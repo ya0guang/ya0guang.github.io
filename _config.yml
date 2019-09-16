@@ -16,16 +16,16 @@ minimal_mistakes_skin    : "air" # "air", "aqua", "contrast", "dark", "dirt", "n
 
 # Site Settings
 locale                   : "zh-CN"
-title                    : "ya0guang's blog"
+title                    : "ya0guang打哈欠的地方"
 title_separator          : "-"
-subtitle                 : # site tagline that appears below site title in masthead
+subtitle                 : "恋恋世界第一可爱"
 name                     : "ya0guang"
 description              : "\ Hack \ Music \ Photography \ Touhou \ Computer Science \ "
 url                      : "https://ya0guang.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : "ya0guang/ya0guang.github.io"
 teaser                   : "/assets/images/cirno.png"
-logo                     : "/assets/images/icon.png"
+logo                     : "/assets/images/lian_icon.jpg"
 masthead_title           : # overrides the website title displayed in the masthead, use " " for no title
 # breadcrumbs            : false # true, false (default)
 words_per_minute         : 200
