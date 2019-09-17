@@ -7,6 +7,8 @@ tags:
 - 硬件安全
 - BadUSB
 - Arduino
+header:
+  teaser: /assets/images/lowcost-badUSB/my_device.jpg
 ---
 
 # 引言

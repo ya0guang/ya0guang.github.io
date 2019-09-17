@@ -374,13 +374,13 @@ zh: &DEFAULT_ZH_HANS
   skip_content               :
   skip_footer                :
   page                       : "页面"
-  pagination_previous        : "向前"
-  pagination_next            : "向后"
-  breadcrumb_home_label      : "首页"
+  pagination_previous        : "推演"
+  pagination_next            : "回溯"
+  breadcrumb_home_label      : "开始的地方"
   breadcrumb_separator       : "/"
   menu_label                 : "切换菜单"
   search_label               :
-  toc_label                  : "在本页上"
+  toc_label                  : "目录"
   ext_link_label             : "直接链接"
   less_than                  : "少于"
   minute_read                : "分钟读完"

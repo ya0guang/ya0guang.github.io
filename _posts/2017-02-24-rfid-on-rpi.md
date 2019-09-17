@@ -8,6 +8,8 @@ tags:
 - 无线安全
 - RFID
 - Raspberry Pi
+header:
+  teaser: /assets/images/rfid-on-rpi/pn532.jpg
 ---
 
 # 引言
