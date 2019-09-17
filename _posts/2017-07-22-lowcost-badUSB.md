@@ -52,7 +52,7 @@ BadUSB早在2014年底的PacSec会议上便已经提出，这是USB协议中的�
 <https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Payloads>
 
 ## Teensy USB
-![Teensy USB](/assets/images/lowcost-badUSB/tenssy.png)
+![Teensy USB](/assets/images/lowcost-badUSB/teensy.png)
 一款USB微控制器开发板，想必便可以当作键盘鼠标来用啦！可以看到部分款式也有插存储卡的地方，价格总体上也达到了Rubber Ducky的一半，但是美刀对于我们而言还是略贵的！
 
 伪装性：★★

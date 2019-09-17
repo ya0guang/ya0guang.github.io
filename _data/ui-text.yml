@@ -395,7 +395,7 @@ zh: &DEFAULT_ZH_HANS
   related_label              : "猜您还喜欢"
   follow_label               : "关注:"
   feed_label                 : "Feed"
-  powered_by                 : "技术来自于"
+  powered_by                 : "Powered by"
   website_label              : "网站"
   email_label                : "电子邮箱"
   recent_posts               : "最新文章"

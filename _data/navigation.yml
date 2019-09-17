@@ -1,8 +1,8 @@
 # main links
 main:
-  - title: "Cate"
+  - title: "分类"
     url: /categories/
-  - title: "tags"
+  - title: "标签"
     url: /tags/
   # - title: "About"
   #   url: https://mmistakes.github.io/minimal-mistakes/about/

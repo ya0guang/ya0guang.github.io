@@ -11,12 +11,12 @@
 # https://mmistakes.github.io/minimal-mistakes/docs/quick-start-guide/#installing-the-theme
 
 # theme                  : "minimal-mistakes-jekyll"
-remote_theme           : "mmistakes/minimal-mistakes"
-minimal_mistakes_skin    : "air" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
+remote_theme             : "mmistakes/minimal-mistakes"
+minimal_mistakes_skin    : "dark" # "air", "aqua", "contrast", "dark", "dirt", "neon", "mint", "plum", "sunrise"
 
 # Site Settings
 locale                   : "zh-CN"
-title                    : "摇光打哈欠的地方"
+title                    : "摇光无意识敲字的地方"
 title_separator          : "-"
 subtitle                 : "<font size=1> Komeiji Koishi, world's first cute </font>"
 name                     : "ya0guang"
@@ -25,7 +25,7 @@ url                      : "https://ya0guang.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : "ya0guang/ya0guang.github.io"
 teaser                   : "/assets/images/cirno.png"
-logo                     : "/assets/images/lian_icon.jpg"
+logo                     : #"/assets/images/lian_icon.jpg"
 masthead_title           : # overrides the website title displayed in the masthead, use " " for no title
 # breadcrumbs            : false # true, false (default)
 words_per_minute         : 200
@@ -108,7 +108,7 @@ analytics:
 # Site Author
 author:
   name             : "ya0guang"
-  avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
+  avatar           : "/assets/images/cirno_shrug.png" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
   bio              : "Hack <br> Music <br> Photograph <br> Touhou Project <br> Computer Science"
   location         : "{+1, +86}"
   email            : ya0guang@protonmail.com
@@ -295,3 +295,5 @@ defaults:
       toc: true
       toc_table: "Content"
       toc_icon: "cog"
+      header:
+        overlay_filter: rgba(94, 162, 121, 0.5)

@@ -135,7 +135,7 @@ sudo apt-get install autoconf libusb-dev libtool libpcsclite-dev
 08 <-> RXD
 10 <-> TXD
 
-![RPi3与PN532连接图](../assets/images/rfid-on-rpi/rpi_pn532.jpg)
+![RPi3与PN532连接图](/assets/images/rfid-on-rpi/rpi_pn532.jpg)
 
 ## libnfc
 顾名思义，nfc库。
