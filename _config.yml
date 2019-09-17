@@ -16,9 +16,9 @@ minimal_mistakes_skin    : "air" # "air", "aqua", "contrast", "dark", "dirt", "n
 
 # Site Settings
 locale                   : "zh-CN"
-title                    : "ya0guang打哈欠的地方"
+title                    : "摇光打哈欠的地方"
 title_separator          : "-"
-subtitle                 : "恋恋世界第一可爱"
+subtitle                 : "<font size=1> Komeiji Koishi, world's first cute </font>"
 name                     : "ya0guang"
 description              : "\ Hack \ Music \ Photography \ Touhou \ Computer Science \ "
 url                      : "https://ya0guang.github.io"
@@ -30,9 +30,9 @@ masthead_title           : # overrides the website title displayed in the masthe
 # breadcrumbs            : false # true, false (default)
 words_per_minute         : 200
 comments:
-  provider               : # false (default), "disqus", "discourse", "facebook", "staticman", "staticman_v2", "utterances", "custom"
+  provider               : "disqus" # false (default), "disqus", "discourse", "facebook", "staticman", "staticman_v2", "utterances", "custom"
   disqus:
-    shortname            : # https://help.disqus.com/customer/portal/articles/466208-what-s-a-shortname-
+    shortname            : "ya0guang-github-io" # https://help.disqus.com/customer/portal/articles/466208-what-s-a-shortname-
   discourse:
     server               : # https://meta.discourse.org/t/embedding-discourse-comments-via-javascript/31963 , e.g.: meta.discourse.org
   facebook:
@@ -77,14 +77,14 @@ google:
   search_engine_id       : # YOUR_SEARCH_ENGINE_ID
   instant_search         : # false (default), true
 # SEO Related
-google_site_verification :
+google_site_verification : "4Gtku-n0LXSNA8hdFajjJZdCD6L4PS9YovPEUKeqEkg"
 bing_site_verification   :
 yandex_site_verification :
 naver_site_verification  :
 
 # Social Sharing
 twitter:
-  username               : "ya0guang"
+  username               : "@ya0guang"
 facebook:
   username               :
   app_id                 :
@@ -109,9 +109,9 @@ analytics:
 author:
   name             : "ya0guang"
   avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "Hack "
+  bio              : "Hack <br> Music <br> Photograph <br> Touhou Project <br> Computer Science"
   location         : "{+1, +86}"
-  email            :
+  email            : ya0guang@protonmail.com
   links:
     - label: "Email"
       icon: "fas fa-fw fa-envelope-square"
@@ -121,16 +121,16 @@ author:
       # url: "https://your-website.com"
     - label: "Twitter"
       icon: "fab fa-fw fa-twitter-square"
-      # url: "https://twitter.com/"
+      url: "https://twitter.com/ya0guang"
     - label: "Facebook"
       icon: "fab fa-fw fa-facebook-square"
       # url: "https://facebook.com/"
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
-      # url: "https://github.com/"
-    - label: "Instagram"
+      url: "https://github.com/ya0guang"
+    - label: "Flickr"
       icon: "fab fa-fw fa-instagram"
-      # url: "https://instagram.com/"
+      url: "https://www.flickr.com/photos/147323121@N08/"
 
 # Site Footer
 footer:
@@ -220,7 +220,7 @@ sass:
 
 # Outputting
 permalink: /:categories/:title/
-paginate: 5 # amount of posts to show
+paginate: 8 # amount of posts to show
 paginate_path: /page:num/
 timezone: # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 
@@ -289,6 +289,9 @@ defaults:
       layout: single
       author_profile: true
       read_time: true
-      comments: # true
+      comments: true
       share: true
       related: true
+      toc: true
+      toc_table: "Content"
+      toc_icon: "cog"
