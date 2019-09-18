@@ -109,7 +109,7 @@ analytics:
 author:
   name             : "ya0guang"
   avatar           : "/assets/images/cirno_shrug.png" # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "Hack <br> Music <br> Photograph <br> Touhou Project <br> Computer Science"
+  bio              : "Hack <br> Music <br> Photograph <br> Touhou Project"
   location         : "{+1, +86}"
   email            : ya0guang@protonmail.com
   links:
