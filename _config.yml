@@ -18,7 +18,7 @@ minimal_mistakes_skin    : "dark" # "air", "aqua", "contrast", "dark", "dirt", "
 locale                   : "zh-CN"
 title                    : "摇光无意识敲字的地方"
 title_separator          : "-"
-subtitle                 : "<font size=1> Komeiji Koishi, world's first cute </font>"
+subtitle                 : "<font size=1> Zzzzzzzzz....... </font>"
 name                     : "ya0guang"
 description              : "\ Hack \ Music \ Photography \ Touhou \ Computer Science \ "
 url                      : "https://ya0guang.github.io"
@@ -286,6 +286,7 @@ defaults:
       path: ""
       type: posts
     values:
+      author: true
       layout: single
       author_profile: true
       read_time: true

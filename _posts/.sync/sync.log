@@ -1,0 +1,250 @@
+﻿platform: Linux 4.19.69-1-MANJARO #1 SMP PREEMPT Thu Aug 29 08:51:46 UTC 2019 x86_64
+version: 2.6.3.1340
+[20190929 00:15:37.984] VerifyFileWithHash failed on file /home/ya0guang/Code/ya0guang.github.io/_posts/.sync/settings.dat with status 2.
+[20190929 00:15:37.985] VerifyFileWithHash failed on file /home/ya0guang/Code/ya0guang.github.io/_posts/.sync/settings.dat with status 2.
+[20190929 00:15:37.985] VerifyFileWithHash failed on file /home/ya0guang/Code/ya0guang.github.io/_posts/.sync/settings.dat with status 2.
+[20190929 00:15:37.985] ZIP: Can't locate [version] in zip, error -100.
+[20190929 00:15:37.986] VerifyFileWithHash failed on file ./.sync//settings.dat with status 2.
+[20190929 00:15:37.986] VerifyFileWithHash failed on file ./.sync//settings.dat with status 2.
+[20190929 00:15:37.986] VerifyFileWithHash failed on file ./.sync//settings.dat with status 2.
+[20190929 00:15:37.989] VerifyFileWithHash failed on file ./.sync//sync.dat with status 2.
+[20190929 00:15:37.989] VerifyFileWithHash failed on file ./.sync//sync.dat with status 2.
+[20190929 00:15:37.989] VerifyFileWithHash failed on file ./.sync//sync.dat with status 2.
+[20190929 00:15:37.989] Failed to find/load sync.dat - 2
+[20190929 00:15:37.989] test sha1: AE5BD8EFEA5322C4D9986D06680A781392F9A642
+[20190929 00:15:37.989] test sha2: 630DCD2966C4336691125448BBB25B4FF412A49C732DB2C8ABC1B8581BD710DD
+[20190929 00:15:37.992] test aes: 0A940BB5416EF045F1C39458C653EA5A07FEEF74E1D5036E900EEE118E949293
+[20190929 00:15:37.995] DISKIO[0x000055a05fcbb080]: Create diskio pool for drive with id 18446744073709551614, path: , type: 0, size: 1
+[20190929 00:15:37.995] WORKER[0x000055a05fcbb270]: created
+[20190929 00:15:37.996] DISKIO[0x000055a05fcbb080]: created
+[20190929 00:15:37.996] DISK_WORKER[0x000055a05fcbb270]: diskio thread start, drive_id = 18446744073709551614, priority = normal
+[20190929 00:15:37.996] WORKER[0x000055a05fcbaef0]: created
+[20190929 00:15:37.996] WORKER[0x000055a05fcbb8b0]: created
+[20190929 00:15:37.996] WORKER[0x000055a05fcbaef0]: thread start
+[20190929 00:15:37.996] WORKER[0x000055a05fcbbb80]: created
+[20190929 00:15:37.996] WORKER[0x000055a05fcbb8b0]: thread start
+[20190929 00:15:37.996] WORKER[0x000055a05fcbbe80]: created
+[20190929 00:15:37.996] WORKER[0x000055a05fcbbb80]: thread start
+[20190929 00:15:37.996] WORKER[0x000055a05fcbc1a0]: created
+[20190929 00:15:37.996] WORKER[0x000055a05fcbbe80]: thread start
+[20190929 00:15:37.996] WORKER[0x000055a05fcbc1a0]: thread start
+[20190929 00:15:37.999] webui thread start
+[20190929 00:15:38.000] register completion queue with id 0
+[20190929 00:15:38.000] register completion queue with id 0
+[20190929 00:15:38.000] register completion queue with id 0
+[20190929 00:15:38.000] 20PeerListenConnection::listen[0x000055a05fcc2ca0][8] bound listening socket 8 to IP 0.0.0.0:64119
+[20190929 00:15:38.000] 20PeerListenConnection::listen[0x000055a05fcc2ce0][10] bound listening socket 10 to IP [::]:64119
+[20190929 00:15:38.000] UDP: UDP: bound listening socket 11 to IP 0.0.0.0:64119
+[20190929 00:15:38.000] UDP: UDP: bound listening socket 12 to IP [::]:64119
+[20190929 00:15:38.000] 20HttpListenConnection::listen[0x000055a05fcc3130][13] bound listening socket 13 to IP 127.0.0.1:8888
+[20190929 00:15:38.005] register completion queue with id 1
+[20190929 00:15:38.005] register completion queue with id 1
+[20190929 00:15:38.005] register completion queue with id 1
+[20190929 00:15:38.012] IPv6 is installed
+[20190929 00:15:38.012] Unsupported or empty sync.dat file
+[20190929 00:15:38.012] My PeerID: 10F18102468AF61F45B93D0FDE5974D133142EEF
+[20190929 00:15:38.012] LC: LoadLicenses: there is no pro license
+[20190929 00:15:38.012] VerifyFileWithHash failed on file ./.sync//history.dat with status 2.
+[20190929 00:15:38.012] VerifyFileWithHash failed on file ./.sync//history.dat with status 2.
+[20190929 00:15:38.012] VerifyFileWithHash failed on file ./.sync//history.dat with status 2.
+[20190929 00:15:38.012] Joining on interface ens33
+[20190929 00:15:38.012] Joining to the multicast group 239.192.0.0:3838 on interface 192.168.78.130
+[20190929 00:15:38.013] Joining on interface lo
+[20190929 00:15:38.013] Joining to the multicast group 239.192.0.0:3838 on interface 127.0.0.1
+[20190929 00:15:38.013] Joining to the multicast group [ff08::f:5f:1c:6f]:3838 on interface ::1
+[20190929 00:15:38.020] Scheduler: Apply global rule, download limit: -1, upload limit: -1
+[20190929 00:15:38.020] message thread start
+[20190929 00:15:38.021] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:15:40.525] Debug log mask has been set to FFFFFFFF
+[20190929 00:15:40.525] Features mask has been set to 0
+[20190929 00:15:50.025] NAT-PMP: Unable to map port with NAT-PMP.
+[20190929 00:16:09.034] OpenSSL: Loaded X509 trusted CA from "/etc/ssl/certs/ca-certificates.crt"
+[20190929 00:16:38.609] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:17:39.718] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:18:40.816] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:19:41.903] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:20:42.485] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:21:43.569] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:22:44.655] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:23:45.741] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:24:46.821] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:25:47.905] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:26:48.489] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:27:49.569] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:28:50.662] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:29:51.748] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:30:52.831] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:31:53.915] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:32:54.499] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:33:55.592] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048265216
+[20190929 00:34:56.699] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36048269312
+[20190929 00:35:57.783] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36047036416
+[20190929 00:36:58.888] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36031021056
+[20190929 00:37:59.470] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 36030824448
+[20190929 00:38:41.346] Received shutdown request via signal 15
+[20190929 00:38:41.348] saved history: 0 events
+[20190929 00:38:42.348] SyncFolderScanner: shut down
+[20190929 00:38:42.348] unregister completion queue with id 1
+[20190929 00:38:42.348] unregister completion queue with id 1
+[20190929 00:38:42.348] message thread stop
+[20190929 00:38:42.348] GS: shutdown
+[20190929 00:38:42.349] DISKIO[0x000055a05fcbb080]: stopping service threads
+[20190929 00:38:42.349] DISK_WORKER[0x000055a05fcbb270]: diskio thread stop, drive_id = 18446744073709551614
+[20190929 00:38:42.349] DISKIO[0x000055a05fcbb080]: service threads stopped
+[20190929 00:38:42.349] WORKER[0x000055a05fcbb270]: deleted
+[20190929 00:38:42.349] DISKIO[0x000055a05fcbb080]: deleted
+[20190929 00:38:42.349] WORKER[0x000055a05fcbaef0]: thread stop
+[20190929 00:38:42.350] WORKER[0x000055a05fcbaef0]: deleted
+[20190929 00:38:42.350] WORKER[0x000055a05fcbb8b0]: thread stop
+[20190929 00:38:42.350] WORKER[0x000055a05fcbb8b0]: deleted
+[20190929 00:38:42.350] WORKER[0x000055a05fcbbb80]: thread stop
+[20190929 00:38:42.350] WORKER[0x000055a05fcbbb80]: deleted
+[20190929 00:38:42.350] WORKER[0x000055a05fcbbe80]: thread stop
+[20190929 00:38:42.350] WORKER[0x000055a05fcbbe80]: deleted
+[20190929 00:38:42.350] webui thread stop
+[20190929 00:38:42.352] Torrent session shutdown: done waiting
+[20190929 00:38:42.352] Stopping network threads
+[20190929 00:38:42.366] Network_ReleaseSockets: deleting 16UDPSocketManager
+[20190929 00:38:42.366] UDP: Stopping UDP threads for 0.0.0.0:64119
+[20190929 00:38:42.454] Network_ReleaseSockets: deleting 16DatagramSocketV4
+[20190929 00:38:42.455] Network_ReleaseSockets: deleting 16DatagramSocketV4
+[20190929 00:38:42.455] Network_ReleaseSockets: deleting 16DatagramSocketV6
+[20190929 00:38:42.455] Network_ReleaseSockets: deleting 16DatagramSocketV4
+[20190929 00:38:42.455] Network_ReleaseSockets: deleting 13NetlinkSocket
+[20190929 00:38:42.455] Network_ReleaseSockets: deleting 15NatPmpUdpSocket
+[20190929 00:38:42.455] Network_ReleaseSockets: deleting 24UpnpNotifyListenerSocket
+[20190929 00:38:42.455] Network_ReleaseSockets: deleting 19UpnpBroadcastSocket
+[20190929 00:38:42.455] Network_ReleaseSockets: deleting 19UpnpBroadcastSocket
+[20190929 00:38:42.455] Network_ReleaseSockets: deleting 16DatagramSocketV6
+[20190929 00:38:42.455] Network_ReleaseSockets: deleting 20PeerListenConnection
+[20190929 00:38:42.455] Network_ReleaseSockets: deleting 20PeerListenConnection
+[20190929 00:38:42.455] Network_ReleaseSockets: deleting 7EventFD
+[20190929 00:38:42.455] Network_ReleaseSockets: deleting 16UDPSocketManager
+[20190929 00:38:42.455] UDP: Stopping UDP threads for [::]:64119
+[20190929 00:38:42.555] Network_ReleaseSockets: all sockets have been released
+[20190929 00:38:42.555] WORKER[0x000055a05fcbc1a0]: thread stop
+[20190929 00:38:42.556] WORKER[0x000055a05fcbc1a0]: deleted
+[20190929 00:38:42.556] Shutdown. Saving config sync.dat
+[20190929 15:13:36.256] Debug log mask has been set to FFFFFFFF
+[20190929 15:13:36.257] Features mask has been set to 0
+[20190929 15:13:36.258] ZIP: Can't locate [version] in zip, error -100.
+[20190929 15:13:36.261] test sha1: AE5BD8EFEA5322C4D9986D06680A781392F9A642
+[20190929 15:13:36.261] test sha2: 630DCD2966C4336691125448BBB25B4FF412A49C732DB2C8ABC1B8581BD710DD
+[20190929 15:13:36.262] test aes: 0A940BB5416EF045F1C39458C653EA5A07FEEF74E1D5036E900EEE118E949293
+[20190929 15:13:36.264] DISKIO[0x0000555fc813d950]: Create diskio pool for drive with id 18446744073709551614, path: , type: 0, size: 1
+[20190929 15:13:36.264] WORKER[0x0000555fc813dbf0]: created
+[20190929 15:13:36.264] DISKIO[0x0000555fc813d950]: created
+[20190929 15:13:36.264] WORKER[0x0000555fc813d7c0]: created
+[20190929 15:13:36.264] DISK_WORKER[0x0000555fc813dbf0]: diskio thread start, drive_id = 18446744073709551614, priority = normal
+[20190929 15:13:36.264] WORKER[0x0000555fc813f120]: created
+[20190929 15:13:36.264] WORKER[0x0000555fc813d7c0]: thread start
+[20190929 15:13:36.264] WORKER[0x0000555fc813f3b0]: created
+[20190929 15:13:36.264] WORKER[0x0000555fc813f120]: thread start
+[20190929 15:13:36.264] WORKER[0x0000555fc813f6b0]: created
+[20190929 15:13:36.264] WORKER[0x0000555fc813fa50]: created
+[20190929 15:13:36.265] WORKER[0x0000555fc813f3b0]: thread start
+[20190929 15:13:36.265] WORKER[0x0000555fc813f6b0]: thread start
+[20190929 15:13:36.265] WORKER[0x0000555fc813fa50]: thread start
+[20190929 15:13:36.267] webui thread start
+[20190929 15:13:36.267] register completion queue with id 0
+[20190929 15:13:36.267] register completion queue with id 0
+[20190929 15:13:36.267] register completion queue with id 0
+[20190929 15:13:36.268] 20PeerListenConnection::listen[0x0000555fc8145110][10] bound listening socket 10 to IP 0.0.0.0:64119
+[20190929 15:13:36.268] 20PeerListenConnection::listen[0x0000555fc8145150][11] bound listening socket 11 to IP [::]:64119
+[20190929 15:13:36.268] UDP: UDP: bound listening socket 12 to IP 0.0.0.0:64119
+[20190929 15:13:36.268] UDP: UDP: bound listening socket 13 to IP [::]:64119
+[20190929 15:13:36.268] 20HttpListenConnection::listen[0x0000555fc81455a0][14] bound listening socket 14 to IP 127.0.0.1:8888
+[20190929 15:13:36.271] register completion queue with id 1
+[20190929 15:13:36.271] register completion queue with id 1
+[20190929 15:13:36.271] register completion queue with id 1
+[20190929 15:13:36.273] IPv6 is installed
+[20190929 15:13:36.273] Loading sync.dat version 2.6.3, current version 2.6.3
+[20190929 15:13:36.273] My PeerID: 10F18102468AF61F45B93D0FDE5974D133142EEF
+[20190929 15:13:36.274] LC: LoadLicenses: there is no pro license
+[20190929 15:13:36.274] loaded history: 0 events
+[20190929 15:13:36.274] Joining on interface ens33
+[20190929 15:13:36.274] Joining to the multicast group 239.192.0.0:3838 on interface 192.168.78.130
+[20190929 15:13:36.275] Joining on interface lo
+[20190929 15:13:36.275] Joining to the multicast group 239.192.0.0:3838 on interface 127.0.0.1
+[20190929 15:13:36.275] Joining to the multicast group [ff08::f:5f:1c:6f]:3838 on interface ::1
+[20190929 15:13:36.278] Scheduler: Apply global rule, download limit: -1, upload limit: -1
+[20190929 15:13:36.278] message thread start
+[20190929 15:13:36.278] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 35807731712
+[20190929 15:13:40.784] Debug log mask has been set to FFFFFFFF
+[20190929 15:13:40.784] Features mask has been set to 0
+[20190929 15:13:48.275] NAT-PMP: Unable to map port with NAT-PMP.
+[20190929 15:14:00.955] 21ReverseHTTPConnection::set_error[0x00007f8148002840][28] 103 (EOF)
+[20190929 15:14:00.981] API: --> licenseagreed({"action":"licenseagreed","t":"1569784440977","token":"YZkV82fvUbrxAEfQKucnRhOwAfVwO4Inek2lK5yF0ZV2E0Z896BMOngCkV0AAAAA"})
+[20190929 15:14:00.981] API: <-- licenseagreed({"status":200,"value":{"allowemptypassword":true,"currentusertermsversion":1,"eulaurl":"http://helpfiles.resilio.com/eula","isfirstrunwindowshown":false,"iswebui":true,"iswebuicredentialsset":true,"licenseagreed":false,"passwordset":false,"privacypolicyurl":"http://helpfiles.resilio.com/privacy","tosurl":"http://helpfiles.resilio.com/terms","usertermsagreed":false}})
+[20190929 15:14:00.984] API: --> getsysteminfo({"action":"getsysteminfo","t":"1569784440978","token":"YZkV82fvUbrxAEfQKucnRhOwAfVwO4Inek2lK5yF0ZV2E0Z896BMOngCkV0AAAAA"})
+[20190929 15:14:00.984] API: <-- getsysteminfo({"status":200,"value":{"cc":0,"hostname":"ya0guang-pc","is_server":false,"language":"en","os":"linux","username":"ya0guang","vendor":""}})
+[20190929 15:14:00.984] API: --> getappinfo({"action":"getappinfo","t":"1569784440979","token":"YZkV82fvUbrxAEfQKucnRhOwAfVwO4Inek2lK5yF0ZV2E0Z896BMOngCkV0AAAAA"})
+[20190929 15:14:00.984] API: <-- getappinfo({"status":200,"value":{"branding":0,"install":1569730538,"placeholders_enabled":false}})
+[20190929 15:14:01.036] API: --> userlang({"action":"userlang","t":"1569784441017","token":"YZkV82fvUbrxAEfQKucnRhOwAfVwO4Inek2lK5yF0ZV2E0Z896BMOngCkV0AAAAA"})
+[20190929 15:14:01.036] API: <-- userlang({"status":200,"value":""})
+[20190929 15:14:07.296] OpenSSL: Loaded X509 trusted CA from "/etc/ssl/certs/ca-certificates.crt"
+[20190929 15:14:24.779] Debug log mask has been set to FFFFFFFF
+[20190929 15:14:24.779] Features mask has been set to 0
+[20190929 15:14:24.779] ZIP: Can't locate [version] in zip, error -100.
+[20190929 15:14:27.804] saved history: 0 events
+[20190929 15:14:27.804] Torrent session shutdown: done waiting
+[20190929 15:14:27.804] Stopping network threads
+[20190929 15:14:27.804] Shutdown. Saving config sync.dat
+[20190929 15:14:37.032] SYS_RES: drive "/", id: 2049, capacity: 49873309696, free_space: 35814023168
+[20190929 15:14:43.236] API: --> licenseagreed({"action":"licenseagreed","t":"1569784483232","token":"ONJNRFif5XACFsnck4Q98Mzsb99wO4Inek2lK5yF0ZV2E0Z896BMOqMCkV0AAAAA"})
+[20190929 15:14:43.236] API: <-- licenseagreed({"status":200,"value":{"allowemptypassword":true,"currentusertermsversion":1,"eulaurl":"http://helpfiles.resilio.com/eula","isfirstrunwindowshown":false,"iswebui":true,"iswebuicredentialsset":true,"licenseagreed":false,"passwordset":false,"privacypolicyurl":"http://helpfiles.resilio.com/privacy","tosurl":"http://helpfiles.resilio.com/terms","usertermsagreed":false}})
+[20190929 15:14:43.236] API: --> getsysteminfo({"action":"getsysteminfo","t":"1569784483233","token":"ONJNRFif5XACFsnck4Q98Mzsb99wO4Inek2lK5yF0ZV2E0Z896BMOqMCkV0AAAAA"})
+[20190929 15:14:43.236] API: <-- getsysteminfo({"status":200,"value":{"cc":0,"hostname":"ya0guang-pc","is_server":false,"language":"en","os":"linux","username":"ya0guang","vendor":""}})
+[20190929 15:14:43.241] API: --> getappinfo({"action":"getappinfo","t":"1569784483235","token":"ONJNRFif5XACFsnck4Q98Mzsb99wO4Inek2lK5yF0ZV2E0Z896BMOqMCkV0AAAAA"})
+[20190929 15:14:43.241] API: <-- getappinfo({"status":200,"value":{"branding":0,"install":1569730538,"placeholders_enabled":false}})
+[20190929 15:14:43.256] API: --> userlang({"action":"userlang","t":"1569784483253","token":"ONJNRFif5XACFsnck4Q98Mzsb99wO4Inek2lK5yF0ZV2E0Z896BMOqMCkV0AAAAA"})
+[20190929 15:14:43.256] API: <-- userlang({"status":200,"value":""})
+[20190929 15:14:47.665] 21ReverseHTTPConnection::set_error[0x00007f8154002a90][28] 103 (EOF)
+[20190929 15:14:47.665] 21ReverseHTTPConnection::set_error[0x00007f8154006cc0][29] 103 (EOF)
+[20190929 15:14:47.665] 21ReverseHTTPConnection::set_error[0x00007f81540062e0][27] 103 (EOF)
+[20190929 15:14:47.667] 21ReverseHTTPConnection::set_error[0x00007f8148001c30][18] 103 (EOF)
+[20190929 15:14:47.669] 21ReverseHTTPConnection::set_error[0x00007f8148002f00][30] 103 (EOF)
+[20190929 15:14:55.274] Received shutdown request via signal 15
+[20190929 15:14:55.276] saved history: 0 events
+[20190929 15:14:55.378] SyncFolderScanner: shut down
+[20190929 15:14:55.378] unregister completion queue with id 1
+[20190929 15:14:55.378] unregister completion queue with id 1
+[20190929 15:14:55.378] message thread stop
+[20190929 15:14:55.381] GS: shutdown
+[20190929 15:14:55.382] DISKIO[0x0000555fc813d950]: stopping service threads
+[20190929 15:14:55.382] DISK_WORKER[0x0000555fc813dbf0]: diskio thread stop, drive_id = 18446744073709551614
+[20190929 15:14:55.382] DISKIO[0x0000555fc813d950]: service threads stopped
+[20190929 15:14:55.382] WORKER[0x0000555fc813dbf0]: deleted
+[20190929 15:14:55.382] DISKIO[0x0000555fc813d950]: deleted
+[20190929 15:14:55.382] WORKER[0x0000555fc813d7c0]: thread stop
+[20190929 15:14:55.382] WORKER[0x0000555fc813d7c0]: deleted
+[20190929 15:14:55.382] WORKER[0x0000555fc813f120]: thread stop
+[20190929 15:14:55.383] WORKER[0x0000555fc813f120]: deleted
+[20190929 15:14:55.383] WORKER[0x0000555fc813f3b0]: thread stop
+[20190929 15:14:55.383] WORKER[0x0000555fc813f3b0]: deleted
+[20190929 15:14:55.383] WORKER[0x0000555fc813f6b0]: thread stop
+[20190929 15:14:55.383] WORKER[0x0000555fc813f6b0]: deleted
+[20190929 15:14:55.383] webui thread stop
+[20190929 15:14:55.592] Torrent session shutdown: done waiting
+[20190929 15:14:55.592] Stopping network threads
+[20190929 15:14:55.601] Network_ReleaseSockets: deleting 16UDPSocketManager
+[20190929 15:14:55.601] UDP: Stopping UDP threads for 0.0.0.0:64119
+[20190929 15:14:55.610] Network_ReleaseSockets: deleting 16DatagramSocketV4
+[20190929 15:14:55.611] Network_ReleaseSockets: deleting 16DatagramSocketV4
+[20190929 15:14:55.611] Network_ReleaseSockets: deleting 16DatagramSocketV6
+[20190929 15:14:55.611] Network_ReleaseSockets: deleting 16DatagramSocketV4
+[20190929 15:14:55.611] Network_ReleaseSockets: deleting 13NetlinkSocket
+[20190929 15:14:55.611] Network_ReleaseSockets: deleting 15NatPmpUdpSocket
+[20190929 15:14:55.611] Network_ReleaseSockets: deleting 24UpnpNotifyListenerSocket
+[20190929 15:14:55.611] Network_ReleaseSockets: deleting 19UpnpBroadcastSocket
+[20190929 15:14:55.611] Network_ReleaseSockets: deleting 19UpnpBroadcastSocket
+[20190929 15:14:55.611] Network_ReleaseSockets: deleting 16DatagramSocketV6
+[20190929 15:14:55.611] Network_ReleaseSockets: deleting 20PeerListenConnection
+[20190929 15:14:55.611] Network_ReleaseSockets: deleting 20PeerListenConnection
+[20190929 15:14:55.611] Network_ReleaseSockets: deleting 7EventFD
+[20190929 15:14:55.611] Network_ReleaseSockets: deleting 16UDPSocketManager
+[20190929 15:14:55.611] UDP: Stopping UDP threads for [::]:64119
+[20190929 15:14:55.709] Network_ReleaseSockets: all sockets have been released
+[20190929 15:14:55.709] WORKER[0x0000555fc813fa50]: thread stop
+[20190929 15:14:55.710] WORKER[0x0000555fc813fa50]: deleted
+[20190929 15:14:55.710] Shutdown. Saving config sync.dat
