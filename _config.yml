@@ -223,10 +223,10 @@ markdown_ext: "markdown,mkdown,mkdn,mkd,md"
 #   enable_coderay: false
 
 
-# # Sass/SCSS
-# sass:
-#   sass_dir: _sass
-#   style: compressed # https://sass-lang.com/documentation/file.SASS_REFERENCE.html#output_style
+# Sass/SCSS
+sass:
+  sass_dir: _sass
+  style: compressed # https://sass-lang.com/documentation/file.SASS_REFERENCE.html#output_style
 
 
 # Outputting
@@ -297,7 +297,7 @@ defaults:
       path: ""
       type: posts
     values:
-      author: true
+      show_date: true
       layout: single
       author_profile: true
       read_time: true
