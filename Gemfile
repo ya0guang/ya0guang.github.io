@@ -13,5 +13,6 @@ group :jekyll_plugins do
     gem 'jekyll-paginate'
     gem 'jekyll-seo-tag'
     gem 'jekyll-gist'
+    gem 'jekyll-include-cache'
     # gem 'jekyll-multiple-languages-plugin'
   end
