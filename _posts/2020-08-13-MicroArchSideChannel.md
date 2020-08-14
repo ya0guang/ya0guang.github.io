@@ -8,7 +8,7 @@ tags:
 - Research
 - SGX
 header:
-  teaser: /assets/images/micro-archAtk/one9fbv.jpg
+  teaser: /assets/images/micro-archAtk/oen9fbv.jpg
 ---
 
 A summary of micro architecture side-channel attacks in recent years. 
