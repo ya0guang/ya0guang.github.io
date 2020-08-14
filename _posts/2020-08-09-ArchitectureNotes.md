@@ -9,12 +9,10 @@ tags:
 - Architecture
 - Books
 header:
-  teaser: 
+  teaser: /assets/images/archNotes/bookcover.jpg
 ---
 
-# Intro
-
-This note is taken from the book: *Computer Architecture: A Quantitative Approach, 6th Edition*. 
+This note is taken while reading book: *Computer Architecture: A Quantitative Approach, 6th Edition*. 
 
 # Chapter 1: Fundamentals of Quantitative Design and Analysis
 

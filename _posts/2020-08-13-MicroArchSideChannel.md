@@ -8,8 +8,10 @@ tags:
 - Research
 - SGX
 header:
-  teaser: 
+  teaser: /assets/images/micro-archAtk/one9fbv.jpg
 ---
+
+A summary of micro architecture side-channel attacks in recent years. 
 
 # Overview
 
@@ -17,17 +19,15 @@ header:
 | ------- | ------------------ | ------------ | ----------------------------------------- |
 | Fallout | Store Buffer       | SGX          | *mem* within the same address space, ASLR |
 
-# Attacks
-
-## Fallout
+# Fallout
 
 MDS-type attack, focusing on store buffer.
 
-### Store Buffer
+## Store Buffer
 
 When CPU needs to write data to the memory, the CPU will enqueue this write operation and dispatch it to the store buffer rather than waiting the operation to complete. There are some slots in the store buffer to serve multiple store request in Intel CPU.
 
-### Write Transient Forwarding (WTF)
+## Write Transient Forwarding (WTF)
 
 The CPU first check the store buffer while loading from memory to see if it will load from a memory unit which is going to be modified a unfinished store request in SB. If the CPU finds a match (on **some** lower bits of the address), the value to be stored will be forwarded to the corresponding load.
 
@@ -39,7 +39,7 @@ The general steps for the attack:
 2. Attacker load triggering WTF. Notice that such load may fail, but have micro-architectural change.
 3. Flush+Reload to recover the victim store(attacker load but failed) value from cache.
 
-### Data Bounce
+## Data Bounce
 
 Since the store-to-load lacks write permission check and only load with valid virtual address would be forwarded, the attacker can know if an address in virtual address space (VAS) is valid (e.g. occupied by kernel).
 
@@ -58,11 +58,11 @@ mov ($mem + $value * 4096) -> $dummy
 4. Encode *x* and later to see if we can recover it correctly
 
 
-### Fetch+Bounce
+## Fetch+Bounce
 
 A new primitive, Fetch+Bounce can then be constructed from aforementioned two building blocks.
 
-```
+```pseudo
 for retry = 0...2 
     mov $x (p)
     mov (p) $value
@@ -73,14 +73,14 @@ for retry = 0...2
 If Data Bounce succeeds on the first try, the address is in the TLB.If it succeeds onthesecond try,the address is valid but not in the TLB.
 
 
-### Competence
+## Competence
 
 - Breaking KASLR
 - Leaking kernel memory/control flow
 - Recovering AES-NI schedule
 
 
-### Limitations
+## Limitations
 
 - Inability on KAISER-enabled machine
 
