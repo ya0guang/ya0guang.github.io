@@ -4,7 +4,6 @@ title: Computer Architecture Notes
 date: 2020-08-09 21:10:07
 categories: "CS Notes"
 tags:
-- English
 - Notes
 - Research
 - Architecture
@@ -63,7 +62,8 @@ $$Module availability = \frac{MTTF}{MTTF + MTTR} $$
 
 $$n = \frac{Exec\ time_Y}{Exec\ time_X} = \frac{Perf_X}{Perf_Y}$$
 
-*Amdahl's law*: $Speedup = \frac{Perf.\ for \ entire\ task\ with\ enhancement}{Perf.\ for \ entire\ task\ without\ enhancement}$
+#### *Amdahl's law*
+$$Speedup = \frac{Perf.\ for \ entire\ task\ with\ enhancement}{Perf.\ for \ entire\ task\ without\ enhancement}$$  
 Thus, $Exec\ time_{new} = Exec\ time_{old} * ((1-Fraction_{enhanced}) + \frac{Fraction_{enhanced}}{Speedup_{enhanced}})$
 
 #### CPU time

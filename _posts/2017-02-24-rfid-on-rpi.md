@@ -4,8 +4,8 @@ title: 低成本安全硬件（二）——RFID on PN532
 date: 2017-02-24 21:41:41
 categories: "Hack"
 tags:
-- 硬件安全
-- 无线安全
+- Hardware Security
+- Wireless Security
 - RFID
 - Raspberry Pi
 header:

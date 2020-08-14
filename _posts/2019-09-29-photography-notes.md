@@ -5,7 +5,7 @@ date: 2019-09-29 09:58:07
 categories: "Photography"
 tags:
 - 摄影
-- 笔记
+- Notes
 header:
   teaser: /assets/images/photography-notes/unity&divergence3.jpg
 ---
