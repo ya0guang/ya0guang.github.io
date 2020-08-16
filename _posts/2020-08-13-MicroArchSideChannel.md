@@ -15,10 +15,13 @@ A summary of micro architecture side-channel attacks in recent years.
 
 # Overview
 
-| Paper   | Micro-architecture | Attacker Priv.   | Victim Priv. | Ability (attack)                          |
-| ------- | ------------------ | ---------------- | ------------ | ----------------------------------------- |
-| Fallout | Store Buffer       | User space prog. | Kernel       | *mem* within the same address space, ASLR |
-| LVI     | SB, L1D            | Kernel           | SGX Enclave  |                                           |
+| Paper     | Micro-architecture | Attacker Priv.   | Victim Priv. | Ability (attack)                          |
+| --------- | ------------------ | ---------------- | ------------ | ----------------------------------------- |
+| Spectre   | Branch Predictor   | User space prog. | cross-prog.  | Control flow hijack                       |
+| Meltdown  | Out of Order       |                  |              |                                           |
+| Fallout   | Store Buffer       | User space prog. | Kernel       | *mem* within the same address space, ASLR |
+| LVI       | SB, L1D            | Kernel           | SGX Enclave  | AES-NI, Quoting Enclave                   |
+| Crosstalk | Stageing Buffer    |                  |              |                                           |
 
 
 ## Transient Domain
@@ -104,7 +107,7 @@ If Data Bounce succeeds on the first try, the address is in the TLB.If it succee
 
 LVI can load values incorrectly from various micro architectural buffers in the transient domain. Moreover, the CPU can even execute following instructions transiently on these faulting load values.
 
-*Note: all GIF and pics are from https://lviattack.eu/ or the LVI paper*
+*Note: all pics in this section are from https://lviattack.eu/ or the LVI paper*
 
 
 ## Attack Steps
@@ -179,7 +182,12 @@ Since such an attack requires fine-grained control over faults/PTE entries and k
 
 - `lfence`: high overhead
 
+# Crosstalk
+
+Traditionally, people believe that side-channel leakage is only possible when the attacker and the victim is on the same core. This paper introduces a new way of leaking info across cores. 
+
 # Reference 
 
 1. [MDS Attack](https://mdsattacks.com/)
 2. [Fallout Paper](https://mdsattacks.com/files/fallout.pdf)
+3. [LVI](https://lviattack.eu/)
