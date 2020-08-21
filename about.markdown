@@ -8,4 +8,80 @@ I'm a current PhD student focusing on system security. This blog is mainly for t
 
 I also like photography, lockpicking, board game, DOTA and touhou project!
 
-欢迎来到我的Blog！最近开始用英文来记录自己在磕盐的过程中阅读的专业书籍/顶会论文来弥补我孱弱的记忆力。未来或许会用中文来记录生活和一些hacking的经历和经验。如有大佬愿意和我交流分享一些经验，那我就感激不尽啦！
+# 关于我
+
+目前正企图用头发换取一个博士学位。主要的研究方向是安全。虽然目前还没有发表什么论文，但是已经试了不少防脱洗发水了。对于软硬件结合的部分比较感兴趣。
+
+- 偶尔摄影
+- 穷烧HiFi
+- 菜鸡CTFer
+
+
+# To Do List
+
+- HAM执照 T/G/E
+- 用SDR搞事情
+- 用BCI搞事情
+
+# Books To Read
+
+删除线表示读完；结尾的斜体表示%进度；粗体表示计划在这个领域开坑，但是没有读具体的某一本书。
+
+如果遇到特别喜欢的大抵会写一些notes。
+
+## CS
+
+- Computer Architecture: A Quantitative Approach *10*
+- LOGIC IN COMPUTER SCIENCE Modelling and Reasoning about Systems *80*
+- ~~程序员的自我修养-链接、装载与库~~
+- Reverse Engineering for Beginners *10*
+
+## Sec
+
+- ~~白帽子讲web安全~~
+- ~~黑客攻防技术宝典：Web实战篇~~
+- **密码学**
+
+## 摄影
+
+- ~~纽约摄影学院摄影教材~~ *上*
+- ~~一本摄影书~~ *书名就这*
+- ~~摄影的艺术~~
+- 论摄影
+
+## 其他
+
+- 影响力
+- ~~全球科技通史（吴军）~~
+- 反脆弱 *16*
+- 黑天鹅
+- ~~三体~~
+- **催眠**
+- 斯塔夫里阿诺斯：全球通史——从史前史到21世纪
+- 王小波全集 *80*
+
+# Artifacts
+
+## EDC
+
+- PD EVERYDAY BACKPACK v1
+- Sony 黑卡6
+- 达音科 DK3001pro
+- OnePlus 7 pro
+- XPS 13 9380
+
+## HiFi
+
+- 前端: 海贝R5 （4.4平衡+3.5单端）
+- 塞子：DUNE DK3001pro，JVC FW002，Final E3000
+- 头戴：ATH ESW990h, Sony MDR7506
+- ~~用娄氏单元自制的动铁定制~~
+
+## 观望中
+
+- LEGO 科技组
+- MTG
+
+# Update 2.0
+
+最近开始用英文来记录自己在磕盐的过程中阅读的专业书籍和顶会论文来弥补我孱弱的记忆力。
