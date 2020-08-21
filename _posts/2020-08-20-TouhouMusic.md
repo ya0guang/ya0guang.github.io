@@ -1,10 +1,11 @@
 ---
 layout: single
 title: 東方同音社团选（持续更新）
-date: 2020-08-09 21:10:07
-categories: "Touhou"
+date: 2020-08-20 21:10:07
+categories: "ACG"
 tags:
 - Notes
+- ACG
 - 東方Project
 header:
   teaser: /assets/images/touhouMusic/teaser.jpg

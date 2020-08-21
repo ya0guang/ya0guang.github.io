@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Micro-architectural Side Channel (Attacks)
-date: 2020-08-09 21:10:07
+date: 2020-08-13 21:10:07
 categories: "Research Notes"
 tags:
 - Notes
