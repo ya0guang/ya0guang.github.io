@@ -27,7 +27,7 @@ locale                   : "zh-CN"
 # i18n Support
 exclude_from_localizations: ["javascript", "images", "css"]
 
-title                    : "摇光无意识敲字的地方"
+title                    : "摇光无意识地搞事情的地方"
 title_separator          : "-"
 subtitle                 : "<font size=1> Zzzzzzzzz....... </font>"
 name                     : "ya0guang"
@@ -39,7 +39,7 @@ teaser                   : "/assets/images/cirno.png"
 logo                     : #"/assets/images/favicon.ico"
 masthead_title           : # overrides the website title displayed in the masthead, use " " for no title
 # breadcrumbs            : false # true, false (default)
-words_per_minute         : 200
+words_per_minute         : 120
 comments:
   provider               : "disqus" # false (default), "disqus", "discourse", "facebook", "staticman", "staticman_v2", "utterances", "custom"
   disqus:
@@ -110,9 +110,9 @@ social:
 
 # Analytics
 analytics:
-  provider               : false # false (default), "google", "google-universal", "custom"
+  provider               : "google-gtag" # false (default), "google", "google-universal", "custom"
   google:
-    tracking_id          :
+    tracking_id          : UA-128048696-1
     anonymize_ip         : # true, false (default)
 
 

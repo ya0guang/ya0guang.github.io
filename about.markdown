@@ -8,9 +8,15 @@ I'm a current PhD student focusing on system security. This blog is mainly for t
 
 I also like photography, lockpicking, board game, DOTA and touhou project!
 
+# 关于本站
+
+经历了VPS上自建WordPress，Github Pages的hexo之后，我决定拥抱Jekyll。Github可以是一个相当可靠的托管服务Provider，比野鸡VPS不知道高到哪里去了。为什么放弃hexo呢？其实它挺棒的，就是更换电脑的时候恢复repository真是一件十分蛋疼的事情。拥抱Jekyll可以让我花更少的时间在博客这件事情本身上，而更加关注**写作**。其实我一直期望能够把Blog做成Terminal一样的东西。~~待到我学会Flask~~
+
+用来记录我学到的知识，读到的书，走到的地方，搞过的事情。
+
 # 关于我
 
-目前正企图用头发换取一个博士学位。主要的研究方向是安全。虽然目前还没有发表什么论文，但是已经试了不少防脱洗发水了。对于软硬件结合的部分比较感兴趣。
+目前正企图用头发换取一个博士学位。主要的研究方向是安全，对于软硬件结合的部分比较感兴趣。虽然目前还没有发表什么论文，但是已经试了不少防脱洗发水了。
 
 - 偶尔摄影
 - 穷烧HiFi
