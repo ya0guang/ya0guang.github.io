@@ -2,7 +2,7 @@
 layout: single
 title: Computer Architecture Notes
 date: 2020-08-09 21:10:07
-categories: "CS Notes"
+categories: "Notes"
 tags:
 - Notes
 - Research
