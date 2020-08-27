@@ -1,6 +1,6 @@
 ---
 layout: single
-title: 各种值得再次看看的网页/网站
+title: 各种值得再次看看的网页/网站/Meta
 date: 2020-08-23 10:10:07
 categories: "Notes"
 tags:
@@ -11,6 +11,10 @@ header:
 ---
 
 持续更新。有事没事就去看看吧！
+
+# Meta Study
+
+- [Matthias Felleisen's Thoughts](https://felleisen.org/matthias/Thoughts/index.html)
 
 # Paper Writing
 
