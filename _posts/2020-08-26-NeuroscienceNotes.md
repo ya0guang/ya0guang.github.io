@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Neuroscience Notes - Molecular Biology
-date: 2020-08-26 21:10:07
+date: 2020-09-07 21:10:07
 categories: "Notes"
 tags:
 - Notes
@@ -12,7 +12,7 @@ header:
 
 Some notes taken from Neuroscience course, part 1: Molecular Biology.
 
-last update: Aug. 27, 2020
+last update: Sep. 07, 2020
 
 # Translation of Terms
 
@@ -44,17 +44,50 @@ last update: Aug. 27, 2020
 | triphosphate           | 三磷酸盐      |                                 |
 | southern/northern blot | 南/北方墨点法 |                                 |
 | thyrotropin            | 促甲状腺素    |                                 |
-| glutamate              | 谷氨酸        |                                 | 
+| glutamate              | 谷氨酸        |                                 |
 | retroviruse            | 逆转录病毒    |                                 |
 | agar                   | 琼脂          | 培养基材料                      |
 | E. Coli                | 大肠杆菌      |                                 |
 | mammalian              | 哺乳类动物的  |                                 |
-| eukaryotic             | 真核的        |                                 |
+| eukaryotic             | 真核的        | eukaryote 真核细胞              |
 | endonuclease           | 内切酶        | DNA clone                       |
 | ligase                 | 连接酶        | DNA clone                       |
 | primer                 | 引物          | e.g., in PCR                    |
 | acrylamide             | 丙烯酰胺      | used in chemical DNA sequencing |
-|dideoxy| 双脱氧法||
+| dideoxy                | 双脱氧法      | used in sequencing              |
+| pyrophosphate          | 焦磷酸盐      | used in sequencing              |
+| eppendorf tube         | 微量离心管    |                                 |
+| hydrophobic            | 疏水的        |                                 |
+| exon                   | 外显子        |                                 |
+| centromere             | 着丝粒        |                                 |
+| embryonic              | 胚胎的        |                                 |
+| pluripotent            | 多功能的      |                                 |
+| neomycin               | 新霉素        |                                 |
+| cell culture           | 细胞培养      |                                 |
+| embryonic stem cell    | 胚胎干细胞    |                                 |
+| formaldehyde           | 甲醛          |                                 |
+| chromophore            | 发色团        |                                 |
+| acetylcholine          | 乙酰胆碱      | a neurotransmitter              |
+| cholinergic            | 胆碱能的      |                                 |
+| bacteriophage          | 噬菌体        |                                 |
+| recombinase            | 重组酶        |                                 |
+| cardiac                | 心脏的        |                                 |
+| phenotype              | 表现型        | \[遗传\]                        |
+| serotonin              | 血清素        | 神经递质                        |
+| estrogen               | 雄性激素      |                                 |
+| steroid                | 类固醇        |                                 |
+| axonal                 | 轴突的        |                                 |
+| lipid                  | 脂类          |                                 |
+| nucleosome             | 核小体        |                                 |
+| histone                | 组蛋白        |                                 |
+| epigenetic             | 表观遗传的    |                                 |
+
+# Lecture 
+
+## 9.1
+
+- intron & exon
+- primer design
 
 # DNA and RNA
 
@@ -201,6 +234,15 @@ A target of cloning is sequencing.
 - Cycle sequencing
 - Capillary sequencing
 
+## Development in Bio Technologies
+
+1. Gene cloning
+2. DNA sequencing
+3. PCR
+4. RNA interference
+5. DNA sequencing (NG)
+6. CRISPR
+
 ## Chemical Sequencing
 
 - **Chemical modification** Use different chemical modifications of the DNA that permit the subsequent specific cleavage of these molecules: at G, G/A, T/C, C
@@ -214,7 +256,7 @@ A target of cloning is sequencing.
 - Dideoxynucleotide(ddNTP): X 3' -OH => termination of growing DNA strand
 - In the original format, each tube contained all 4 dNTPs but just one ddNTP
 - The chain-termination happened infrequently => a broad rage of sized-DNAs
-- All the DNAs are “single-stranded” and all must share the same 5’ end.
+- All the DNAs are “single-stranded” and all must share 
 
 ### Fluorescently Tagged Primers
 
@@ -226,3 +268,140 @@ For very long sequences: human, mouse, etc.
 
 - DNA samples is first broken into small pieces
 - The data is assembled bioinformatically <= overlapping information
+
+## NG Sequencing
+
+- High Throughput
+- Require Imaging
+- Detect the release of "pyrophosphate" or "H+"
+
+Technologies
+
+- 454 (Roche) “pyrosequencing”
+- Illumina/Solexa sequencing (short seq, color of light)
+- Ion semiconductor sequencing (“Ion torrent”), monitoring the release of H+
+- Single molecule “real-time” (“SMRT”) sequencing (long seq)
+- “Nanopore” sequencing
+
+## Human Genome Project
+
+**There is no ideal human genome reference sequence as we are all different**
+
+- Protein-coding genes: ~20k
+- Non-coding genes: encode RNAs are never translated into proteins
+- Alternative splicing: a mature mRNA need not include every exon present within a gene => increases the number of proteins can be made from one gene
+- Organismal complexity may be related to differences in gene regulation.
+- Reference Sequence: Not complete => "NGS" to sequence individuals
+- SNP: single nucleotide polymorphisms ~3.5M
+- CNV: copy number variants, ~1000 large (>500 bp)
+- Genome Projects of different populations and higher coverage
+
+### What Genomics Make Human Human?
+
+- Humans and chimps were ~98.77% identical in shared regions
+- FOXP2 had been identified as the gene mutated in a British family having an inherited speech disorder
+- FOXP2 plays a role in “vocalization” but it is not the “language” gene separating apes from man
+- The human brain is ~3 times larger than that of the chimp
+- Overexpression of NOTCH2NL in human neural cortical progenitors in vitro leads to an increase in cell number
+
+### Precision Medicine
+
+- to predict who is at risk
+- to diagnose disorders
+- permit “personalized” health care 
+- permit the rapid diagnosis of pathogens
+- ethical questions: privacy & disclosure
+
+
+## RNA Sequencing
+
+- RNAs are not being directly sequenced but are converted to DNAs using reverse transcriptase
+- Single cell RNA seq: Linnarsson lab neural cell profiling
+- Cells can be categorized by similarities in their gene expression profiles using RNAseq
+
+
+# Transgenic & Knockout Mice
+
+- Transgenic mice contain modified DNAs that have “randomly integrated” into the genome
+- Knockout mice have been traditionally made by using homologous recombination. 
+- The normal allele is modified via replacement with an altered DNA that eliminates the expression of that gene
+
+## Transgenic 
+
+May insert transgenes into ant chromosome.
+
+- The DNA construct used for the production of a typical transgenic mouse contains a promoter, protein-coding region, poly (A) addition site and an intron.
+- the inserted DNAs are frequently found in tandem arrays, i.e. there are multiple adjacent copies of each transgene.
+
+## Knockout mice
+
+- Actual recombination occurs in embryonic stem cells (“ES cells”) and not in the fertiilized egg
+- "targeting construct": selectable marker()neomycin resistance + associated elements flanked by "homology arms"
+- The arms are regions of DNA that permit precise homologous recombination into the normal gene locus.
+- The recombination event is designed to eliminate one or more of the gene’s exons.
+- A second marker (HSV-tk) is used to select against the random insertion of the construct.
+- A few of these cells are injected into early stage pre-implantation embryos (blastocysts)
+- It is only useful if the altered gene is “in the germline” 
+
+![Wiki](https://upload.wikimedia.org/wikipedia/commons/thumb/b/bf/Knockout_mouse_production_2.svg/849px-Knockout_mouse_production_2.svg.png)
+
+## Fluorescent Proteins
+
+> GFP fluorescence occurs when aequorin interacts with Ca++, which emits blue light. Some of this is transferred to GFP in a non-radiative manner, which then emits in the green part of the spectrum.
+
+- to “tag” proteins permitted visualizing those proteins in living cells
+- Variants: ECFP, EGFP, EYFP, mCherry
+- The excitation energy must be higher (shorter wavelength) than that of the emitted light!!!
+- BACs(Bacterial artificial chromosomes) provide a source of “promoters”
+
+### Usage 
+
+- One can label specific cell types in an organism, which typically means marking the expression of cells that express a specific promoter
+- Protein function may be compromised by the presence of the tag.
+- Fluorescent proteins are useful for studying the expression/localization or “co-localization” or proteins
+- As a proximity detector between 2 fluorescent protein-tagged molecules. 
+- Collect electron microscopy data from each section. 
+
+## Cre-loxP Recombination
+
+Cre recombinase is an enzyme derived from a bacterial virus that mediates recombination when it detects its target sequence (a “loxP” site).  
+
+- Two recombinases: *Cre*(bacteriophage P1) and *Flp*(yeast)
+- Cre: recognizes a 34 bp sequence (“loxP”) that contains an inverted repeat
+- Recombination requires 2 sites, and each has a direction => *excise* or *flip*
+- **Knockout mice** are generated by homologous recombination in embryonic stem cells 
+- **Conditional knockout mice**: contain exons flanked by loxP sites. When mated to cre-expressing lines, the doubly transgenic offspring should undergo a loss of the flanked exon in the cell types that express cre recombinase. 
+- Two lines: *Cre driver* line and *Floxed* line
+- lox-STOP-lox cassette (transcriptional stop)
+- There are different kinds of “mutant” loxP sites and they do not work with the other loxP sites.
+- *"intersectional" strategies*(“binary systems”): limit manipulations to defined sets of cells
+- Temporal regulation: steroid inducible cre (“Cre-ERT2”). In the presence of estrogen (or tamoxifen), the fusion protein enters the nucleus=> permits one to regulate the timing of the induction of cre activity.
+
+## Brainbow mice
+
+- The Brainbow mice: express mixtures of fluorescent proteins
+- The Brainbow mice express multiple (5 or more) tandem copies of their transgenes => each cell can express a different fluorescent protein from each copy of the transgene
+- Goal: understand connections; limited successes in the mammalian brain because of its complexity
+- Brainbow version 3: these proteins are farnesylated (a lipid modification), which permits membrane association => detect fine axonal processes
+
+### CLARITY
+
+- The fixed tissues are opaque (perfuses” the tissue to eliminate the blood and to also introduce a fixative to preserve the tissue morphology)
+- CLARITY: a brain is perfused with a mixture of acrylamides, formaldehyde and a cross-linking agent => The lipids (which contribute to brain opacity) are removed via electrophoresis => clear for imaging
+
+### 3D “EM” Reconstruction
+
+> Kasthuri et al., 2015, Cell 162:648-661.
+
+- Determine the synaptic connectivity of the mammalian brain.
+- Murine brain tissue fixed for electron microscopy is sectioned and transferred onto a moving plastic tape
+- The tape is cut and placed onto a silicon support.
+- These are inserted into a specially designed electron microscope.
+- Adjacent sections need to be connected to form a 3D image of a region of tissue
+- Typically only one out of nine axon actually formed a synapse. 
+
+# Transcription
+
+## References
+
+- [TAD](https://zhuanlan.zhihu.com/p/26988506)
