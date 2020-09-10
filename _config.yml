@@ -35,7 +35,7 @@ description              : "\ Hack \ Music \ Photography \ Touhou \ Computer Sci
 url                      : "https://ya0guang.com"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : "ya0guang/ya0guang.github.io"
-teaser                   : "/assets/images/cirno.png"
+teaser                   : "/assets/images/komeiji.png"
 logo                     : #"/assets/images/favicon.ico"
 masthead_title           : # overrides the website title displayed in the masthead, use " " for no title
 # breadcrumbs            : false # true, false (default)
