@@ -81,6 +81,14 @@ last update: Sep. 07, 2020
 | nucleosome             | 核小体        |                                 |
 | histone                | 组蛋白        |                                 |
 | epigenetic             | 表观遗传的    |                                 |
+| polyadenylation        | 聚腺苷酸化    |                                 |
+| kinase                 | 激酶；致活酶  |                                 |
+| dimer                  | 二聚体        |                                 |
+| ligand                 | 配位体        |                                 |
+| acetylation            | 乙酰化作用    |                                 |
+| in vitro               | 在体外        |                                 |
+| corpus callosum        | 胼胝体        |                                 |
+| dendrite| 树突| |
 
 # Lecture 
 
@@ -97,7 +105,7 @@ last update: Sep. 07, 2020
 - DNA can be double stranded *ds* or single stranded *ss*, stability
 - **"Wastson-Crick" double helical conformation**, A=(2H)=T, C=(3H)=G
 - Increase temperature or change pH(>12.5): *ds* -> *ss*
-- DNA can be linear (humnan) or circular (bacterial plasmid)
+- DNA can be linear (humnan) or circular (bacterial plasmid)****
 - *ds*: oriented in an antiparallel configuration
 - *sense strand*: seq from cDNA (DNA copy of an mRNA)
 - Polymerize: dATP => DNA; rATP => RNA
@@ -400,8 +408,27 @@ Cre recombinase is an enzyme derived from a bacterial virus that mediates recomb
 - Adjacent sections need to be connected to form a 3D image of a region of tissue
 - Typically only one out of nine axon actually formed a synapse. 
 
-# Transcription
+# Regulation of Gene Expression
 
-## References
+The regulation of gene expression: Genomic organization
+
+![geneExp](/assets/images/Neuro/Gene-expression-mechanism.png)
+
+- Promoter: the region near the 5’ end of a gene that contains the cis-acting regulatory elements that bind to transcription factors => that facilitate the ability of RNA polymerase to bind and initiate “transcription”
+- Enhancers: (distant sites) regions of DNA that regulate a gene’s expression
+
+## Transcript
+
+![transcriptionFactor](https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Transcription_Factors.svg/663px-Transcription_Factors.svg.png)
+
+### References
 
 - [TAD](https://zhuanlan.zhihu.com/p/26988506)
+
+
+pioneer factor
+
+## Splicing
+
+## Translation
+
