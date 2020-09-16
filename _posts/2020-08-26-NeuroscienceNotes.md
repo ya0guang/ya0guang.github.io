@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Neuroscience Notes - Molecular Biology
-date: 2020-09-07 21:10:07
+date: 2020-09-16 21:10:07
 categories: "Notes"
 tags:
 - Notes
@@ -12,7 +12,7 @@ header:
 
 Some notes taken from Neuroscience course, part 1: Molecular Biology.
 
-last update: Sep. 07, 2020
+last update: Sep. 16, 2020
 
 # Translation of Terms
 
@@ -88,7 +88,8 @@ last update: Sep. 07, 2020
 | acetylation            | 乙酰化作用    |                                 |
 | in vitro               | 在体外        |                                 |
 | corpus callosum        | 胼胝体        |                                 |
-| dendrite| 树突| |
+| dendrite               | 树突          |                                 |
+| interphase             | 间期          | 不再分裂的细胞阶段              |
 
 # Lecture 
 
@@ -416,19 +417,147 @@ The regulation of gene expression: Genomic organization
 
 - Promoter: the region near the 5’ end of a gene that contains the cis-acting regulatory elements that bind to transcription factors => that facilitate the ability of RNA polymerase to bind and initiate “transcription”
 - Enhancers: (distant sites) regions of DNA that regulate a gene’s expression
+- Regulatory elementsL protein fatcors (*trans elements*) and DNA sequences (*cis elements*)
 
-## Transcript
+## Transcription
 
 ![transcriptionFactor](https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Transcription_Factors.svg/663px-Transcription_Factors.svg.png)
+![Chromatin_Structures](https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Chromatin_Structures.png/1275px-Chromatin_Structures.png)
 
-### References
+- **Transcription factors**: proteins that can bind to DNA(enhancers & promter) & promote transcription.
+- Transcription factor binding to the promoter and to enhancers is thought to lead to the recruitment of the large collection of molecules required to initiate the production of RNA by RNA polymerase (to initiate transcription).
+- Each interphase chromosome is largely confined to a “territory” within the nucleus. 
+- RNA Polymerase: I: ribosomal RNA; II: mRNA/snRNA/miRNA; III: small RNAs (tRNA, etc.)
+- One surprise: Transcription not only occurs at promoters but can also be initiated at enhancers and the these transcripts are called “eRNAs”. 
 
-- [TAD](https://zhuanlan.zhihu.com/p/26988506)
+### Topological Associating Domains (TADs)
 
+*In interphase chromosomes, the chromatin is thought to be organized into loops that are ~1 Mb in length. The loops (or collections of loops) are called “topological associating domains” (TADs), which contain multiple genes.*
+
+![cohesin](/assets/images/Neuro/cohesion.jpg)  
+
+*Ref:[TAD](https://zhuanlan.zhihu.com/p/26988506)*
+
+- chromosome is organized into “sub-regions” called TADs
+- to identify if non-adjacent sites on chromosomes could interact
+- chromosomes are divided into distinct regulatory “neighborhoods”, adjacent TADs are thought to be insulated from each other
+- TADs solution: restricting the activity of enhancers to specific promoters
+- Chromosome conformation capture (3C): determine the "loop structure"
+- cohesin complex: extrude DNA; the presence of CTCF appears to terminate loop formation
+- TADs <= one or more loops; loop boundaries <= CTCF & cohesin
+- chromosome structure is dynamic and that TAD boundaries shift
+- loop structure may not be the primary feature guiding gene regulation
+
+### Stages
+
+1. **Initiation**: RNA polymerase and other factors are assembled into a complex (the pre-initiation complex) that permits transcription to start  
+  - "pre-initiation complex" (PIC ~~position-independent code~~): general trascription factors & "the mediator complex"
+  - unwinds the promoter DNA (TFIIH) => RNA pol gain access to DNA template
+  - cell-type sepcific differneces in this complex
+2. **Pausing**: Shortly after initiation, RNA Pol II pauses and its ability to proceed is a regulated step. => ability to rapidly increase transcription
+  - transcribes 50~80 NTs before pausing
+3. **Elongation** Once the pause has been lifted, RNA polymerase moves down the DNA template, incorporating ribonucleotides one at a time. (also proofreading)
+4. **Termination**: less well understood. This event appears to be coupled to site selection for polyadenylation
+
+### Transcription Factor
+
+- Ligand binding can “induce” their activity by permitting them to ”shuttle into” the nucleus. (“inducible” Cre recombinase)
+- Combinations of TFs help to specify distinct cell types
+- **reprogramming**: some TFs could specify cell types
+- *ENCODE* project: evidence in support of the combinatorial association of transcription factors => cell type; developmental stage; level of expression
+- *Chromatin immunoprecipitation*: identify putative TF-binding sites, may overestimate the number of binding sites
+
+=======================================
+
+- co-activators & co-repressors: should not directly bind to the DNA but should instead bind to other proteins
+- co-activators: *e.g. histone acetylases* these enzymes add acetyl groups on to specific histone proteins
+- co-repressors: *e.g. histone deacetylases* activities counter those of the acetylases
+- There are also transcriptional repressors and co-repressors that can antagonize the function of activators and co-activators, *e.g. HDAC and HAT*
+- Enhancer activity may be restricted to a topologically-associated domain (TAD) 
+- **Phase separation**: there are molecules (proteins and RNAs) that can self-assemble to form larger molecular complexes in support of specific functions
 
 pioneer factor
 
 ## Splicing
 
+![splicing_wiki](https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/RNA_splicing_reaction.svg/1280px-RNA_splicing_reaction.svg.png)
+
+- The primary transcript is “capped” (m7GpppN) shortly after transcription is initiated
+- the RNA hybridized with non-adjacent regions of a single DNA molecule
+- In mammals, splicing is a protein-assisted process. 
+- “RNA can splice itself”: RNAs can be catalytic => may be an intrinsic, intramolecular RNA-mediated reaction
+- Spliceosome: ~100 proteins => recognize the start(GU) and end(AG) of RNA
+- Alternative splicing:  Genes containing multiple exons may generate different mRNAs by the regulated inclusion or exclusion of specific exons => increases the number of proteins that can be made from one gene
+
+### Example: *Nova* proteins
+
+- Nova1 & Nova2: proteins can bind to the primary RNA transcript and influence whether a particular exonic sequence will be retained or excluded
+- how the location of Nova binding influenced alternative splicing: Nova1/2 double KO mice
+- Nova binding in the downstream intron correlates with exon inclusion while binding to the exon correlates with exclusion
+
 ## Translation
 
+Regulation may occur via:  
+- general regulatory proteins that affect all mRNAs 
+- microRNAs
+- by RNA-binding proteins
+
+### Example of Translational Control
+
+#### Some mRNAs are regulated by polyadenylation (length of *poly(A)* tail)
+
+- “CPEB” binds to CPE (the cytoplasmic polyadenylation element) and to the protein Maskin 
+- Maskin can bind to the 5’ end of the mRNA via eIF4E (eukaryotic translation initiation factor 4E), which binds to the 5’ cap. When bound to Maskin, eIF4E cannot bind to the ribosome to initiate translation
+- During development, phosphorylation of CPEB leads to the dissociation of Maskin from eIF4E and polyadenylation occurs via polyA polymerase (PAP). ). Multiple molecules of PABP can now bind to this tail and recruit the translation machinery. 
+- Thus, regulation of poly(A) length boosts translation. 
+  
+#### Fragile X
+  
+![FragileX](/assets/images/Neuro/fragileX.jpeg)
+
+- Fragile X results from mutations in the X-linked gene, FMR1 (fragile X mental retardation-1) gene, which encodes FMRP, the fragile X mental retardation protein.
+- => Fragile X is associated with a loss of FMRP expression/function 
+- CGG repeats are in the promoter region and not in the FMRP coding region!
+- FMRP is an RNA-binding protein: represses translation by “stalling ribosomes”, i.e. preventing them from moving down the mRNAs
+- Fragile X => FMRP(which represses translation) ↓ => translation of some mRNAs ↑ => encoded proteins (pre- and post-synaptic proteins) ↑ => syndrome
+
+### RNA interference & microRNAs
+
+- RNAi: RNA molecules serve to regulate the activity of genes => reducing or “knocking down” gene expression
+- MicroRNAs: endogenous small RNAs whose outcome tends to be the repression of mRNA translation 
+
+#### RNAi
+
+- “antisense” nucleic acids: persumably hybirdizing to mRNAs => blocking their translation
+- not only antisense, but also sens strand RNAs can supress gene expression in the nematode
+- *not* sense strand, but ds RNAs to inhibit gene expression: most preparations of sense strand RNA were slightly contaminated with antisense RNA
+- These small RNAs can “interfere” with the translation of mRNAs by the sequence-specific targeting of their destruction
+
+**Mechanism**
+
+![RNAi_wiki](https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Conventional_RNAi.png/2560px-Conventional_RNAi.png)
+
+1. In the cytoplasm, ds RNAs are processed by an enzyme called “Dicer” which cuts it into small siRNAs (21-23 nts) that carry 2 NT 3’ overhangs
+2. The siRNAs are incorporated into the “RNA-inducing silencing complex” or “RISC”.  One component, a protein called Argonaute-2 (Ago2), cleaves the target RNAs.
+3. It appears that only one of the 2 strands, the “guide” (antisense) strand, of the double-stranded siRNA is actually “loaded” into RISC. The other strand, the “passenger strand” is destroyed
+4. The guide (antisense) strand of the siRNA provides the specificity and presumably identifies its target by hybridization.
+
+*Cleavage is “catalytic” and precise*
+
+#### miRNAs
+
+- Our genomes contain many “miRNAs”, which are small endogenous dsRNAs whose precursors have a hairpin-like structure
+- Although some miRNAs are produced from a single transcription unit, most are produced from transcripts that make more than one miRNA
+- The primary transcript is the primary miRNA (pri-mRNA), which is typically made by Pol II
+- Can be processed by Dicer into siRNA-like ds RNA molecules.
+- They primarily target the 3’ UT regions of mRNAs and they do not require perfect matches for their activity
+- miRNAs may target hundreds of different mRNAs as the so-called “seed” or target sequence may be as short as 6 bases. 
+- targets shared a common, short “seed sequence” => Each miRNA appeared to target hundreds of mRNAs. 
+- How do miRNAs supress translation: most of the repression is accomplished by degradation of the mRNA targets
+- Many miRNAs are highly evolutionarily conserved: proliferation across various spacies
+
+
+**Example: miR-124**
+- Increased levels of miR-124 led to an early reduction of progenitors, which was associated with their precocious differentiation into neurons 
+- Reduced levels of miR-124 expression maintained the precursors in the actively dividing state (proliferation as opposed to differentiation)
+- miR-124 plays an important role in determining neuronal fate. High levels of miR-124 promotes the formation of neurons while low levels block it
