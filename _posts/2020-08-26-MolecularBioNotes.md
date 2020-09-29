@@ -16,80 +16,86 @@ last update: Sep. 16, 2020
 
 # Translation of Terms
 
-| Eng                    | Chs           | Comment                         |
-| ---------------------- | ------------- | ------------------------------- |
-| nucleus                | 细胞核        |                                 |
-| chromosome             | 染色体        |                                 |
-| polymerase             | 聚合酶        |                                 |
-| cytoplasm              | 细胞质        |                                 |
-| ribosome               | 核糖体        |                                 |
-| polymer                | 聚合物        |                                 |
-| deoxyribonucleotide    | 脱氧核糖核酸  | DNA                             |
-| nucleotide             | 核酸          |                                 |
-| nomenclature           | 命名法/术语   | 3' 5'末端                       |
-| phosphate              | 磷酸盐        |                                 |
-| hydroxyl               | 羟基          | -OH                             |
-| plasmid                | 质粒          |                                 |
-| ATP                    | 三磷酸腺苷    | adenosine triphosphate          |
-| phosphodiester         | 磷酸二酯      | breaking ~ bond -> energy       |
-| polypeptide            | 多肽          |                                 |
-| codon                  | 密码子        |                                 |
-| protease               | 蛋白酶        |                                 |
-| catalytic              | 催化的        |                                 |
-| denaturation           | 使变性        | （化学意义上                    |
-| Hybridization          | 杂交？        | 两条相配的DNA(RNA)链            |
-| phage                  | 噬菌体        |                                 |
-| molar                  | 摩尔的        |                                 |
-| oligonucleotide        | 低聚核苷酸    | short (DNAs)                    |
-| triphosphate           | 三磷酸盐      |                                 |
-| southern/northern blot | 南/北方墨点法 |                                 |
-| thyrotropin            | 促甲状腺素    |                                 |
-| glutamate              | 谷氨酸        |                                 |
-| retroviruse            | 逆转录病毒    |                                 |
-| agar                   | 琼脂          | 培养基材料                      |
-| E. Coli                | 大肠杆菌      |                                 |
-| mammalian              | 哺乳类动物的  |                                 |
-| eukaryotic             | 真核的        | eukaryote 真核细胞              |
-| endonuclease           | 内切酶        | DNA clone                       |
-| ligase                 | 连接酶        | DNA clone                       |
-| primer                 | 引物          | e.g., in PCR                    |
-| acrylamide             | 丙烯酰胺      | used in chemical DNA sequencing |
-| dideoxy                | 双脱氧法      | used in sequencing              |
-| pyrophosphate          | 焦磷酸盐      | used in sequencing              |
-| eppendorf tube         | 微量离心管    |                                 |
-| hydrophobic            | 疏水的        |                                 |
-| exon                   | 外显子        |                                 |
-| centromere             | 着丝粒        |                                 |
-| embryonic              | 胚胎的        |                                 |
-| pluripotent            | 多功能的      |                                 |
-| neomycin               | 新霉素        |                                 |
-| cell culture           | 细胞培养      |                                 |
-| embryonic stem cell    | 胚胎干细胞    |                                 |
-| formaldehyde           | 甲醛          |                                 |
-| chromophore            | 发色团        |                                 |
-| acetylcholine          | 乙酰胆碱      | a neurotransmitter              |
-| cholinergic            | 胆碱能的      |                                 |
-| bacteriophage          | 噬菌体        |                                 |
-| recombinase            | 重组酶        |                                 |
-| cardiac                | 心脏的        |                                 |
-| phenotype              | 表现型        | \[遗传\]                        |
-| serotonin              | 血清素        | 神经递质                        |
-| estrogen               | 雄性激素      |                                 |
-| steroid                | 类固醇        |                                 |
-| axonal                 | 轴突的        |                                 |
-| lipid                  | 脂类          |                                 |
-| nucleosome             | 核小体        |                                 |
-| histone                | 组蛋白        |                                 |
-| epigenetic             | 表观遗传的    |                                 |
-| polyadenylation        | 聚腺苷酸化    |                                 |
-| kinase                 | 激酶；致活酶  |                                 |
-| dimer                  | 二聚体        |                                 |
-| ligand                 | 配位体        |                                 |
-| acetylation            | 乙酰化作用    |                                 |
-| in vitro               | 在体外        |                                 |
-| corpus callosum        | 胼胝体        |                                 |
-| dendrite               | 树突          |                                 |
-| interphase             | 间期          | 不再分裂的细胞阶段              |
+| Eng                    | Chs            | Comment                         |
+| ---------------------- | -------------- | ------------------------------- |
+| nucleus                | 细胞核         |                                 |
+| chromosome             | 染色体         |                                 |
+| polymerase             | 聚合酶         |                                 |
+| cytoplasm              | 细胞质         |                                 |
+| ribosome               | 核糖体         |                                 |
+| polymer                | 聚合物         |                                 |
+| deoxyribonucleotide    | 脱氧核糖核酸   | DNA                             |
+| nucleotide             | 核酸           |                                 |
+| nomenclature           | 命名法/术语    | 3' 5'末端                       |
+| phosphate              | 磷酸盐         |                                 |
+| hydroxyl               | 羟基           | -OH                             |
+| plasmid                | 质粒           |                                 |
+| ATP                    | 三磷酸腺苷     | adenosine triphosphate          |
+| phosphodiester         | 磷酸二酯       | breaking ~ bond -> energy       |
+| polypeptide            | 多肽           |                                 |
+| codon                  | 密码子         |                                 |
+| protease               | 蛋白酶         |                                 |
+| catalytic              | 催化的         |                                 |
+| denaturation           | 使变性         | （化学意义上                    |
+| Hybridization          | 杂交？         | 两条相配的DNA(RNA)链            |
+| phage                  | 噬菌体         |                                 |
+| molar                  | 摩尔的         |                                 |
+| oligonucleotide        | 低聚核苷酸     | short (DNAs)                    |
+| triphosphate           | 三磷酸盐       |                                 |
+| southern/northern blot | 南/北方墨点法  |                                 |
+| thyrotropin            | 促甲状腺素     |                                 |
+| glutamate              | 谷氨酸         |                                 |
+| retroviruse            | 逆转录病毒     |                                 |
+| agar                   | 琼脂           | 培养基材料                      |
+| E. Coli                | 大肠杆菌       |                                 |
+| mammalian              | 哺乳类动物的   |                                 |
+| eukaryotic             | 真核的         | eukaryote 真核细胞              |
+| endonuclease           | 内切酶         | DNA clone                       |
+| ligase                 | 连接酶         | DNA clone                       |
+| primer                 | 引物           | e.g., in PCR                    |
+| acrylamide             | 丙烯酰胺       | used in chemical DNA sequencing |
+| dideoxy                | 双脱氧法       | used in sequencing              |
+| pyrophosphate          | 焦磷酸盐       | used in sequencing              |
+| eppendorf tube         | 微量离心管     |                                 |
+| hydrophobic            | 疏水的         |                                 |
+| exon                   | 外显子         |                                 |
+| centromere             | 着丝粒         |                                 |
+| embryonic              | 胚胎的         |                                 |
+| pluripotent            | 多功能的       |                                 |
+| neomycin               | 新霉素         |                                 |
+| cell culture           | 细胞培养       |                                 |
+| embryonic stem cell    | 胚胎干细胞     |                                 |
+| formaldehyde           | 甲醛           |                                 |
+| chromophore            | 发色团         |                                 |
+| acetylcholine          | 乙酰胆碱       | a neurotransmitter              |
+| cholinergic            | 胆碱能的       |                                 |
+| bacteriophage          | 噬菌体         |                                 |
+| recombinase            | 重组酶         |                                 |
+| cardiac                | 心脏的         |                                 |
+| phenotype              | 表现型         | \[遗传\]                        |
+| serotonin              | 血清素         | 神经递质                        |
+| estrogen               | 雄性激素       |                                 |
+| steroid                | 类固醇         |                                 |
+| axonal                 | 轴突的         |                                 |
+| lipid                  | 脂类           |                                 |
+| nucleosome             | 核小体         |                                 |
+| histone                | 组蛋白         |                                 |
+| epigenetic             | 表观遗传的     |                                 |
+| polyadenylation        | 聚腺苷酸化     |                                 |
+| kinase                 | 激酶；致活酶   |                                 |
+| dimer                  | 二聚体         |                                 |
+| ligand                 | 配位体         |                                 |
+| acetylation            | 乙酰化作用     |                                 |
+| in vitro               | 在体外         |                                 |
+| corpus callosum        | 胼胝体         |                                 |
+| dendrite               | 树突           |                                 |
+| interphase             | 间期           | 不再分裂的细胞阶段              |
+| halorhodopsin          | 鹽細菌視紫紅質 |                                 |
+| hypocretin             | 下视丘分泌素   | 食欲素，和失眠也有关            |
+| narcolepsy             | 嗜睡症         |                                 |
+| dopamine               | 多巴胺         |                                 |
+| ligand                 | 配位体         |                                 |
+| pharmacological| 药理学的||
 
 # Lecture 
 
