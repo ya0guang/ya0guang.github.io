@@ -50,7 +50,7 @@ But different ion channels cause different permeabilities for each ion. Therefor
 - Depolarization: positive feedback of ${Na}^+$ channel
 
 1. Membrane depolarization
-2. increase in $g_{{Na}^+}$
+2. increase in $g_{Na^+}$
 3. more ${Na}^+$ rushes into cell
 4. lead to 1 => positive feedback
 
