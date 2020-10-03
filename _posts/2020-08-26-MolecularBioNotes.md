@@ -7,7 +7,7 @@ tags:
 - Notes
 - Course
 header:
-  teaser: 
+  teaser: https://upload.wikimedia.org/wikipedia/commons/6/60/Myoglobin.png
 ---
 
 Some notes taken from Neuroscience course, part 1: Molecular Biology.

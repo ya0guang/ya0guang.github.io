@@ -10,7 +10,8 @@ header:
   teaser: 
 ---
 
-持续更新。有事没事就去看看吧！
+持续更新。有事没事就去看看吧！  
+Last update: Oct. 1, 2020
 
 # Meta Study
 
@@ -24,7 +25,17 @@ header:
 
 - [CVE Details](https://www.cvedetails.com/top-50-products.php)
 
+# CTF
+
+- [CTFtime](https://ctftime.org/)
+- [HackTheBox](https://www.hackthebox.eu/)
+
 # People & Group
+
+## SDR
+
+- [雪碧0xroot](https://cn0xroot.com/)
+- [卫星黑客](http://www.chnsatcom.com/)
 
 ## Micro Architecture
 
