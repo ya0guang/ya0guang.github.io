@@ -6,6 +6,7 @@ categories: "Notes"
 tags:
 - Notes
 - Course
+- BCI
 header:
   teaser: https://upload.wikimedia.org/wikipedia/commons/6/60/Myoglobin.png
 ---

@@ -6,6 +6,7 @@ categories: "Notes"
 tags:
 - Notes
 - Course
+- BCI
 header:
   teaser: https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Blausen_0657_MultipolarNeuron.png/1920px-Blausen_0657_MultipolarNeuron.png
 ---
