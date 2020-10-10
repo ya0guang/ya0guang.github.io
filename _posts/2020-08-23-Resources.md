@@ -29,8 +29,12 @@ Last update: Oct. 1, 2020
 
 - [CTFtime](https://ctftime.org/)
 - [HackTheBox](https://www.hackthebox.eu/)
+- [CTF-All-in-One](https://firmianay.gitbook.io/ctf-all-in-one/)
+- [cheatsheet](https://github.com/uppusaikiran/awesome-ctf-cheatsheet#awesome-ctf-cheatsheet-)
 
 # People & Group
+
+- [Dave Tian](https://davejingtian.org/)
 
 ## SDR
 
