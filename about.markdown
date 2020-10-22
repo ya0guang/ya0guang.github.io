@@ -8,11 +8,13 @@ I'm a current PhD student focusing on system security. This blog is mainly for t
 
 I also like photography, lockpicking, board game, DOTA and touhou project!
 
+Last Update: Oct. 22, 2020
+
 # 关于本站
 
-经历了VPS上自建WordPress，Github Pages的hexo之后，我决定拥抱Jekyll。Github可以是一个相当可靠的托管服务Provider，比野鸡VPS不知道高到哪里去了。为什么放弃hexo呢？其实它挺棒的，就是更换电脑的时候恢复repository真是一件十分蛋疼的事情。拥抱Jekyll可以让我花更少的时间在博客这件事情本身上，而更加关注**写作**。其实我一直期望能够把Blog做成Terminal一样的东西。~~待到我学会Flask~~
+经历了VPS上自建WordPress，Github Pages的hexo之后，我决定拥抱Jekyll。Github可以是一个相当可靠的托管服务Provider，比野鸡VPS不知道高到哪里去了。为什么放弃hexo呢？其实它挺棒的，就是更换电脑的时候恢复repository真是一件十分蛋疼的事情。拥抱Jekyll可以让我花更少的时间在博客这件事情本身上，而更加关注**写作**。其实我一直期望能够把Blog做成Terminal一样的东西。~~待到有时间学会Flask~~
 
-用来记录我学到的知识，读到的书，走到的地方，搞过的事情。
+用来记录我学到的知识，读到的书，走到的地方，搞过的事情~~，脑外辅助记忆~~。
 
 # 关于我
 
@@ -21,7 +23,6 @@ I also like photography, lockpicking, board game, DOTA and touhou project!
 - 偶尔摄影
 - 穷烧HiFi
 - 菜鸡CTFer
-
 
 # To Do List
 
@@ -41,12 +42,17 @@ I also like photography, lockpicking, board game, DOTA and touhou project!
 - LOGIC IN COMPUTER SCIENCE Modelling and Reasoning about Systems *80*
 - ~~程序员的自我修养-链接、装载与库~~
 - Reverse Engineering for Beginners *10*
+- CSAPP *10*
+- 信息传 : 决定我们未来发展的方法论
+- ~~浪潮之巅~~
+- ~~黑客与画家~~
 
 ## Sec
 
 - ~~白帽子讲web安全~~
 - ~~黑客攻防技术宝典：Web实战篇~~
 - **密码学**
+- 从0到1：CTFer成长之路
 
 ## 摄影
 
@@ -65,6 +71,7 @@ I also like photography, lockpicking, board game, DOTA and touhou project!
 - **催眠**
 - 斯塔夫里阿诺斯：全球通史——从史前史到21世纪
 - 王小波全集 *80*
+- 文明之光
 
 # Artifacts
 
@@ -79,8 +86,9 @@ I also like photography, lockpicking, board game, DOTA and touhou project!
 ## HiFi
 
 - 前端: 海贝R5 （4.4平衡+3.5单端）
-- 塞子：DUNE DK3001pro，JVC FW002，Final E3000
+- 塞子：DUNE DK3001pro，JVC FW002，Final E3000，ES4SR
 - 头戴：ATH ESW990h, Sony MDR7506
+- 降噪: WH1000-XM4
 - ~~用娄氏单元自制的动铁定制~~
 
 ## 观望中

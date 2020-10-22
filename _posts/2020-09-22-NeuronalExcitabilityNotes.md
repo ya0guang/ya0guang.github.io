@@ -13,7 +13,7 @@ header:
 
 Notes taken form Neuroscience course, Part 2: Neuronal excitability.
 
-Last update: Oct. 8, 2020
+Last update: Oct. 21, 2020
 
 ![neuron](https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Blausen_0657_MultipolarNeuron.png/1920px-Blausen_0657_MultipolarNeuron.png)
 
@@ -273,6 +273,80 @@ Low frequency input will cause long-term depression in EPSP. This may support â€
 
 ![izhikevich](https://www.izhikevich.org/publications/izhik.gif)
 
-### Thalamic neurons and rhythms
+## Thalamic neurons and rhythms
 
-- Two different patterns 
+- Two different patterns: oscillatory(bursting) tonic(transfer) modes
+
+## Intrinsic Plasticity
+
+![plasticityExp](/assets/images/Neuro/plasticity.jpg)
+
+It seems perhaps all currents can be up- or down-regulated depending on experience.
+
+# Network Memory: Memory and Encoding
+
+![hippo_network](/assets/images/Neuro/hippo_network.jpg)
+
+- Autoassociative sub-network (CA3) => pattern completion
+- Heteroassociative sub-network (CA1, DG) => link different complex patterns 
+- Too many memories => degradation
+
+## Hebbian Rule (Hebbian theory)
+
+> Let us assume that the persistence or repetition of a reverberatory activity (or "trace") tends to induce lasting cellular changes that add to its stability. ... When an axon of cell A is near enough to excite a cell B and repeatedly or persistently takes part in firing it, some growth process or metabolic change takes place in one or both cells such that A's efficiency, as one of the cells firing B, is increased.
+
+It's just like training and testing a neural network.
+
+## Lattice Rules
+
+Borrow the theory from ferromagnetism and lowest energy theory to explain the phenomenon in memory network.
+
+- Annealing: Ordered -*heat*-> Disordered -*cool*-> Ordered
+- Alternating Spins: the relationship with an atom from neighbor to distant ones are alternatively opposite and same spins.
+- Calculate energy: harmonious (-1), frustrated (+1)
+
+### Basic Rules
+
+Two atoms can have:  
+- no relationship
+- same spins 
+- opposite spins 
+
+### Energy Surface
+
+- we can calculate the energy of this system, by sum up the energy of each pair of atoms
+- system moves toward lower energy
+- low energy states are "attractors"
+
+## Experiment: False memory
+
+[Ramirez et al., 2013)](https://science.sciencemag.org/content/341/6144/387)
+
+# Emergent Properties
+
+![hippo_network](/assets/images/Neuro/manyScales.png)
+
+## Reductionism
+
+Low level ---> High level
+
+- the molecular basis of Huntingtonâ€™s disease
+- brain rhythms and criticality as examples of emergent properties
+- Language: **FOXP2** is considered as language gene
+
+## Emergentism
+
+High level ---> Low level
+
+## Criticality
+
+| Low Temp |  Critical Temp | High Temp |
+| Ordered  |     Complex    |   Random  |
+
+### Correlations
+
+$C_{ij} = (i - <i>)(j- <j>)$
+
+- Great corr length
+- Critical point is optimal
+- 
