@@ -47,7 +47,7 @@ When CPU needs to write data to the memory, the CPU will enqueue this write oper
 
 ## Write Transient Forwarding (WTF)
 
-The CPU first check the store buffer while loading from memory to see if it will load from a memory unit which is going to be modified a unfinished store request in SB. If the CPU finds a match (on **some** lower bits of the address), the value to be stored will be forwarded to the corresponding load.
+The CPU first check the store buffer while loading from memory to see if it will load from a memory unit which is going to be modified by a unfinished store request in SB. If the CPU finds a match (on **some** lower bits of the address), the value to be stored will be forwarded to the corresponding load.
 
 The forwarding may have no architectural effect if it's a invalid load (e.g. load from a illegal non-canonical address). However, the load may still affect cache, which can be then recovered from Flush+Reload attack.
 

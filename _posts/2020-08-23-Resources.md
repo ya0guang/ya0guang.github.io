@@ -16,6 +16,7 @@ Last update: Oct. 1, 2020
 # Meta Study
 
 - [Matthias Felleisen's Thoughts](https://felleisen.org/matthias/Thoughts/index.html)
+- [小小整理网站](https://smallcollation.blogspot.com/#gsc.tab=0)
 
 # Paper Writing
 
@@ -46,8 +47,7 @@ Last update: Oct. 1, 2020
 - [Jo Van Bulck](https://jovanbulck.github.io/)
 - [Daniel Gruss](https://gruss.cc/)
 
-# Interesting Blogs
+# Interesting Gadgets
 
-# SGX
-
-- [SGX从入门到放弃(笔记)](https://github.com/dingelish/SGXfail)
+- [betrusted project](https://betrusted.io/)
+- [Light Commands](https://lightcommands.com/)
