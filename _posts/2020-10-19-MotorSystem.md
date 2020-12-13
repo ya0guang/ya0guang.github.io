@@ -44,8 +44,12 @@ Last update: Oct. 31, 2020
 | spindle         | 纺锤             |                               |
 | myelinated      | 有髓鞘的         |                               |
 | flexor          | 屈肌             |                               |
-| parietal        | 腔壁的；颅顶骨的 | |
-| pons | 脑桥 | |
+| parietal        | 腔壁的；颅顶骨的 |                               |
+| pons            | 脑桥             |                               |
+| granular        | 颗粒的           | granular cell                 |
+| basal ganglia   | 基底核           |                               |
+| athetosis       | 手足徐动症       |                               |
+| 
 
 # Pre
  
@@ -151,6 +155,7 @@ Respond to force & heaviness
 # Motor & Premotor cortices
 
 ## Primary motor cortex (M1)
+!!
 
 - M1 has gross somatotopy & forms most of the corticospinal tract
 - M1 codes for movement force and direction
@@ -190,7 +195,7 @@ Respond to force & heaviness
 - Internally generated and mental rehearsal of movements.
 - Linking conditions to actions
 - Intention to move
-
+  
 # Non-invasive brain stimulation
 
 ## Transcranial magnetic stimulation (TMS)
@@ -290,5 +295,88 @@ brain area X => behavior Y?
 - Portable and cheap
 - But not as focal as TMS
 - Intervention only, doesn’t measure anything.
+
+# Cerebellum & Basal Ganglia
+
+- Cerebellum excites thalamus; basal ganglia inhibit thalamus.
+`just like a pair of controller`
+
+## Cerebellum: little brain
+
+- 10% of total brain volume, half of neurons 
+- influences behavior
+- trail-and-error adaptation (motor learning)
+
+### Anatomy
+
+- Divided into anterior, posterior, and flocculonodular lobes.
+- All inputs and outputs go through the cerebellar peduncles
+- All outputs are via deep cerebellar nuclei(excitatory)
+- Cerebellum controls ipsilateral movements
+
+![functional_regions](/assets/images/Neuro/Cerebellum_Functional_regions.png)
+
+### Cortex
+
+![cortex](https://bellspalsycranialnerves.files.wordpress.com/2013/01/cerebellar-connections.jpg)
+
+- Purkinje cell
+  - simple spike: spontaneous; driven by mossy fiber, convey ongoing info about different parameters of movement.
+  - complex spike: low rate, driven by climbing fibers, related to errors in movement -> motor learning
+  - Pairing stimulation of climbing fibers (CF) and parallel fibers (PF) causes LTD that reduces the parallel fiber EPSP.
+
+- Plasticity: Movement results in error.
+1. Inferior olive compares predicted and actual result of movement.
+2. Climbing fiber fires, conveying error.
+3. LTD of parallel fiber-Purkinje cell synapses.
+4. Purkinje cell less active.
+5. Deep cerebellar nucleus disinhibited.
+6. Cerebellar excitation of cerebral cortex increases.
+7. This tells cerebellar targets that an error was made, and changes are made to the motor command to reduce the error.
+
+### Lesion
+
+- Motor learning in humans with cerebellar damage -> have difficulty learning /adapting movements with practice
+- cerebellar patients are slow to adapt movement to novel contexts and often do not store the effect of short-term training. 
+- Cerebellar deficits <= stroke, tumor, or atrophy
+- **Ataxia**: any incoordination between movements of body parts
+- **Nystagmus**: an involuntary and rhythmic eye movement.
+- **Dysdiadochokinesia** and **Dysmetria**
+
+### Cognitive functions
+
+- Anatomy: Lateral cerebellum receives input from parietal, temporal and prefrontal cortex
+- Linguistic prediction: activation linked to unexpected word order and sentence ending in visually-presented sentences
+
+## Basal ganglia
+
+- Function: brake hypothesis
+
+### Direct & Indirect pathways
+
+![bgPathways](/assets/images/Neuro/bgPathway.jpg)
+[Pic Source](https://www.neurovascularmedicine.com/basalgangliastrokes.php)
+
+- Neuro transmitters
+  - GABA: inhibitory 
+  - Glutamate: excitatory
+  - Dopamine: can be both
+
+- **Direct**: inhibit the basal ganglia output nuclei => disinhibition of the thalamus  
+cerebral cortex -> striatum -> GPi/SNpr -> thalamus -> cerebral cortex
+- **Indirect**: excite the basal ganglia output nuclei => inhibition of the thalamus  
+cerebral cortex -> striatum -> GPe -> STN -> GPi/SNpr -> thalamus -> cerebral cortex
+- **Dopamine**: modulatory
+  - Neurons in the striatum that receive dopamine inputs from SNpc can have different types of dopamine receptors 
+  - excites D1 receptors (direct pathway)
+  - inhibites D2 receptors (indirect pathway)
+- **Hyberdirect**: May be important for action cancelling/stop signals for motor & cognitive programs
+
+### Lesion
+
+- Hyperkinetic: **Huntington’s** Disease
+  - early HD: D2 receptor fail
+- Hypokinetic: **Parkinson’s** Disease
+  - PD Mechanism: loss of dopaminergic cells
 
 
