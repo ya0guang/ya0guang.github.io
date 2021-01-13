@@ -410,7 +410,7 @@ error:
 
 这个函数是真的长啊。一开始检查了`msg1`, `msg2`, `session`, `role`的validity，然后创建了自己的keypair，根据`g_a`计算出来`shared_key`，销毁自己的`priv_key`；之后`shared_key`被`derive_key`做了一次key derivation, derive出来了`dh_smk`。根据LA的版本不同(v1 or v2)，`msg2`被generate (see below), 。最后，session的信息，包括`pub_key`, `peer_pub_key`, `smk_aek`, `shared_key`, `state`都被更新。
 
-## ## LAv1 and LAv2
+## LAv1 and LAv2
 
 ### Generator caller
 
