@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Rust 学习笔记 (To Be Continued)
-date: 2021-01-13 21:10:07
+date: 2021-01-14 14:10:07
 categories: "Notes"
 tags:
 - Rust
@@ -223,6 +223,134 @@ fn first_space(s: &String) -> &str {
     &s
 }
 ```
+
+`fn first_space(s: &str) -> &str`这样的函数原型的参数也可以是`String`。
+
+Slice这种机制也可以运用在其他类型的array中。
+
+# Struct
+
+```Rust
+struct User {
+    username: String,
+    email: String,
+    active:bool,
+    sign_in_count: u64,
+}
+
+fn main() {
+    let user1 = User {
+        email: String::from("eg@eg.com"),
+        username: String::from("user1"),
+        active: false,
+        sign_in_count: 1
+    };
+}
+```
+- 结构体可以像这样被定义和实例化。Rust也提供了额外的语法糖来简化一些参数：
+    ```Rust
+    fn init_user(email: String, username: String) -> User {
+        User {
+            //email: email,
+            email,
+            //username: username,
+            username,
+            active: false,
+            sign_in_count: 1,
+        }
+    }
+    ```
+- Rust还允许从一个结构体创建另一个：
+    ```Rust
+        let user2 = User {
+            username: String::from("user2"),
+            ..user1
+        };
+    ```
+- **String会被deep copy吗？** 
+
+- Tuple也可以被作为Struct来使用:
+
+    ```Rust
+    struct Color(i32, i32, i32);
+    let blk = Color(0, 0, 0);
+    ```
+- Struct中data fields的ownership归实例化的变量。
+- Struct中可以有对于其他data的reference，但是这要求specify lifetime。
+- 可以有不含任何data的struct(unit-like Struct)
+
+## Debug output
+
+```Rust
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rec1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+
+    println!("rec1 is {:#?}", rec1);
+}
+```
+Rust对于Struct的格式化输出可以借助`#[derive(Debug)]`来实现。这种用法有些类似Python中的装饰器。用官方的说法是这里derive了一个`Debug` trait。具体是什么东西还得往后看看才明白。
+
+## Method
+
+```Rust
+#[derive(Debug)]
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+impl Rectangle {
+    fn area(&self) -> u32 {
+        self.width * self.height
+    }
+
+    fn can_hold(&self, sub_rec: &Rectangle) -> bool {
+        self.width > sub_rec.width && self.height > sub_rec.height
+    }
+
+    fn new_square(edge: u32) -> Rectangle {
+        Rectangle {
+            width: edge,
+            height: edge,
+        }
+    }
+}
+
+fn main() {
+    let rec1 = Rectangle {
+        width: 30,
+        height: 50,
+    };
+    let rec2 = Rectangle {
+        width: 20,
+        height: 45,
+    };
+
+    let square = Rectangle::new_square(30);
+
+    println!("rec1 is {:#?}, area is {}", rec1, rec1.area());
+    println!("rec1 can hold re2? {}", rec1.can_hold(&rec2));
+}
+```
+
+可以implement一个area方法。和Python中的方法类似，这里Struct的方法的第一个参数也是`&self`。因为`area`被实现在`impl Rectangle {}`内部，所以`&self`的类型不需要被指定。Ownership同样也可以在这里被方法拿走。  
+和C/C++不同的是，Rust并没有用`->`来调用对象(当其为指针时)的方法或者取对象的成员。Rust会自动添加`&`, `&mut`, `*`来match函数的signature。个人感觉这是一个很方便的东西，而且看上去比C要清爽很多。这个feature被称为*automatic referencing and dereferencing*。  
+~~不过这样的话，感觉需要多多在函数定义的时候注意到底参数是什么类型的。~~可能只会给Object(a.k.a self)去自动加？其他的参数似乎并不会。
+
+## Associated Functions
+
+不把`self`作为参数之一的方法。如果我没有记错的话，这种在Python中被称作类方法？Rust中被称为*associated function*。通常被用来return一个新的对象。语法参考上面的代码。
+
+此外Rust还支持对于同一对象的多个`impl`代码块，这似乎是为了trait和泛型设计的。
 
 # Other References
 
