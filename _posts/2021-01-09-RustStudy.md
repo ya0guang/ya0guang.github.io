@@ -26,7 +26,7 @@ Rust的安装还是十分方便舒爽的，[官网](https://www.rust-lang.org/to
 
 随便放一段第二章中完成的代码感受一下！
 
-```Rust
+```rs
 use rand::Rng;
 use std::cmp::Ordering;
 use std::io;
@@ -78,7 +78,7 @@ fn main() {
 
 为了防止double free之类的错误，rust对于所有编译时大小未知的变量（以及**没有**implement`Copy` trait的变量）在形如这样的assignment时都是只进行shallow copy的（书中的说法是move）。这样做的后果是在之后所有的`s`都无法被正常使用。为了避免使用runtime gc的性能损耗，Rust在离开一个变量的scope（简单地说就是花括号包住的地方里）的时候就会彻底地释放掉它（在heap上清除）。因此如若`s`和`s2`都能够正常使用但是他们却指向了同一个heap中的地址，那么就会在离开这个scope的时候被double free从而产生安全隐患。因此可以使用`clone`方法来创建deep copy。
 
-```Rust
+```rs
 let s = SomeType;
 let s2 = s;
 ```
@@ -86,7 +86,7 @@ let s2 = s;
 ## Ownership
 
 Rust这个奇葩在传递参数的时候也会传递Ownership。Ownership简单地说就是这个变量属于哪个函数。这种传递是否为deep copy和上面一小节中assignment的规律是一样的。这样就会导致一些奇奇怪怪的问题：
-```Rust
+```rs
 fn main() {
     let s = String::from("hello");
     takes_ownership(s);
@@ -122,7 +122,7 @@ fn takes_and_gives_back(some_str: String) -> String {
 因为`s`在传递给`takes_ownership`时也会给出ownership，故而在函数return的时候ownership就么的了，然后这个String的memory便会被free掉。而与之相对的，`x`能够在调用完以之为参数的函数后继续使用。
 
 然而，以下代码可以获得正确的输出：
-```Rust
+```rs
 fn main() {
     let s = "hello";
 
@@ -139,7 +139,7 @@ fn takes_ownership(some_str: &str) {
 
 ### Call by reference
 
-```Rust
+```rs
 fn main() {
     let s1 = String::from("hello");
 
@@ -160,7 +160,7 @@ Rust似乎并不像C一样在每一次dereference的时候都需要使用到`*`�
 如何做到在参数传递的时候不交出ownership呢？可以传递一个reference给函数。如上面的代码写的，`s`在函数`calculate_len`存储了一个指向`s1`的指针。在Rust中，这种参数传递方式称为*borrowing*。
 
 不过以这种方式传递的参数有一个缺点：数据是immutable的。可以使用另一种ref：
-```Rust
+```rs
 fn main() {
     let mut s1 = String::from("hello");
 
@@ -176,7 +176,7 @@ fn calculate_len (s: &mut String) -> usize {
 ```
 
 然而，如果两个mutable borrow发生在不同的scope里则是允许的
-```Rust
+```rs
 let mut s = String::from("hello");
 
 {
@@ -191,7 +191,7 @@ Rust为了防止data race，禁止创建两个同样的mutable borrow。immutabl
 
 和python类似，Rust里面的String也可以被slice。这种slice是为了避免变量被drop之后index还存在的尴尬事。
 
-```Rust
+```rs
 
 let s = String::from("hello");
 let s1 = &s[0..2];
@@ -200,7 +200,7 @@ let s1 = &s[0..2];
 
 将之前的功能重新用slice来实现。slice将作为`&str`返回。
 
-```Rust
+```rs
 fn main() {
     let s1 = String::from("hel lo");
 
@@ -230,7 +230,7 @@ Slice这种机制也可以运用在其他类型的array中。
 
 # Struct
 
-```Rust
+```rs
 struct User {
     username: String,
     email: String,
@@ -248,7 +248,7 @@ fn main() {
 }
 ```
 - 结构体可以像这样被定义和实例化。Rust也提供了额外的语法糖来简化一些参数：
-    ```Rust
+    ```rs
     fn init_user(email: String, username: String) -> User {
         User {
             //email: email,
@@ -261,7 +261,7 @@ fn main() {
     }
     ```
 - Rust还允许从一个结构体创建另一个：
-    ```Rust
+    ```rs
         let user2 = User {
             username: String::from("user2"),
             ..user1
@@ -271,7 +271,7 @@ fn main() {
 
 - Tuple也可以被作为Struct来使用:
 
-    ```Rust
+    ```rs
     struct Color(i32, i32, i32);
     let blk = Color(0, 0, 0);
     ```
@@ -281,7 +281,7 @@ fn main() {
 
 ## Debug output
 
-```Rust
+```rs
 #[derive(Debug)]
 struct Rectangle {
     width: u32,
@@ -301,7 +301,7 @@ Rust对于Struct的格式化输出可以借助`#[derive(Debug)]`来实现。这�
 
 ## Method
 
-```Rust
+```rs
 #[derive(Debug)]
 struct Rectangle {
     width: u32,
