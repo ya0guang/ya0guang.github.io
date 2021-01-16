@@ -355,7 +355,7 @@ fn main() {
 # Enum
 
 Rust的enum可以按照这种方式来定义：
-```
+```rs
 enum Message {
     // unit
     Quit,
@@ -373,6 +373,7 @@ impl Message {
     }
 }
 ```
+
 
 # Other References
 
