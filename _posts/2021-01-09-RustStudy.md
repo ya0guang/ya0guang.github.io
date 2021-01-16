@@ -352,6 +352,28 @@ fn main() {
 
 此外Rust还支持对于同一对象的多个`impl`代码块，这似乎是为了trait和泛型设计的。
 
+# Enum
+
+Rust的enum可以按照这种方式来定义：
+```
+enum Message {
+    // unit
+    Quit,
+    // anonymous nested struct
+    Move {x: i32, y: i32},
+    // String included
+    Write(String),
+    // 3 * i32 included
+    ChangeColor(i32, i32, i32),
+}
+
+impl Message {
+    fn call(&self) {
+        //
+    }
+}
+```
+
 # Other References
 
 - [如何看待 Rust 的应用前景？](https://www.zhihu.com/question/30407715/answer/48032883)里面说的关于Rust的各种features还有待我去体会到
