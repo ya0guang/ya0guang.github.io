@@ -18,7 +18,7 @@ header:
 
 简单地说就是给Kernel里面塞点奇奇怪怪的东西让Kernel变得奇怪起来。框架大抵是这样的：
 
-```C
+```c
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
