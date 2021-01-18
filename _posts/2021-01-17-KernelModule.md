@@ -64,7 +64,7 @@ Hook一个system call大概需要如下几个步骤：
 5. 把这个位置指向的函数改成你自己的
 6. 还原syscall table的权限
 
-```C
+```c
 #include <linux/module.h>
 #include <linux/kernel.h>
 #include <linux/init.h>
