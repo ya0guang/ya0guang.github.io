@@ -373,6 +373,18 @@ impl Message {
     }
 }
 ```
+可以看出其支持在enum里面的不同variants有着不同的nested data types。这倒是一个十分方便的feature。
+
+## Option
+
+为了避免C/C++中`NULL`引起的一些问题，例如null pointer dereference之类的，Rust引入了Option枚举类。
+```rs
+enum Option<T> {
+    Some(T),
+    None,
+}
+```
+这有些类似于functional programming中monad的思想。这样便允许了可以为空的fields。
 
 
 # Other References
