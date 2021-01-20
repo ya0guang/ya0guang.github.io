@@ -386,6 +386,145 @@ enum Option<T> {
 ```
 这有些类似于functional programming中monad的思想。这样便允许了可以为空的fields。
 
+那么如何把Option里面的东西取出来呢？那就要用到牛逼的match了
+```rs
+fn main() {
+    let x = Some(3);
+    let x = plus_one(x);
+    println!("x is {:?}", x);
+
+    let y = None;
+    let y = plus_one(y);
+    println!("y is {:?}", y);
+}
+
+fn plus_one(num: Option<i32>) -> Option<i32> {
+    match num {
+        Some(v) => Some(v+1),
+        None => None,
+    }
+}
+```
+
+PS：在match里面，`_`可以去match任意值。也可以用`if let`来match一种case，这个时候Rust不会check是否有其他的case没有被match到。
+```rs
+if let Some(3) = num {
+    println!("Lucky!");
+}
+```
+
+# Rust包 
+
+- 通过`cargo new --lib [libname]`来创建一个Rust的lib
+- 在`src/lib.rs`下面可以通过`mod`关键字创建多个module
+- module之间可以嵌套，可以包含enum, struct, function，这些都可以是public的
+- 所有的`fn`, `mod`, `enum`, `struct`都是默认private的，父类无法直接访问到子类但是反之则可
+- 可以使用相对或者绝对“路径”来访问module里面的内容
+- `impl`里面的东西可以access被impl的对象的private field
+- `use`基本等同于Python中的`import`，也可以使用`use A as a`
+- `pub use`可以被用来提升命名空间？[ref](https://tonydeng.github.io/2019/10/28/rust-mod/)
+- 也有`use [namespace]::*`的用法，和Python类似
+- nested path
+  Rust提供了一个语法糖：
+  ```rs
+  // original
+  use std::cmp::Ordering;
+  use std::io;
+  use std::io::Write;
+
+  // nested
+  use std::{cmp::Ordering, io};
+  use std::io::{self, Write};
+  ```
+
+## 分割到不同文件
+
+
+Rust通过把module里面的sub module放在root下的其他文件/文件夹中来完成module的嵌套。Rust的文件名即是其所在module的名字。
+
+以下为在单个文件里面的module结构：
+```rs
+//#[cfg(test)]
+mod back_of_house {
+
+    // #[derive(Debug)]
+    pub struct Breakfast {
+        pub toast: String,
+        seasonal_fruit: String,
+    }
+
+    impl Breakfast {
+        pub fn summer(toast: &str) -> Breakfast {
+            Breakfast {
+                toast: String::from(toast),
+                seasonal_fruit: String::from("peaches"),
+            }
+        }
+    }
+}
+mod front_of_house {
+    pub mod hosting {
+        pub fn add_to_waitlist() {}
+
+        fn seat_at_table() {}
+
+    }
+
+    mod serving {
+        fn take_order() {}
+
+        fn serve_order() {}
+
+        fn take_payment() {}
+    }
+}
+
+use crate::front_of_house::hosting;
+// or use relative path
+// use self::front_of_house::hosting;
+
+pub fn eat_at_restaurant() {
+
+    // abosulute path
+    crate::front_of_house::hosting::add_to_waitlist();
+    // relative path
+    front_of_house::hosting::add_to_waitlist();
+    // effective after use
+    hosting::add_to_waitlist();
+
+    let mut meal = back_of_house::Breakfast::summer("Rye");
+    meal.toast = String::from("Wheat");
+    println!("{} toast pls!", meal.toast);
+}
+```
+
+其中，`front_of_house`可以通过这种重构实现：
+
+- `src/lib.rs` root
+```rs
+mod front_of_house;
+```
+
+- `src/front_of_house.rs`
+```rs
+pub mod hosting {
+    pub fn add_to_waitlist() {}
+}
+```
+
+或者可以对`hosting`进行更进一步的拆分：
+- `src/front_of_house.rs`
+```rs
+pub mod hosting;
+```
+
+- `src/front_of_house/hosting.rs`
+```rs
+pub fn add_to_waitlist() {}
+```
+
+
+
 
 # Other References
 
