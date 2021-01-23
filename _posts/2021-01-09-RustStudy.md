@@ -523,8 +523,138 @@ pub mod hosting;
 pub fn add_to_waitlist() {}
 ```
 
+# Rust Collections
 
+Rust提供了一堆方便的数据结构。
 
+## Vector
+
+这里的Vector其实基本上类似于可变长度的数组，定义与Pie language里面的vector比较类似。  
+可以通过`vec!`宏或者`Vec::new()`初始化。  
+因为vector内部的实现问题，mutable vector在长度变化的时候有可能会被挪动到别的内存（在vector变长的时候原本malloc的内存可能装不下），因此vector也遵循同一scope内不能有mutable和immutable reference的规则，即使immutable reference指向vector初始的几个元素。
+
+还可以用引用和`get()`方法来拿到vector中的元素。其处理的方式会有些许不同：
+```rs
+fn main() {
+    let mut v = Vec::new();
+
+    v.push(5);
+    v.push(6);
+
+    // panic if out of bound
+    let third = &v[2];
+
+    // will get an Option<T>
+    match v.get(1) {
+        Some(val) => println!("get {}", val),
+        None => println!("not even get!"),
+    }
+}
+```
+
+### Iterate a vector
+
+和Python的语法类似，和C的语义类似，可以用指针来迭代vector：
+```rs
+    for i in &mut v {
+        *i += 10;
+    }
+```
+但是如若像这样使用迭代器则会报错：
+```rs
+    for mut i in v {
+        i += 10;
+    }
+
+    for j in v {
+        println!("{}", j);
+    }
+```
+报错：
+```shell
+error[E0382]: use of moved value: `v`
+   --> src/main.rs:12:14
+    |
+2   |     let mut v = Vec::new();
+    |         ----- move occurs because `v` has type `Vec<i32>`, which does not implement the `Copy` trait
+...
+8   |     for mut i in v {
+    |                  -
+    |                  |
+    |                  `v` moved due to this implicit call to `.into_iter()`
+    |                  help: consider borrowing to avoid moving into the for loop: `&v`
+...
+12  |     for j in v {
+    |              ^ value used here after move
+    |
+note: this function consumes the receiver `self` by taking ownership of it, which moves `v`
+```
+这是因为在把给了迭代器的时候传递了ownership，导致v在后续的scope内失效了。看来如无必要迭代器还是得borrow。
+
+如若想要把不同类型的元素存储在同一个vector里面，可以用它来存储一个enum类型，这个enum类型里面包括不同类型。  
+
+## String
+
+和之前的代码中出现的api类似，可以通过`::new()`, `::from()`, `.to_string()`等方法创建一个`String`。  
+`String`的api还包括`push_str()`, `push()`, `+`运算符的重载。要说明的是这些运算并不会take ownership。
+还有`format!()`宏可以使用：
+```rs
+let s1 = String::from("tic");
+
+let s = format!("{}-tok", s1);
+```
+`s`也是一个`String`。
+
+Rust中String其实是`Vec<u8`。但是其支持utf-8编码，因此Rust并不能像C一样直接index一个String。因此可以使用slice的方式去拿sub elements，但如若卡在了char boundary上面的话会报错。
+
+可以用`.chars()`或者`.bytes()`方法来生成一个可迭代的对象，前者会划分为一个个unicode，而后者则是`u8`。
+
+## Hashmap
+
+看如下代码，`HashMap`不像vector一样有用来初始化的宏，但是它可以从两个vector来初始化。
+```rs
+use std::collections::HashMap;
+
+fn main() {
+    let mut scoreboard = HashMap::new();
+
+    scoreboard.insert(String::from("A"), 20);
+    scoreboard.insert(String::from("B"), 30);
+
+    println!("{:?}", scoreboard);
+
+    let teams = vec![String::from("A"), String::from("B")];
+    let scores = vec![20, 30];
+
+    // must specify the type here
+    let mut scoreboard: HashMap<_, _> = teams.into_iter().zip(scores.into_iter()).collect();
+    println!("{:?}", scoreboard);
+
+    // get an Option<T> here
+    let team = String::from("A");
+    let s = scoreboard.get(&team);
+    // euivalent to
+    let s = scoreboard.get("A");
+    println!("{:?}", s);
+
+    for (k, v) in &scoreboard {
+        println!("{}: {}", k, v);
+    }
+
+    // insert if the Key has no value
+    scoreboard.entry(String::from("A")).or_insert(50);
+    scoreboard.entry(String::from("C")).or_insert(50);
+
+    // update the data
+    let score = scoreboard.entry(String::from("A")).or_insert(0);
+    *score += 100;
+    println!("{:?}", scoreboard);
+}
+```
+
+需要注意的是，`HashMap`的key值不能重复，如果重复的话则会update现有的key对应的value。那么便可以用`entry().or_insert`来检查是否存在，如若不存在则插入。  
+这里`entry()`是一个蛮神奇的存在，其会返回一个`Entry`。如果key存在则会返回一个mutable reference，如果不存在则会创建一个mutable reference并返回。  
+也可以通过`entry()`来获得对于`HashMap`里面一个slot的mutable reference，从而进一步更新其中的数据。
 
 # Other References
 

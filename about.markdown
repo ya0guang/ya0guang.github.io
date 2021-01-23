@@ -87,7 +87,7 @@ Last Update: Oct. 22, 2020
 
 - 前端: 海贝R5 （4.4平衡+3.5单端）
 - 塞子：DUNE DK3001pro，JVC FW002，Final E3000，ES4SR
-- 头戴：ATH ESW990h, Sony MDR7506
+- 头戴：ATH ESW990h, Sony MDR7506，Sony WH1000-XM4， HiFiMan HE-560V4
 - 降噪: WH1000-XM4
 - ~~用娄氏单元自制的动铁定制~~
 
