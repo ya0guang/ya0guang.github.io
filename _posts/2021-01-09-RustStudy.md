@@ -656,6 +656,86 @@ fn main() {
 这里`entry()`是一个蛮神奇的存在，其会返回一个`Entry`。如果key存在则会返回一个mutable reference，如果不存在则会创建一个mutable reference并返回。  
 也可以通过`entry()`来获得对于`HashMap`里面一个slot的mutable reference，从而进一步更新其中的数据。
 
+# Error
+
+和其他语言不同的是，Rust并没有Exception handling这种机制。其将错误分为recoverable和unrecoverable。前者通过`Result<T, E>`来处理，而后者则会在调用`panic!()`宏的时候出现。  
+这个宏可以主动调用来使程序panic，还可以在运行时设置`RUST_BACKTRACE=1`来在程序panic的时候backtrace。
+
+Result的定义如下：
+```rs
+enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}
+```
+
+用`match`来对result处理是Rust的常规操作。骚操作呢？也不是没有：`unwrap_or_else()`，后面会讲到，先卖个关子。如果懒得用match的话可以直接`unwrap()`。这样如果没有错误便会直接返回`Ok`里面夹着的东西，反之则panic。也可以用`expect()`来在其参数里面填上其他的描述来实现更友好的错误输出，`except()`除了接收一个参数外和`unwrap()`一毛一样。
+
+```rs
+use std::fs::File;
+use std::io::ErrorKind;
+
+fn main() {
+    let f = File::open("./src/hello.txt");
+    let f = match f {
+        Ok(file) => file,
+        Err(err) => match err.kind() {
+            ErrorKind::NotFound => match File::create("hello.txt") {
+                Ok(f) => f,
+                Err(err) => panic!("create file failed {:?}", err),
+            },
+            other => {
+                panic!("unexpected error: {:?}", other)
+            }
+        },
+    };
+    println!("open file successfully! {:?}", f);
+}
+```
+
+## 错误传递
+
+```rs
+use std::fs::File;
+use std::io::{self, Read};
+
+fn read_username_from_file() -> Result<String, io::Error> {
+    let f = File::open("hello.txt");
+
+    let mut f = match f {
+        Ok(file) => file,
+        Err(e) => return Err(e),
+    };
+
+    let mut s = String::new();
+
+    match f.read_to_string(&mut s) {
+        Ok(_) => Ok(s),
+        Err(e) => Err(e),
+    }
+}
+```
+这段简单的代码可以返回一个`Result`。而Rust提供了一个更简单的操作符, `?`~~？？？~~。用这个操作符，函数可以写成：
+```rs
+    let mut f = File::open("hello.txt")?;
+
+    let mut s = String::new();
+
+    f.read_to_string(&mut s)?;
+
+    Ok(s)
+```
+`?`所做的事情几乎和之前写的match一毛一样，区别在于它会调用standard library里面的`From` trait来把错误的类型转换为函数定义的return type中的错误类型。（*难道`matcch`在return的时候没有做类型转换吗？*）但是这里还有一处改变，`f`被定义为了mutable。这里令我十分无法理解，为什么在前面的code中immutable `f`可以正常运行？？？？`read_to_string`的定义是`fn read_to_string(&mut self, buf: &mut String) -> Result<usize>`，很显然需要一个mutable self。但是这tm居然能运行？？？我十分**不解**这是为什么。
+
+**破案了，因为上一个f被shadow了。。。我没发现f被定义了两次！！！**
+
+不过上面的任务有一个更简单的写法：
+```rs
+    fs::read_to_string("hello.txt")
+```
+这里应该是使用了类似于类方法的东西，并不需要我们创建一个File就可以调用类的方法了。但是这个signature是这样的：`pub fn read_to_string<P: AsRef<Path>>(path: P) -> io::Result<String>`，可见返回值并不是像之前看到的`Result<T, E>`一样。因为这里面不知道为啥没法直接看到它的定义，但是猜测是封装了后者。
+
+
 # Other References
 
 - [如何看待 Rust 的应用前景？](https://www.zhihu.com/question/30407715/answer/48032883)里面说的关于Rust的各种features还有待我去体会到
