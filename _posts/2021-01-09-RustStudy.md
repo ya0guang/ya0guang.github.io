@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Rust 学习笔记 (To Be Continued)
-date: 2021-01-23 17:10:07
+date: 2021-01-26 13:10:07
 categories: "Notes"
 tags:
 - Rust
@@ -735,6 +735,103 @@ fn read_username_from_file() -> Result<String, io::Error> {
 ```
 这里应该是使用了类似于类方法的东西，并不需要我们创建一个File就可以调用类的方法了。但是这个signature是这样的：`pub fn read_to_string<P: AsRef<Path>>(path: P) -> io::Result<String>`，可见返回值并不是像之前看到的`Result<T, E>`一样。因为这里面不知道为啥没法直接看到它的定义，但是猜测是封装了后者。
 
+# Generic Types, Traits, and Lifetimes
+
+泛型以及其相关内容。
+
+## Generic Types
+
+### Struct
+```rs
+struct Point<T> {
+    x: T,
+    y: T,
+}
+
+impl<T> Point<T> {
+    fn x(&self) -> &T {
+        &self.x
+    }
+}
+
+impl Point<f32> {
+    fn distance(&self) -> f32 {
+        (self.x.powi(2) + self.y.powi(2)).sqrt()
+    }
+}
+
+struct PowerfulPoint<T, U> {
+    x: T,
+    y: U,
+}
+
+impl<T, U> PowerfulPoint<T, U> {
+    fn mixup<V, W>(self, other: PowerfulPoint<V, W>) -> PowerfulPoint<T, W> {
+        PowerfulPoint {
+            x: self.x,
+            y: other.y,
+        }
+    }
+}
+```
+这里实现了结构体内的泛型。枚举类的泛型类似。有几点需要说明：
+- 如果要实现泛型结构体的函数，`impl`后面要加上泛型参数`<T>`
+- 那么也可以实现非泛型结构体的函数：为某一特定类型实现
+- 实现的函数也可以具有不同与泛型结构体的泛型参数，如`PowerfulPoint`的实现
+- 注意`x()`在这里的返回是一个引用。如果不是引用则会报错：
+  - `cannot move out of `self.x` which is behind a shared reference`
+  - 其实应该是有办法的，如果`T` implement了`Copy`这个trait的话。但是Rust现在不知道有没有这个trait，所以我们姑且先返回引用
+
+
+### Function
+
+将这个函数变成泛型的版本：
+```rs
+fn largest(list: &[i32]) -> &i32 {
+    let mut largest = &list[0];
+
+    for n in list {
+        if n > largest {
+            largest = n;
+        }
+    }
+    largest
+}
+```
+然而简单地加上泛型参数并不能使之编译：
+```rs
+fn largest<T>(list: &[T]) -> &T {
+    let mut largest = &list[0];
+
+    for n in list {
+        if n > largest {
+            largest = n;
+        }
+    }
+    largest
+}
+```
+这是因为并非所有的type都可以去比大小。这个`T`必须实现了偏序的trait
+
+### 编译
+
+Rust的泛型是通过在编译时把不同使用到的泛型都编译出来实现的，所以性能开销很小。比如`foo<T>()`如果被传入了`i32`和`u8`，那么其在编译时便会被转变成两个函数：`foo_i32()`和`foo_u8()`，从而减少泛型引起的性能开销。
+
+## Trait
+
+简单地说trait就是让编译器知道一些类型有着一些共有的功能。Rust说这货和接口比较像。
+
+### Define a trait
+
+这里我们定义一个叫做`Summary`的trait。注意函数的Signature以`;`结尾。一个trait里面可以有多个函数，而每个类型若想实现一个trait必须自己拥有每一个trait里面的函数的实现。
+```rs
+// src/lib.rs
+pub trait Summary {
+    fn summarize(&self) -> String;
+}
+```
+
+Rust的trait遵循coherence property (orphan rule)，即trait的implementation要么在trait里，要么在类里（类或者trait的crate是local的）。反之，假设在一个奇奇怪怪的地方（e.g.自己的lib）定义了比如`Vec<T>`实现了`Display`，但是这俩玩意都是来自stdlib里面的东西，对于自己的lib而言都是extern的，那么这样是不行的。这样做是为了防止trait被重复实现。除此之外也有安全的考虑：如果这些extern的trait和类可以被重新实现，那么即意味着任何在项目中使用的crate都可以**劫持**这些实现。
 
 # Other References
 
