@@ -811,7 +811,21 @@ fn largest<T>(list: &[T]) -> &T {
     largest
 }
 ```
-这是因为并非所有的type都可以去比大小。这个`T`必须实现了偏序的trait
+这是因为并非所有的type都可以去比大小。这个`T`必须实现了偏序的trait。  
+改写成如下形式能够编译通过：
+```rs
+fn largest<T: PartialOrd + Copy>(list: &[T]) -> T {
+    let mut largest = list[0];
+
+    for &n in list {
+        if n > largest {
+            largest = n;
+        }
+    }
+    largest
+}
+```
+这里的语法细节将在下面进一步讨论。
 
 ### 编译
 
@@ -829,9 +843,126 @@ Rust的泛型是通过在编译时把不同使用到的泛型都编译出来实�
 pub trait Summary {
     fn summarize(&self) -> String;
 }
+
+pub struct News {
+    pub headline: String,
+}
+
+impl Summary for News {
+    fn summarize(&self) -> String {
+        format!("{}", self.headline)
+    }
+}
+
+pub struct Tweet {
+    pub username: String,
+}
+
+impl Summary for Tweet {
+    fn summarize(&self) -> String {
+        format!("{}", self.username)
+    }
+}
+
+// src/main.rs
+mod lib;
+use lib::Summary;
+
+fn main() {
+    println!("aaa");
+    let n = lib::News{
+        headline: String::from("headline_A"),
+    };
+
+    println!("{}", n.summarize());
+}
 ```
 
 Rust的trait遵循coherence property (orphan rule)，即trait的implementation要么在trait里，要么在类里（类或者trait的crate是local的）。反之，假设在一个奇奇怪怪的地方（e.g.自己的lib）定义了比如`Vec<T>`实现了`Display`，但是这俩玩意都是来自stdlib里面的东西，对于自己的lib而言都是extern的，那么这样是不行的。这样做是为了防止trait被重复实现。除此之外也有安全的考虑：如果这些extern的trait和类可以被重新实现，那么即意味着任何在项目中使用的crate都可以**劫持**这些实现。
+
+若要使用刚刚写的类和trait，可以切换到`main.rs`下面去先`mod lib`，然后`use lib::Summary`。注意这里`lib`其实可以是任何模块名（文件名），只要和src目录下的rs源文件名相同即可。而若要调用`summarize()`这个来自`Summary` trait的函数，则必须use它。
+
+如同接口中所能做的一样，也可以将trait实现：
+```rs
+pub trait Summary {
+    fn summarize(&self) -> String {
+        String::from("Unimplemented Summmary")
+    }
+}
+
+pub struct News {
+    pub headline: String,
+}
+
+impl Summary for News {
+}
+```
+
+这里在调用`news.summarize()`时则会直接找trait定义里面的实现。但是必须`impl Summary for News`才可能进行这个调用，即使`impl`里面为空。这也有些类似类里面（虚）函数的重载。
+
+```rs
+mod lib;
+use lib::Summary;
+
+// also works here if fn notify(item: &Summary)
+fn notify(item: &impl Summary) {
+    println!("Notification: {}", item.summarize());
+}
+
+fn main() {
+    println!("aaa");
+    let n = lib::News{
+        headline: String::from("headline_A"),
+    };
+
+    notify(&n);
+}
+```
+
+- 定义在trait里面的函数可以调用这个trait中的其他函数，即使后者没有在trait里面实现
+- 可以定义函数其参数必须实现一个trait从而不指定具体的类型
+  - 上面代码函数signature中`impl`其实是语法糖
+  - 原型应为：`fn notify<T: Summary>(item: &T)`
+  - **可以要求参数同时实现多个trait吗？**可以，使用`&(impl Trait1 + Trait2)`
+- 也可以要求返回值它实现了trait
+- 当函数泛型有比较多的trait的约束时，可以用`where`关键字使其更清晰
+```rs
+fn some_fn<T, U>(t: &T, u: &U) -> impl Summary
+    where T: Summary + Display,
+          U: Summary
+{
+    lib::News{
+        headline: String::from("headline_A"),
+    }
+}
+```
+目前`some_fn`只能return一种类型。即：它没法return `News`或者`News2`，即使两者都实现了`Summary`。这与编译的实现有关。后面会讲到如何让它可以return不同类型的变量。我猜测这里是因为如果return了多种变量的话，编译器不知道在后续接收这个对象的代码中以何种方式调用对象的方法，因为**似乎**Rust中的trait并非是像虚函数那样实现的。
+
+一开始的`largest`函数也可以不需要`Copy`或者`Clone`这样的trait。这里它可以只返回一个slice：
+```rs
+fn largest<T: PartialOrd>(list: &[T]) -> &T {
+    let mut largest = &list[0];
+
+    for n in list {
+        if *n > *largest {
+            largest = &n;
+        }
+    }
+    largest
+}
+```
+
+### Conditionally Implemented Method
+
+我们也可以完成这个目标：当类中的泛型实现了某（些）trait时，为这个类实现一个方法。语法如下：
+```rs
+impl<T: Display + PartialOrd> Some_type<T> {
+    fn some_fn(&self) {
+        // do something
+    }
+}
+```
+这里，当且仅当`Some_type<T>`中的`T`类型实现了`Display`和`PartialOrd`两个trait时，才为其实现`some_fn`方法。
 
 # Other References
 
