@@ -142,6 +142,9 @@ author:
     - label: "Flickr"
       icon: "fab fa-fw fa-instagram"
       url: "https://www.flickr.com/photos/147323121@N08"
+    - label: "Telegram"
+      icon: "fab fa-fw fa-telegram"
+      url: "https://t.me/joinchat/WLVfNsuUMjFUG5SW"
 
 # Site Footer
 footer:
