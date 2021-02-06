@@ -1,7 +1,7 @@
 ---
 layout: single
 title: 各种值得再次看看的网页/网站/Meta
-date: 2020-08-23 10:10:07
+date: 2021-02-03 10:10:07
 categories: "Notes"
 tags:
 - Notes
@@ -11,7 +11,7 @@ header:
 ---
 
 持续更新。有事没事就去看看吧！  
-Last update: Oct. 1, 2020
+Last update: Feb. 3, 2021
 
 # Meta Study
 
@@ -36,6 +36,7 @@ Last update: Oct. 1, 2020
 # People & Group
 
 - [Dave Tian](https://davejingtian.org/)
+- [Yanick Fratantonio](https://reyammer.io/): 离开了学术界的大佬
 
 ## SDR
 
