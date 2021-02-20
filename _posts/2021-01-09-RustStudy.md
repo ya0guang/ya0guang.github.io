@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Rust 学习笔记 (To Be Continued)
-date: 2021-02-05 23:10:07
+date: 2021-02-20 11:10:07
 categories: "Notes"
 tags:
 - Rust
@@ -753,7 +753,23 @@ fn read_username_from_file() -> Result<String, io::Error> {
 
 # Generic Types, Traits, and Lifetimes
 
-泛型以及其相关内容。
+泛型以及其相关内容。本章会讲述形如这样的代码到底说了什么：
+
+```rs
+use std::fmt::Display;
+
+fn longest_with<'a, T>(x: &'a str, y: &'a str, ann: T) -> &'a str
+where
+    T: Display,
+{
+    println!("announcement {}", ann);
+    if x.len() > y.len() {
+        x
+    } else {
+        y
+    }
+}
+```
 
 ## Generic Types
 
@@ -979,6 +995,132 @@ impl<T: Display + PartialOrd> Some_type<T> {
 }
 ```
 这里，当且仅当`Some_type<T>`中的`T`类型实现了`Display`和`PartialOrd`两个trait时，才为其实现`some_fn`方法。
+
+## Lifetime
+
+Rust和其他语言最不一样的地方应该属lifetime了。这里的lifetime指的是变量的lifetime。由于默认情况下所有变量在离开自己的scope之后便会被销毁，有些时候可能需要一些变量live longer。
+
+```rs
+fn main() {
+    let r;
+    {
+        let x = 5;
+        r = &x;
+    }
+    println!("{}", r);
+}
+```
+在这段代码中，尝试编译会报错：
+
+```
+error[E0597]: `x` does not live long enough  
+ --> src/main.rs:5:13  
+  |  
+5 |         r = &x;  
+  |             ^^ borrowed value does not live long enough  
+6 |     }  
+  |     - `x` dropped here while still borrowed  
+7 |     println!("{}", r);  
+  |                    - borrow later used here  
+```
+
+若想要实现和引用相关的函数，有时候也需要显示标注lifetime:
+```rs
+fn main() {
+    let s1 = String::from("str1");
+    {
+    let s2 = "s2";
+    let result = longest(&s1, s2);
+    println!("{}", result);
+    }
+
+}
+
+// fn longest (s1: &str, s2: &str) -> &str
+// rasie error: expected named lifetime parameter
+fn longest<'a>(s1: &'a str, s2: &'a str) -> &'a str {
+    if s1.len() > s2.len() {
+        s1
+    }
+    else {
+        s2
+    }
+}
+```
+这里因为`longest`的参数`s1`和`s2`可能拥有不同的lifetime，导致return之后编译器不会玩了（不知道什么时候需要销毁变量）。因此我们这里需要显示的标注他们的lifetime。这里标注的意义是，`s1`和`s2`overlap的部分（或者说较小的那个？）即是return value的lifetime。标注之后，即使是如下的调用也是ok的：
+```rs
+fn main() {
+    let s1 = String::from("str1");
+    {
+        let s2 = "s2";
+        let result = longest(&s1, s2);
+        println!("{}", result);
+    }
+}
+```
+因此，这样的调用会报错：
+```rs
+fn main() {
+    let s1 = String::from("str1");
+    let result;
+    {
+        let s2 = String::from("s2");
+        result = longest(&s1, &s2);
+    }
+
+    println!("{}", result);
+}
+``` 
+lifetime类似于泛型参数，一般以`'` + 小写字母表示。类似类型，lifetime是不可以被更改的。
+
+对于结构体和方法也可以标记lifetime：
+```rs
+struct Strstr<'a> {
+    part: &'a str,
+}
+
+impl<'a> Strstr<'a> {
+    fn level(&self) -> i32 {
+        42
+    }
+}
+```
+
+实际上我们在真正写代码的时候并不需要那么多的annotations，这是因为Rust编译器引入了一些规则来帮助自动标记lifetime
+1. 所有的参数的lifetime都会被标记成不同的
+2. 如果只有一个参数，那么其返回的lifetime会被标记成和参数相同的
+3. 如果方法有`self`之类的参数，那么返回的lifetime和`self`的相同
+
+### `'static`
+
+除了上述的标记之外，还有一种特殊的lifetime标记：`'static`。其意味着可以活到程序的终结。所有的string literal都具有这个lifetime。
+
+# Test
+
+Rust提供了完善的测试功能。对于library，在创建的时候便会在`lib.rs`里面生成test module。类似：
+```rs
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn exploration() {
+        assert_eq!(2 + 2, 4);
+        assert!(true);
+    }
+
+    #[test]
+    fn another() {
+        panic!("Fail!")
+    }
+}
+```
+在需要作为测试函数的函数头上标记`#[test]`，然后运行`cargo test`即可自动去做test。而在module上面标记
+`#[cfg(test)]`可以实现对于一个模块的unit test。
+
+除此之外，Rust还可以做panic的捕获，以及输出更加详细的测试信息。
+
+# Functional Rust
+
+终于要快进到魔法Rust了。来这里体验一把Rust强大的函数式特性。
 
 # Other References
 
