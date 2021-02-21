@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Rust 学习笔记 (To Be Continued)
-date: 2021-02-20 11:10:07
+date: 2021-02-20 23:10:07
 categories: "Notes"
 tags:
 - Rust
@@ -1121,6 +1121,191 @@ mod tests {
 # Functional Rust
 
 终于要快进到魔法Rust了。来这里体验一把Rust强大的函数式特性。
+
+## Closure
+
+Rust里面的函数可以是一等公民，这即意味着函数可以作为参数和返回值。使用closure的范例如下：
+```rs
+use std::thread;
+use std::time::Duration;
+
+fn generate_workout(intensity: u32, random_number: u32) {
+    let expensive_closure = |num| {
+        println!("calulating slowly...");
+        thread::sleep(Duration::from_secs(2));
+        num
+    };
+
+    if intensity < 25 {
+        println!("Do {} pushups!", expensive_closure(intensity));
+        println!("Do {} situps!", expensive_closure(intensity));
+    } else {
+        if random_number == 3 {
+            println!("Take a break");
+        } else {
+            println!("Run for {} mins!", expensive_closure(intensity));
+        }
+    }
+}
+```
+这里`expensive_closure`就是一个closure。其中`|num|`表明了匿名函数的参数，而函数最后返回的也是`num`。这个closure在之后可以被调用。
+
+同样的，也可以对其标注类型：
+```rs
+    let expensive_closure = |num: u32| -> u32 {
+        println!("calulating slowly...");
+        thread::sleep(Duration::from_secs(2));
+        num
+    };
+```
+
+### Memoization
+
+可以看到最外层的`if`内调用了`expensive_closure`两次，而这其实是低效的。我们可以通过memoization来实现lazy evaluation。
+
+为了实现memoization，构造一个`Cacher` struct。它存储一个closure，上一次递交给它的参数和结果。注意这里用到了`Fn` trait: `where T: Fn(u32) -> u32`。这里`Cacher`的实现并不完美。
+```rs
+struct Cacher<T> where T: Fn(u32) -> u32 {
+    calc: T,
+    val: Option<u32>,
+    arg: Option<u32>,
+}
+
+impl<T> Cacher<T> where T: Fn(u32) -> u32 {
+    fn new(calc: T) -> Cacher<T> {
+        Cacher {
+            calc,
+            val: None,
+            arg: None,
+        }
+    }
+
+    fn value(&mut self, argument: u32) -> u32 {
+        match self.val {
+            Some(val) => val,
+            None => {
+                let v = (self.calc)(argument);
+                self.val = Some(v);
+                v
+            }
+        }
+    }
+}    
+```
+
+### Capturing the Environment
+
+Rust中的closure中可以使用到当前scope里面有效的变量，比如这样：
+```rs
+fn main() {
+    let x = 4;
+    let eqx = |y| y == x;
+    eqx(4);
+}
+```
+
+既然要和其所在的scope(Environment)产生物质交换，那么它便和函数一样有着Ownership的问题。Rust提供了三种对应的traits：
+
+- `FnOnce`: take ownership，只能被调用一次（因为只能take一次ownership）
+- `FnMut`: 传递mutable borrows，因此可以改变environment
+- `Fn`: borrow不可变的值
+
+```rs
+fn main() {
+    let x = vec![1, 2, 3];
+
+    let eqx = move |z: Vec<i32>| z == x;
+
+    let y = vec![1, 2, 3];
+    let z = vec![1, 2, 3];
+
+    eqx(y);
+    eqx(z);
+    eqx(y);
+    println!("{:?}", x);
+}
+```
+形如这样的代码会编译报一堆错：
+- `x`的ownership被递交给了`eqx`，在后面无法继续被使用
+- `y`的ownership也在使用的时候被递交给了`eqx`
+- 可以继续使用z作为参数
+
+## Iterator
+
+Rust内的Iterator trait定义如下：
+```rs
+pub trait Iterator {
+    type Item;
+
+    fn next(&mut self) -> Option<Self::Item>;
+}
+```
+这里的`type Item`是associated type，具体似乎后续会讲。简单地说Rust迭代器需要实现一个`next`函数，而对于`iter()`而言，其返回一个`Iterator`。个人感觉似乎可以用dependent type中的理论来理解这个`Item`，即表示`Item`是一个类型。
+
+这里便可以引入很多函数式编程中常用的函数，如`map`，`filter`等。用法如下：
+```rs
+fn main() {
+    let v1 = vec![1, 2, 3, 4, 5];
+
+    let it = v1.iter();
+
+    let v2: Vec<_> = it.map(|x| x + 1).collect();
+
+    let it = v1.iter();
+
+    let v2: Vec<_> = it.filter(|x| **x > 3).collect();
+}
+```
+简单地说，`map`把一个函数作为参数，然后apply这个函数；`filter`会filter调所有返回值是`false`的元素。它们都是再次产生迭代器的东西。
+
+注意：
+- 需要用`collect()`来完成真正的求值。因为`Iterator`是lazy的
+- **为什么`filter`里面需要两次dereference？`**
+
+### 实现Iterator trait
+
+对原书中的例子修改之后的一个简单例子如下：
+```rs
+struct Counter {
+    count: i32,
+}
+
+impl Counter {
+    fn new(count: i32) -> Self {
+        Counter {
+            count: count,
+        }
+    }
+}
+
+impl Iterator for Counter {
+    type Item = i32;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.count += 1;
+        Some(self.count)
+    }
+}
+
+fn main() {
+    let mut counter = Counter::new(10);
+
+    for i in (0..10) {
+        println!("{}", counter.next().unwrap());
+    }
+
+}
+```
+从某种意义上讲，我们似乎可以通过这种方式来制造出一个stream。
+
+# Smart Pointer
+
+~~杀马特指针~~
+一些智能指针能够自动统计引用的数量，并且在引用数为0的时候自动清理掉。
+
+## `Box<T>`
+
+`Box`会帮你把数据分配在堆上。这样可以避免转移ownership时的拷贝。
 
 # Other References
 
