@@ -1305,7 +1305,96 @@ fn main() {
 
 ## `Box<T>`
 
-`Box`会帮你把数据分配在堆上。这样可以避免转移ownership时的拷贝。
+`Box`会帮你把数据分配在堆上。这样可以避免转移ownership时的拷贝。Box的语法简单如斯：
+```rs
+fn main() {
+    let b = Box::new(5);
+    println!("b = {}", b);
+}
+```
+有没有什么是只有`Box`才能做到的呢？有。有时候我们不知道需要在stack上面**静态地**分配多大的空间。*cons list*是函数式中常用到的recursive type，如果按照这种定义的话是会编译失败的：
+```rs
+enum List {
+    Cons(i32, List),
+    Nil,
+}
+```
+甚至Rust还会贴心的提醒你：
+```
+ --> src/main.rs:1:1
+  |
+1 | enum List {
+  | ^^^^^^^^^ recursive type has infinite size
+2 |     Cons(i32, List),
+  |               ---- recursive without indirection
+  |
+help: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to make `List` representable
+  |
+2 |     Cons(i32, Box<List>),
+  |               ^^^^    ^
+```
+因此可以以这种姿势来构造cons list:
+```rs
+enum List {
+    Cons(i32, Box<List>),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+
+fn main() {
+    let ls = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
+}
+```
+
+## `Deref` and `Drop` Traits
+
+Smart Pointer在Rust中之所以smart，是因为其对于一些特定的traits的实现，导致其在引用或者离开scope的时候可以有很多骚操作的空间。这样智能指针的行为可以类似于通常的引用。
+
+### `Deref`
+
+`Deref` trait可以customize在使用`*`时的操作，这有些类似于重载了解引用这个操作。
+首先，可以观察到`Box`在dereference的时候，行为和通常的引用是基本一致的：
+```rs
+fn main() {
+    let x = 5;
+    let y = &x;
+    let y_box = Box::new(x);
+
+    assert_eq!(*y, 5);
+    assert_eq!(*y_box, 5);
+}
+```
+`Box`除去在heap上分配内存的部分，实现大抵是这样的：
+```rs
+use std::ops::Deref;
+
+struct MyBox<T>(T);
+
+impl<T> MyBox<T> {
+    fn new(val: T) -> MyBox<T> {
+        MyBox(val)
+    }
+}
+
+impl<T> Deref for MyBox<T> {
+    type Target = T;
+
+    fn deref(&self) -> &T {
+        &self.0
+    }
+}
+
+fn main() {
+    let x = 5;
+    let y_mybox = MyBox::new(x);
+
+    assert_eq!(*y_mybox, 5);
+    assert_eq!(*(y_mybox.deref()), 5);
+}
+```
+实际上对于`MyBox`的dereference会被自动变成形如`*(y_mybox.deref())`的样子。值得一提的是`deref`并没有直接返回`self.0`，而是对其的一个引用。不直接返回值的原因是不传递ownership。
+
 
 # Other References
 
