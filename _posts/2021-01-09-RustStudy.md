@@ -1395,6 +1395,193 @@ fn main() {
 ```
 实际上对于`MyBox`的dereference会被自动变成形如`*(y_mybox.deref())`的样子。值得一提的是`deref`并没有直接返回`self.0`，而是对其的一个引用。不直接返回值的原因是不传递ownership。
 
+实际上Rust为了写起来方便，还引入了一个机制：*Deref Coercions*(解引用强制多态)。
+```rs
+fn hello(name: &str) {
+    println!("hello, {}", name);
+}
+
+fn main() {
+    let m = MyBox::new(String::from("f***"));
+    hello(&m);
+}
+```
+这段代码是能够正常运行的。中文书中的解释如下：
+
+> 这里使用 `&m` 调用 `hello` 函数，其为 `MyBox<String>` 值的引用。因为示例 15-10 中在 `MyBox<T>` 上实现了 Deref trait，Rust 可以通过 `deref` 调用将 `&MyBox<String>` 变为 `&String`。标准库中提供了 `String` 上的 `Deref` 实现，其会返回字符串 slice，这可以在 `Deref` 的 API 文档中看到。Rust 再次调用 `deref` 将 `&String` 变为 `&str`，这就符合 `hello` 函数的定义了。
+
+如若么的这个机制，写出来的代码应该长这样：
+```rs
+fn main() {
+    let m = MyBox::new(String::from("Rust"));
+    hello(&(*m)[..]);
+}
+```
+
+同理，mutable引用的解引用操作也可以通过`DerefMut`重载。除此之外`Deref`也可以将mutable引用解引用为immutable。
+
+### `Drop`
+
+可以手动的实现`Drop` trait：
+```rs
+struct CustomSmartPointer {
+    data: String,
+}
+
+impl Drop for CustomSmartPointer {
+    // why &mut here?
+    fn drop(&mut self) {
+        println!("Dropping... {}", self.data);
+    }
+}
+
+fn main() {
+    let c = CustomSmartPointer { data: String::from("first pointer")};
+    let d = CustomSmartPointer { data: String::from("second pointer")};
+
+    println!("created pointers");
+}
+```
+输出如下：
+> created pointers
+> Dropping... second pointer
+> Dropping... first pointer
+
+- `Drop`是reverse order的
+- Rust不允许`drop`被直接手动调用
+- 可以通过`std::mem::drop`来手动drop销毁
+
+# Project: **minigrep**
+
+在书中的第12章介绍了一个小的project如何在Rust里面实现。
+
+```rs
+// main.rs
+use std::env;
+use std::process;
+
+use minigrep::Config;
+
+
+fn main() {
+    let args: Vec<String> = env::args().collect();
+
+    let config = Config::new(&args).unwrap_or_else(|err| {
+        eprintln!("Problem parsing arguments: {}", err);
+        process::exit(1)
+    });
+
+    if let Err(e) = minigrep::run(config) {
+        eprintln!("Runtime error: {}", e);
+        process::exit(1);
+    }
+
+}
+
+//lib.rs
+use std::error::Error;
+use std::fs;
+use std::env;
+
+pub struct Config {
+    pub query: String,
+    pub filename: String,
+    pub case_sensitive: bool,
+}
+
+impl Config {
+    pub fn new(args: &[String]) -> Result<Config, &'static str> {
+        if args.len() < 3 {
+            return Err("Not enough args");
+        }
+
+        let query = args[1].clone();
+        let filename = args[2].clone();
+        let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
+        Ok(Config { query, filename, case_sensitive })
+    }
+}
+
+pub fn run(config: Config) -> Result<(), Box<dyn Error>>{
+    let contents = fs::read_to_string(config.filename)?;
+
+    let result = if config.case_sensitive {
+        search(&config.query, &contents)
+    } else {
+        search_case_insensitive(&config.query, &contents)
+    };
+
+    for line in result {
+        println!("{}", line);
+    }
+
+    Ok(())
+}
+
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    let mut result = Vec::new();
+
+    for line in contents.lines() {
+        if line.contains(query) {
+            result.push(line);
+        }
+    }
+
+    result
+}
+
+pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    let query = query.to_lowercase();
+    let mut result = Vec::new();
+
+    for line in contents.lines() {
+        if line.to_lowercase().contains(&query) {
+            result.push(line);
+        }
+    }
+
+    result
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn one_result() {
+        let query = "duct";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.";
+
+        assert_eq!(
+            vec!["safe, fast, productive."], 
+            search(query, contents));
+    }
+
+    #[test]
+    fn case_insensitive() {
+        let query = "rUsT";
+        let contents = "\
+Rust:
+safe, fast, productive.
+Pick three.
+Trust me.";
+
+        assert_eq!(
+            vec!["Rust:", "Trust me."], 
+            search_case_insensitive(query, contents));
+    }
+}
+```
+虽然我必须要吐槽一下test case里面官方吹自己的吹的真是毫不掩饰，不过这个小project还是蛮有趣的。具体的实现细节就不多介绍了，有一些有意思的点：
+
+- closure在`unwrap_or_else`里面的应用
+- 对于环境变量变量和cli参数的读取： `env::var()`和`env::args()`
+- 让function返回error，`main`处理error
+- lifetime在函数中的标记
 
 # Other References
 

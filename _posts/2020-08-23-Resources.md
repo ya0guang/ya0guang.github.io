@@ -37,6 +37,7 @@ Last update: Feb. 3, 2021
 
 - [Dave Tian](https://davejingtian.org/)
 - [Yanick Fratantonio](https://reyammer.io/): 离开了学术界的大佬
+- [Huang Xuan](https://huangxuan.me) 很牛逼的工程师
 
 ## SDR
 
