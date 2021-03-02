@@ -1583,6 +1583,62 @@ Trust me.";
 - 让function返回error，`main`处理error
 - lifetime在函数中的标记
 
+在学习了Rust的Functional features之后，这段代码可以进行一些改写：
+```rs
+impl Config {
+    pub fn new(mut args: env::Args) -> Result<Config, &'static str> {
+        args.next();
+
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get query string"),
+        };
+
+        let filename = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get filename"),
+        };
+
+        let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
+
+        Ok(Config { query, filename, case_sensitive })
+    }
+}
+
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    contents
+        .lines()
+        .filter(|x| x.contains(query))
+        .collect()
+}
+
+fn main() {
+    let config = Config::new(env::args()).unwrap_or_else(|err| {
+        eprintln!("Problem parsing arguments: {}", err);
+        process::exit(1)
+    });
+
+    if let Err(e) = minigrep::run(config) {
+        eprintln!("Runtime error: {}", e);
+        process::exit(1);
+    }
+
+}
+```
+我也尝试使用closure将`Config::new`的逻辑进行简化：
+```rs
+        let getarg = |argname| {
+            match args.next() {
+                Some(arg) => arg,
+                None => return Err("Didn't get string"),
+            }
+        };
+        
+        let query = getarg("query");
+
+```
+但是这里`return`并没有办法return到closure外面去。故而感觉这种改写可能只能用宏来实现。
+
 # Other References
 
 - [如何看待 Rust 的应用前景？](https://www.zhihu.com/question/30407715/answer/48032883)里面说的关于Rust的各种features还有待我去体会到
