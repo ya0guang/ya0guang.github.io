@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Rust 学习笔记 (To Be Continued)
-date: 2021-02-20 23:10:07
+date: 2021-03-04 23:10:07
 categories: "Notes"
 tags:
 - Rust
@@ -1451,6 +1451,234 @@ fn main() {
 - Rust不允许`drop`被直接手动调用
 - 可以通过`std::mem::drop`来手动drop销毁
 
+## `Rc<T>`
+
+`Rc`是reference count(er)的缩写，其允许多个变量拥有同一个指针的ownership。它的内部维护一个引用计数器，在被创建(clone)的时候加一，被drop的时候减一。使用如下：
+```rs
+enum List {
+    Cons(i32, Rc<List>),
+    Nil,
+}
+
+fn main() { 
+    let mut a = Rc::new(Cons(5, Rc::new(Cons(10, Rc::new(Nil)))));
+
+    println!("count after creating a: {}", Rc::strong_count(&a));
+
+    // *a = Cons(10, Rc::new(Nil));
+
+    let b = Cons(3, Rc::clone(&a));
+    let c = Cons(2, Rc::clone(&a));
+
+    println!("count after creating c: {}", Rc::strong_count(&a));
+
+    println!("{:?}", b);
+}
+```
+但是`Rs`不允许指针指向mutable reference。
+
+## `RefCell<T>`
+
+当它是某个struct的element时，即使这个struct在被实例化的时候并没有被实例化成mutable，这个element仍旧可以被变更。而使用这个指针的borrow则会在runtime进行borrow规则的检查。
+其用法可以通过一个简单的例子得知：
+```rs
+pub trait Messenger {
+    fn send(&self, msg: &str);
+}
+
+pub struct LimitTracker<'a, T:Messenger> {
+    messenger: &'a T,
+    value: usize,
+    max: usize,
+}
+
+impl<'a, T> LimitTracker<'a, T> where T:Messenger {
+    pub fn new(messenger: &T, max: usize) -> LimitTracker<T> {
+        LimitTracker {
+            messenger,
+            value: 0,
+            max,
+        }
+    }
+
+    pub fn set_value(&mut self, value: usize) {
+        self.value = value;
+
+        let percentage = self.value as f64 / self.max as f64;
+
+        if percentage >= 1.0 {
+            self.messenger.send("Error: over quota");
+        } else if percentage >= 0.9 {
+            self.messenger.send("Urgent Warning: over 90% quota");
+        } else if percentage >= 0.75 {
+            self.messenger.send("Warning: over 75% quota");
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests{
+    use super::*;
+    use std::cell::RefCell;
+
+    struct MockMessenger {
+        sent_messages: RefCell<Vec<String>>,
+    }
+
+    impl MockMessenger {
+        fn new() -> MockMessenger {
+            MockMessenger {
+                sent_messages: RefCell::new(vec![]),
+            }
+        }
+    }
+
+    impl Messenger for MockMessenger {
+        fn send(&self, message: &str) {
+            self.sent_messages.borrow_mut().push(String::from(message));
+            
+            // 这里会运行时panic
+            let b1 = self.sent_messages.borrow_mut();
+            let b2 = self.sent_messages.borrow_mut();
+        }
+    }
+
+    #[test]
+    fn sends_over_75() {
+        let mockMessenger = MockMessenger::new();
+        let mut LimitTracker = LimitTracker::new(&mockMessenger, 100);
+
+        LimitTracker.set_value(80);
+
+        assert_eq!(mockMessenger.sent_messages.borrow().len(), 1);
+    }
+}
+```
+`RefCell`的规则是运行时检查的。其中`borrow_mut()`会返回一个mutable borrow，而复数个mutable borrow会引起运行时panic。
+
+其中的数据可以修改也可以通过这个例子说明，注意这里创建的`List`都是immutable的：
+```rs
+use std::rc::Rc;
+use std::cell::RefCell;
+
+#[derive(Debug)]
+enum List {
+    Cons(Rc<RefCell<i32>>, Rc<List>),
+    Nil,
+}
+
+use crate::List::{Cons, Nil};
+
+fn main() { 
+    let val = Rc::new(RefCell::new(5));
+
+    let a = Rc::new(Cons(Rc::clone(&val), Rc::new(Nil)));
+    
+    let b = Cons(Rc::new(RefCell::new(3)), Rc::clone(&a));
+    let c = Cons(Rc::new(RefCell::new(4)), Rc::clone(&a));
+
+    println!("a = {:?}", a);
+
+    *val.borrow_mut() += 10;
+    
+    println!("a = {:?}", a);
+    println!("b = {:?}", b);
+    println!("c = {:?}", c);
+}
+```
+
+而这段代码则产生了循环指针：
+```rs
+use std::rc::Rc;
+use std::cell::RefCell;
+
+#[derive(Debug)]
+enum List {
+    Cons(i32, RefCell<Rc<List>>),
+    Nil,
+}
+
+impl List {
+    // why &RefCell in Option
+    fn tail(&self) -> Option<&RefCell<Rc<List>>> {
+        match self {
+            Cons(_, item) => Some(item),
+            Nil => None,
+        }
+    }
+}
+
+use crate::List::{Cons, Nil};
+
+fn main() { 
+    let a = Rc::new(Cons(5, RefCell::new(Rc::new(Nil))));
+
+    println!("a initial rc = {}", Rc::strong_count(&a));
+    println!("a next: {:?}", a.tail());
+
+    let b = Rc::new(Cons(10, RefCell::new(Rc::clone(&a))));
+    println!("a rc after b = {}", Rc::strong_count(&a));
+    println!("b initial rc = {}", Rc::strong_count(&b));
+    println!("b next: {:?}", b.tail());
+
+    if let Some(link) = a.tail() {
+        *link.borrow_mut() = Rc::clone(&b);
+    }
+
+    println!("a rc after b = {}", Rc::strong_count(&a));
+    println!("b rc after b = {}", Rc::strong_count(&b));
+
+    // infinite output loop here
+    // println!("a next item = {:?}", a.tail());
+    // println!("a next item = {:?}", a);
+}
+```
+最后如果当输出`a`或者`a.tail()`的时候，会进入`RefCell`里面循环地dereference直到溢出。这种Reference cycle会导致Rust无法自动地清理掉smart pointer，从而导致内存泄漏。
+
+为了避免这种reference cycle，我们可以使用`Rc::downgrade`来把strong reference变成weak reference（`Weak<T>`）。`Rc`的清理是根据`strong_count`来进行的，而`weak_count`并不能阻止它被drop。
+
+```rs
+use std::cell::RefCell;
+use std::rc::{Rc, Weak};
+
+#[derive(Debug)]
+struct Node {
+    value: i32,
+    parent: RefCell<Weak<Node>>,
+    children: RefCell<Vec<Rc<Node>>>,
+}
+
+fn main() {
+    let leaf = Rc::new(Node { 
+        value: 3,
+        parent: RefCell::new(Weak::new()),
+        children: RefCell::new(vec![])
+    });
+
+    println!("leaf strong = {}, weak = {}", Rc::strong_count(&leaf), Rc::weak_count(&leaf));
+    println!("leaf parent: {:?}", leaf.parent.borrow().upgrade());
+
+    {
+        let branch = Rc::new(Node {
+            value: 5,
+            parent: RefCell::new(Weak::new()),
+            children: RefCell::new(vec![Rc::clone(&leaf)]),
+        });
+    
+        *leaf.parent.borrow_mut() = Rc::downgrade(&branch);
+
+        println!("branch strong = {}, weak = {}", Rc::strong_count(&branch), Rc::weak_count(&branch));
+        println!("leaf strong = {}, weak = {}", Rc::strong_count(&leaf), Rc::weak_count(&leaf));
+    }
+
+    println!("leaf parent: {:?}", leaf.parent.borrow().upgrade());
+    println!("leaf strong = {}, weak = {}", Rc::strong_count(&leaf), Rc::weak_count(&leaf));
+}
+}
+```
+以上代码实现了树的`Node`。通过这种方式，可以让子节点拥有指向父节点的能力而不至于创建reference cycle，因为指针是`Weak`的。  
+这里代码还是有一点点奇怪，`upgrade()`似乎并不会把`Weak`变成`Rc`而是直接return `Rc`。                                                        
+
 # Project: **minigrep**
 
 在书中的第12章介绍了一个小的project如何在Rust里面实现。
@@ -1638,6 +1866,8 @@ fn main() {
 
 ```
 但是这里`return`并没有办法return到closure外面去。故而感觉这种改写可能只能用宏来实现。
+
+# Concurrency
 
 # Other References
 
