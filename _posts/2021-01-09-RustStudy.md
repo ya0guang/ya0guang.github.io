@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Rust 学习笔记 (To Be Continued)
-date: 2021-03-04 23:10:07
+date: 2021-03-07 23:10:07
 categories: "Notes"
 tags:
 - Rust
@@ -1868,6 +1868,260 @@ fn main() {
 但是这里`return`并没有办法return到closure外面去。故而感觉这种改写可能只能用宏来实现。
 
 # Concurrency
+
+Rust的目标是安全的多线程，通过ownership和type enforcement等特性可以实现这个目的。而Rust需求的runtime很小，故而实现的多线程比较底层。一个简单的例子如下：
+```rs
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let handle = thread::spawn(|| {
+        for i in 1..10 {
+            println!("number {}, spawn", i);
+            thread::sleep(Duration::from_millis(1));
+        }
+    });
+
+    for i in 1..5 {
+        println!("number {}, main", i);
+        thread::sleep(Duration::from_millis(1));
+    }
+
+    handle.join();
+}
+```
+
+在ownership的设计下，可以方便地通过`move`在线程间传递变量的ownership:
+```rs
+use std::thread;
+use std::time::Duration;
+
+fn main() {
+    let v = vec![1, 2, 3];
+
+    let clos = || println!("vector: {:?}", v);
+
+    clos();
+
+    let handle = thread::spawn(move || {
+        println!("vector: {:?}", v);
+    });
+
+    handle.join().unwrap();
+}
+```
+`spawn()`里面的closure可以capture `v`，从而在新的线程中使用它。然而如若把`move`去掉将会出现编译错误。注意这里倘若直接使用一个closure是不会报错的，因为`main`里面的closure总是按照确定的顺序被执行的。然而在多线程的背景下，新线程中的`println!`被执行时并不能确保`v`是否仍然有效（因为可能在离开了自己的scope之后被drop），故而需要传递ownership。
+
+## Channel
+
+在拥有了多线程之后，必然产生了线程间通讯的需求。书中引用了一句Go名言：  
+> Do not communicate by sharing memory; instead, share memory by communicating.
+
+Rust的通讯机制叫做channel，其可以传输某一个类型的对象。
+```rs
+use std::thread;
+use std::sync::mpsc;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let val = String::from("hi");
+        tx.send(val).unwrap();
+    });
+
+    let received = rx.recv().unwrap();
+    println!("Got: {}", received);
+}   
+```
+注意这里send会拿走ownership。
+
+在这个模型中，也可以有多个生产者：
+```rs
+use std::thread;
+use std::sync::mpsc;
+use std::time::Duration;
+
+fn main() {
+    let (tx, rx) = mpsc::channel();
+    let tx1 = tx.clone();
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("Hello"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+        
+        for val in vals {
+            tx1.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+        // println!("val is {}", val);
+    });
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("more"),
+            String::from("messages"),
+            String::from("for"),
+            String::from("you"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+    
+    for recvied in rx {
+        println!("Got: {}", recvied);
+    }
+}   
+```
+
+## Shared-state
+
+除了之前提到的允许多个ownership的智能指针，Rust还封装了mutex：
+```rs
+use std::sync::Mutex;
+
+fn main() {
+    let m = Mutex::new(5);
+
+    {
+        let mut n = m.lock().unwrap();
+        *n += 1;
+    }
+
+    println!("m = {:?}", m);
+}   
+```
+这里的`lock()`实际上就是在阻塞式地获取mutex。注意到这段代码并没有进行unlock，这是因为`Mutex<T>`中智能指针`MutexGuard`的实现导致其在离开scope时的`Drop`进行了`unlock()`。
+
+在多线程的场景下使用：
+```rs
+use std::sync::{Mutex, Arc};
+
+fn main() {
+    let counter = Arc::new(Mutex::new(0));
+
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = counter.clone();
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!("Result: {}", counter.lock().unwrap());
+}   
+```
+这里的代码使用了`Arc`而非`Rc`。A代表atomic，其可以理解为多线程场景下使用的`Rc`，因为`Arc`实现了`Send`这个trait而`Rc`则没有。将`Mutex`用法`Arc`包住即可使得`Mutex`能够在不同的线程间复用。这里可能还有一个骚操作：`let counter = counter.clone();`，其创建了`counter`的副本并将这个副本`move`到了closure里面。还有一点则是`counter`在被创建时实际上是immutable的，但是我们`let mut num`，从`counter`中得到了mutable reference，这是因为`Mutex`就像`Cell`一样提供了interior mutability。顺带一提，`counter`也可以在代码中改为`(*counter)`
+
+除此之外，`Mutex`也可能引起deadlock(死锁)。Rust并不能阻止逻辑错误。
+
+## `Sync` and `Send`
+
+Rust提供了`Sync`和`Send`两个trait来处理并发。实现了`Send`则表示其ownership可以在不同线程之间传递，而实现了`Sync`则可以在不同线程里被访问。
+
+# OOP 面向对象
+
+Rust并没有严格按照OOP来进行语言设计，但是Rust能够实现OOP能够实现的所有功能。Rust中并没有继承这一概念，但是可以通过约束函数中的泛型参数(bounded parametric polymorphism)必须实现某个trait来达到类似的目的。
+
+除此之外，像对于函数（方法）的封装，隐藏实现细节/数据结构等等OOP特征都在Rust中存在。
+
+## Trait 对象
+
+在Rust中，trait是更加接近对象的存在，因为其可以实现多个不同类型的函数重用。在这层意义上其比struct 或者enum的`impl`更贴近对象的概念。可以用这种方式来定义一个动态的trait object vector：
+```rs
+//lib.rs
+pub trait Draw {
+    fn draw(&self);
+}
+
+pub struct Screen {
+    pub components: Vec<Box<dyn Draw>>,
+}
+
+pub struct Button {
+    pub width: u32,
+    pub height: u32,
+    pub label: String,
+}
+
+impl Draw for Button {
+    fn draw(&self) {
+        //do something
+    }
+}
+
+impl Screen {
+    pub fn run(&self) {
+        for component in self.components.iter() {
+            component.draw();
+        }
+    }
+}
+
+//main.rs
+use rust_test::Draw;
+
+struct SelectBox {
+    width: u32,
+    height: u32,
+    options: Vec<String>,
+}
+
+impl Draw for SelectBox {
+    fn draw(&self) {
+        // code
+    }
+}
+
+use rust_test::{Button, Screen};
+
+fn main() {
+    let screen = Screen {
+        components: vec![
+            Box::new(SelectBox {
+                width: 75,
+                height: 10,
+                options: vec![
+                    String::from("Yes"),
+                    String::from("No"),
+                ],
+            }),
+            Box::new(Button {
+                width: 50,
+                height: 10,
+                label: String::from("OK"),
+            })
+        ],
+    };
+}
+```
+上述代码的抽象逻辑是实现对于gui的统一管理，用户也可以自行添加gui的控件，只要其实现`Draw` trait即可。注意到`dyn`关键字的使用，大抵是运行时才可以确定类型的标记，这样在编译时便会添加额外的runtime代码来进行检查。
+
+在Rust中对于trait object的创建必须使用引用或者智能指针(`Box<T>`，猜测是因为需要确定大小来分配内存)。
+这段代码和泛型的区别在于，`components`这个向量里面可以存放不同类型的变量，而如若使用`T`泛型参数，则只能存放同一种类型。
+
+### Object-safe
+
+Rust只允许object-safe的trait在trait object中被使用。规则如下：
+- 返回类型不能为`Self`
+- 无泛型参数
+
+原因可以查看[Rust PL中文版](https://kaisery.github.io/trpl-zh-cn/ch17-02-trait-objects.html)：
+> 当使用 trait 对象时其具体类型被抹去了，故无从得知放入泛型参数类型的类型是什么。
 
 # Other References
 
