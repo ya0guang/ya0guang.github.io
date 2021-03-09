@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Rust 学习笔记 (To Be Continued)
-date: 2021-03-07 23:10:07
+date: 2021-03-08 23:10:07
 categories: "Notes"
 tags:
 - Rust
@@ -12,11 +12,15 @@ header:
 
 最近突然对于Rust产生了兴趣~~因为它的吉祥物小螃蟹很可爱~~，遂开始阅读[The Rust PL](https://doc.rust-lang.org/book/)一书想要一探究竟。我发现Rust真的是一门相当阳间的语言，一些functional programming的特性和build system可以让使用者用起来十分舒爽。
 
-虽然目前只看了~~两~~十章，但我已经从代码中嗅到了了浓郁的Rust的香~~锈~~味。
+> 虽然目前只看了~~两~~十章，但我已经从代码中嗅到了了浓郁的Rust的香~~锈~~味。
+
+基本看完了现在。
 
 创建时间：2021-01-09 21:10:07
 
 # Prologue
+
+这篇博文是的主要内容是给**我自己**看的，用以弥补我孱弱的记忆力，其中大多数是看*The Rust PL*过程中的笔记和代码，少部分是我自己的一些思考。正常人可以只看这个章节。
 
 ## 为什么我要学Rust
 
@@ -2123,7 +2127,137 @@ Rust只允许object-safe的trait在trait object中被使用。规则如下：
 原因可以查看[Rust PL中文版](https://kaisery.github.io/trpl-zh-cn/ch17-02-trait-objects.html)：
 > 当使用 trait 对象时其具体类型被抹去了，故无从得知放入泛型参数类型的类型是什么。
 
+## OOP范例
+
+这里*Rust PL*给出了两个同一任务的两个参考OOP范例实现，通过举了一个发布post的例子。post被创建时是草稿，必须经过审核才能发表。
+```rs
+// lib.rs
+pub struct Post {
+    state: Option<Box<dyn State>>,
+    // state: Box<dyn State>,
+    content: String,
+}
+
+impl Post {
+    pub fn new() -> Post {
+        Post {
+            state: Some(Box::new(Draft {})),
+            // state: Box::new(Draft {}),
+            content: String::new(),
+        }
+    }
+
+    pub fn add_text(&mut self, text: &str) {
+        self.content.push_str(text);
+    }
+
+    pub fn content(&self) -> &str {
+        self.state.as_ref().unwrap().content(self)
+    }
+
+    pub fn request_review(&mut self) {
+        // `take()` takes ownership and set to None temporarily
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.request_review());
+        }
+        // self.state = self.state.request_review()
+    }
+
+    pub fn approve(&mut self) {
+        if let Some(s) = self.state.take() {
+            self.state = Some(s.approve());
+        }
+    }
+}
+
+trait State {
+    // self: Box<Self> means the caller of this is holds a `Box` for Self type
+    // note self will take the ownership, invalidating the current state
+    fn request_review(self: Box<Self>) -> Box<dyn State>;
+    fn approve(self: Box<Self>) -> Box<dyn State>;
+    
+    fn content<'a>(&self, post: &'a Post) -> &'a str {
+        ""
+    }
+}
+
+struct Draft {}
+
+impl State for Draft {
+    fn request_review(self: Box<Self>) -> Box<dyn State> {
+        Box::new(PendingReview {})
+    }
+
+    fn approve(self: Box<Self>) -> Box<dyn State> {
+        self
+    }
+}
+
+struct PendingReview {}
+
+impl State for PendingReview {
+    fn request_review(self: Box<Self>) -> Box<dyn State> {
+        self
+    }
+
+    fn approve(self: Box<Self>) -> Box<dyn State> {
+        Box::new( Published {})
+    }
+}
+
+struct Published {}
+
+impl State for Published {
+    fn request_review(self: Box<Self>) -> Box<dyn State> {
+        self
+    }
+
+    fn approve(self: Box<Self>) -> Box<dyn State> {
+        self
+    }
+
+    fn content<'a>(&self, post: &'a Post) -> &'a str {
+        &post.content
+    }
+}
+
+// main.rs
+use rust_test::Post;
+
+fn main() {
+    let mut post = Post::new();
+
+    post.add_text("some text??");
+    assert_eq!("", post.content());
+
+    post.request_review();
+    assert_eq!("", post.content());
+
+    post.approve();
+    assert_eq!("some text??", post.content());
+}
+```
+- `Post`中包含了一个trait object，`State`
+- `State`实现了状态转换
+- `self.state.take()`拿走了ownership来invalidate之前的状态
+- 个人认为还可以通过将`State`设计成enum然后通过`match`来实现状态转换。
+- 使用`state: Box::new(Draft {})`和`self.state = self.state.request_review()`会出错，猜测原因是不能拿走ownership
+  - >  cannot move out of `self.state` which is behind a mutable reference
+  - >  move occurs because `self.state` has type `Box<dyn State>`, which does not implement the `Copy` trait
+
+除了上述实现之外，书中还给了一个将struct本身设计为状态的实现，即在不同的struct之间的转换即为状态转换。
+
+在此展示出来的实现的好处是可以随意的添加状态。实际上通过在`State` trait中添加可以return `self`的默认实现可以简化代码，但是这样会违背object-safe的规则，从而导致不能使用trait object。
+
+# Pattern & Matching
+
+读到这章才发现，Rust原来一直在用pattern matching这个概念，它最骚的是根本没有告诉你就连赋值这种简单的东西都是通过pattern matching来实现的。突然有一种自己被PUA了的感觉？于是我就想知道这种方式的实现和其他PL(e.g. C)的实现有什么区别？结果反倒翻到了王垠大佬的Blog，进而发现这家伙居然还在我校退学过，然后爬了一整天他的Blog~~还被“骗”五刀:)~~。结果发现自己不但还是没明白究竟是怎么实现的，连学Rust的时间都被压缩了-_-。
+
+在Rust中，`match`，`if let`，`while let`甚至`let`和函数的参数传递本身都用到了pattern matching。你还可以写出这样的代码：
+
+
 # Other References
 
 - [如何看待 Rust 的应用前景？](https://www.zhihu.com/question/30407715/answer/48032883)里面说的关于Rust的各种features还有待我去体会到
 - [用Rust重写Linux内核模块体验](https://zhuanlan.zhihu.com/p/137077998)留用参考
+- [王垠对于Rust的分析](https://www.yinwang.org/blog-cn/2016/09/18/rust)

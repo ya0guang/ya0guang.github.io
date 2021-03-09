@@ -1,7 +1,7 @@
 ---
 layout: single
 title: 各种值得再次看看的网页/网站/Meta
-date: 2021-02-03 10:10:07
+date: 2021-03-08 10:10:07
 categories: "Notes"
 tags:
 - Notes
@@ -11,7 +11,7 @@ header:
 ---
 
 持续更新。有事没事就去看看吧！  
-Last update: Feb. 3, 2021
+Creation Date: Sep, 2020
 
 # Meta Study
 
@@ -38,6 +38,9 @@ Last update: Feb. 3, 2021
 - [Dave Tian](https://davejingtian.org/)
 - [Yanick Fratantonio](https://reyammer.io/): 离开了学术界的大佬
 - [Huang Xuan](https://huangxuan.me) 很牛逼的工程师
+- [王垠](https://www.yinwang.org/)
+  - 最近才发现王垠大佬也在IU念过书
+  - 虽然并非很认同他的一些观点，但是感觉从哲学的层面上他的思维和我很像:)
 
 ## SDR
 
