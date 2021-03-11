@@ -1,7 +1,7 @@
 ---
 layout: single
 title: Rust 学习笔记 (To Be Continued)
-date: 2021-03-08 23:10:07
+date: 2021-03-11 23:10:07
 categories: "Notes"
 tags:
 - Rust
@@ -2253,11 +2253,565 @@ fn main() {
 
 读到这章才发现，Rust原来一直在用pattern matching这个概念，它最骚的是根本没有告诉你就连赋值这种简单的东西都是通过pattern matching来实现的。突然有一种自己被PUA了的感觉？于是我就想知道这种方式的实现和其他PL(e.g. C)的实现有什么区别？结果反倒翻到了王垠大佬的Blog，进而发现这家伙居然还在我校退学过，然后爬了一整天他的Blog~~还被“骗”五刀:)~~。结果发现自己不但还是没明白究竟是怎么实现的，连学Rust的时间都被压缩了-_-。
 
-在Rust中，`match`，`if let`，`while let`甚至`let`和函数的参数传递本身都用到了pattern matching。你还可以写出这样的代码：
+在Rust中，`match`，`if let`,`while let`，destructure甚至`let`和函数的参数传递本身都用到了pattern matching。你还可以写出这样的代码：
+```rs
+fn main() {
+    let color: Option<&str> = None;
+    let is_thursday = false;
+    let age: Result<u8, _> = "34".parse();
 
+    if let Some(color) = color {
+        println!("using color {}", color);
+    } else if is_thursday {
+        println!("Today is thursday");
+    } else if let Ok(age) = age {
+        if age > 30 {
+            println!("old boy");
+        } else {
+            println!("young boy");
+        }
+    } else {
+        println!("Nothing happened");
+    }
+}
+```
+其中混用了`if let`和分支判断。我个人认为这样的代码组合方式不是特别有逻辑，从某种意义上讲还是比较容易引起confusion的。
+
+## Refutability
+
+然而pattern matching在Rust中是分情况的。考虑如下代码和报错：
+```rs
+    let Some(x) = Some(1);
+```
+错误：
+```
+error[E0005]: refutable pattern in local binding: `None` not covered
+   --> src/main.rs:2:9
+    |
+2   |     let Some(x) = Some(1);
+    |         ^^^^^^^ pattern `None` not covered
+    | 
+   ::: /home/ya0guang/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:165:5
+    |
+165 |     None,
+    |     ---- not covered
+    |
+    = note: `let` bindings require an "irrefutable pattern", like a `struct` or an `enum` with only one variant
+    = note: for more information, visit https://doc.rust-lang.org/book/ch18-02-refutability.html
+    = note: the matched value is of type `Option<i32>`
+help: you might want to use `if let` to ignore the variant that isn't matched
+```
+这里Rustc告诉我们`let`需要 **irrefutable pattern**，即不会被拒绝的模式，意味着变量的绑定不会失败。而像`if let`则可以接受**refutable pattern**。
+
+## Matching Syntaxes
+
+### `match`
+
+`_`在matching中有着特殊的意义：
+```rs
+fn main() {
+    let s = Some(String::from("hello"));
+
+    if let Some(x) = s {
+        println!("found string");
+    }
+
+    println!("{:?}", s);
+}
+```
+用`Some(_x)`或者是`Some(x)`去匹配时都会报错：*borrow of partially moved value: `s`*。而若是使用`Some(_)`去匹配则不会产生任何错误，因为其不绑定。顺带一提这里还可以使用`&s`避免move。
+
+
+- 在`match`语句内会创建新的scope，也可能shadow外面的变量
+- 可以使用`|`来表明逻辑或去匹配多个模式
+- `..=`能够匹配范围，例如：`1..=5`，只允许数字/`char`
+- `_`作为通配符匹配想要“忽略”的部分，并且不产生绑定。其作为符号是语义是不同于其他变量名的！
+
+### Destructuring
+
+这段代码写下来有些奇怪：
+```rs
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+fn main() {
+    let p = Point { x: 0, y: 7};
+
+    let Point {x: a, y: b} = p;
+    // in case: let Point {x: a, y: b} = p;
+    // var x, y will be created
+    assert_eq!(0, a);
+    assert_eq!(7, b);
+    
+    match p {
+        Point {x, y: 0} => println!("On x axis at {}", x),
+        Point {x: 0, y} => println!("On y axis at {}", y),
+        Point {x, y} => println!("Not on axis at {}, {}", x, y),
+    }
+}
+```
+
+其他的例子如下：
+```rs
+struct Point {
+    x: i32,
+    y: i32,
+    z: i32,
+}
+
+fn main() {
+    let origin = Point {x: 0, y: 0, z: 0};
+
+    match origin {
+        Point {x, ..} => println!("on x axis"),
+    };
+}
+```
+
+- destructuring也可以作用于struct/tuple/enum
+- 同理，可以作用于nested type
+- `..`用于匹配懒得管的字段，可以把`..`以不产生歧义的方式丢在中间
+
+### Match Guard
+
+可以在被匹配的模式后面加上`if`表达式来仅匹配表达式为真的情况，这样能够丰富语义：
+```rs
+fn main() {
+    let x = Some(10);
+
+    match x {
+        Some(x) if x <= 10 => println!("x is {}", x),
+        _ => println!("Nothing"),
+    }
+}
+```
+match guard的优先级低于`|`。
+
+Rust还提供了一个在我看来像是语法糖一样的东西，`@`，其可以在同一个模式中顺便测试和保存值的范围。
+```rs
+// from Rust PL book
+enum Message {
+    Hello { id: i32 },
+}
+
+let msg = Message::Hello { id: 5 };
+
+match msg {
+    Message::Hello { id: id_variable @ 3..=7 } => {
+        println!("Found an id in range: {}", id_variable)
+    },
+    Message::Hello { id: 10..=12 } => {
+        println!("Found an id in another range")
+    },
+    Message::Hello { id } => {
+        println!("Found some other id: {}", id)
+    },
+}
+```
+
+# 高级特性
+
+终于到语言特性的最后一章了~~兴奋的搓手手~~。
+
+## `unsafe`
+
+由于计算机不安全的本质，Rust为了system level programming，提供了一些不安全的“超能力”。
+
+### 裸指针解引用
+
+```rs
+fn main() {
+    let mut num = 42;
+    
+    let r1 = &num as * const i32;
+    let r2 = &mut num as * mut i32;
+
+    unsafe {
+        println!("r1: {}", *r1);
+        println!("r2: {}", *r2);
+    }
+
+    let address = 0x12345usize;
+    let r = address as *const i32;
+    println!("addr: {:?}",r);
+    // seg fault
+    unsafe {
+        println!("deref a invalid pointer: {:?}", *r);
+    }
+}
+```
+Rust的裸指针可以有两种形式(类型)：`* const T`和`* mut T`。创建裸指针本身并不违法，但是解引用就需要超能力的帮助了。甚至我们也可以直接创建一个地址。
+
+### 调用不安全的函数/方法
+
+一个例子如下：
+```rs
+use std::slice;
+
+fn split_at_mut(slice: &mut [i32], mid: usize) -> (&mut [i32], &mut [i32]) {
+    let len = slice.len();
+    let ptr = slice.as_mut_ptr();
+
+    assert!(len >= mid);
+
+    unsafe {
+        (
+            slice::from_raw_parts_mut(ptr, mid),
+            slice::from_raw_parts_mut(ptr.add(mid), len - mid),
+        )
+        
+    }
+    // (&mut slice[..mid], &mut slice[mid..])
+
+
+}
+
+fn main() {
+    let mut v = vec![1, 2, 3, 4, 5, 6];
+
+    let r = &mut v;
+
+    let (a, b) = split_at_mut(r, 3);
+
+    assert_eq!(a, &mut [1, 2, 3]);
+    assert_eq!(b, &mut [4, 5, 6]);
+}
+```
+如果不使用`unsafe`中的内容而用注释中的代码的话，编译无法通过：rust不允许对同一个变量创建两个mutable references。因此这里需要使用`std::slice`中提供的unsafe函数。
+
+### `extern`
+
+可以让Rust使用外部的函数或是给其他语言export一个Rust写的函数：
+```rs
+extern "C" {
+    fn abs(input: i32) -> i32;
+}
+
+#[no_mangle]
+pub extern "C" fn call_from_c() {
+    println!("Hello Rust");
+}
+
+fn main() {
+    unsafe {
+        println!("abs fo -3: {}", abs(-3));
+    }
+}
+```
+
+其中，`no_mangle`告诉编译器不要mangle函数名。
+
+### 可变静态变量
+
+`static`变量在Rust中被存储在固定的内存中。其本不应该是可变的。但是可以通过这种技术：
+
+```rs
+static mut s: &str = "hello";
+
+fn push(ins: &'static str) {
+    unsafe {
+        s = ins;
+    }
+}
+
+fn main() {
+    push("Rust");
+    
+    unsafe { println!("unsafe string: {}", s);}
+}
+```
+这种操作还是比较骚的。原书中使用的是`u32`，但是我想试试能不能改变一个`&str`的值。我还不知道应该如何把`String`的值强行赋给这个`&str`，不过感觉这样需要非常蛋痛地fight with compiler。
+
+### 实现不安全的trait
+
+```rs
+unsafe trait Foo {
+    // do something
+}
+
+unsafe impl Foo for i32 {
+    // do something else
+}
+```
+
+### 访问联合体中的字段
+
+## 高级trait
+
+### Associated Type
+
+可以在trait中使用associated type:
+```rs
+pub trait Iterator {
+    type Item;
+
+    fn next(&mut self) -> Option<Self::Item>;
+}
+
+impl Iterator for Counter {
+    type Item = u32;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        // code
+    }
+}
+
+// generics signature
+pub trait Iterator<T> {
+    fn next(&mut self) -> Option<T>;
+}
+```
+当然也可以用泛型实现类似的功能。Associated type限制我们对于一个trait只能有一个实现，而泛型则允许我们对于多种类型进行不同的实现。
+
+### Default Generic Type Para & Overloading
+
+可以给泛型参数设置默认值和重载运算符：
+```rs
+use std::ops::Add;
+
+#[derive(Debug, PartialEq)]
+struct Point {
+    x: i32,
+    y: i32,
+}
+
+impl Add for Point {
+    type Output = Point;
+
+    fn add(self, other: Point) -> Point {
+        Point { 
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+fn main() {
+    assert_eq!(
+        Point { x: 1, y: 2 } + Point { x: 2, y: 1},
+        Point { x: 3, y: 3}
+    )
+}
+
+// `Add` trait
+trait Add<Rhs=Self> {
+    type Output;
+
+    fn add(self, rhs: Self) -> Self::Output;
+}
+```
+
+### 消除歧义
+
+如果在不同名称的trait内定义了同样名称的方法，而之后又为某个类型实现了这些traits，那么在调用的时候应该可以采用这种方式：`Trait::method(&var)`。更加general的语法是这样的：`<Type as Trait>::function()`。
+
+### Supertrait
+
+当一个trait依赖另一个来实现功能时，后者是supertrait。
+```rs
+use std::fmt;
+
+trait OutlinePrint: fmt::Display {
+    fn outline_print(&self) {
+        let output = self.to_string();
+        let len = output.len();
+
+        println!("{}", "*".repeat(len + 4));
+        println!("* {} *", output);
+        println!("{}", "*".repeat(len + 4));
+    }
+}
+
+impl OutlinePrint for Point {}
+
+impl fmt::Display for Point {
+    fn fmt(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+        write!(fmt, "({}, {})", self.x, self.y)
+    }
+}
+```
+
+## 高级类型
+
+```rs
+// nothing different from i32 for Kilometers
+type Kilometers = i32;
+
+fn main() {
+    let km: Kilometers = 42;
+    let m: i32 = 44;
+    // can still add km and m here 
+    let x = km + m;
+}
+
+fn generic<T: ?Sized>(t: &T);
+```
+
+- 可以用`type Kilometers = i32;`类似的代码来创建一个类型的别名
+- Rust有一个奇怪的`!`类型，它
+  - `fn bar() -> !`表示函数永不返回
+  - `panic!()`是`!`类型
+  - `continue`是`!`类型
+  - `!`可以被视作任何类型，所以`match`可以使得所有分支的返回类型相同
+- 出于静态编译/DST(*dynamically sized type*)的考虑，Rust有`Sized` trait
+  - 它用来决定在编译时类型的大小是否知道
+  - 所有泛型参数必须实现`Sized`
+  - 接上条，除非使用`<T: ?Sized>`时，可以在函数中使用`&T`
+
+## 高级函数/Closure
+
+可以像这样把函数作为参数传递给别的函数：
+```rs
+fn add_one(x: i32) -> i32 {
+    x + 1
+}
+
+fn do_twice(f: fn(i32) -> i32, arg: i32) -> i32 {
+    f(arg) + f(arg)
+}
+
+fn main() {
+    let answer = do_twice(add_one, 10);
+
+}
+```
+不得不说这种写法让人想起了*Typed Racket*。  
+`f`在这里的类型是函数指针，注意`fn`是类型，其实现了所有closure的trait，和closure的`Fn`区分。因此理论上接收closure的地方都应该接收`fn`。
+
+还可以通过这样的骚操作来初始化数组：
+```rs
+enum Status {
+    Value(u32),
+    Stop,
+}
+
+fn main() {
+    let list: Vec<Status> = (0u32..20).map(Status::Value).collect();
+}
+```
+
+当然也函数也可以返回一个closure：
+```rs
+// fn return_closure() -> dyn Fn(i32) -> i32 {
+//     |x| x + 1
+// }
+
+fn return_closure() -> Box<dyn Fn(i32) -> i32> {
+    Box::new(|x| x + 1)
+}
+```
+因为closure在编译时不知道大小(`Sized`问题)，必须用指针包起来。
+
+## 宏
+
+宏是一种元编程，简单地说就是可以让Rust帮你写Rust。
+
+### Declarative Macro 
+
+例如 vec!简化版是这样实现的：
+```rs
+#[macro_export]
+macro_rules! vec {
+    ( $( $x:expr ),* ) => {
+        {
+            let mut temp_vec = Vec::new();
+            $(
+                temp_vec.push($x);
+            )*
+            temp_vec
+        }
+    };
+}
+```
+这个规则其实有点类似于Racket的`define-syntax`，也基本上是宏定义的写法。
+- `( $( $x:expr ),* )`匹配模式
+- `$(),*`中，`,`可以出现或者不出现，`*`表示匹配数次
+- `=>` 语义同`match`
+- `$x:expr`匹配Rust表达式，将其赋给`$x`
+- `#[macro_export]`使其能够被调用
+
+### Procedural Macro
+
+更加类似于函数：接收代码作为输入并输出代码。
+```rs
+use proc_macro;
+
+#[some_attribute]
+pub fn some_name(input: TokenStream) -> TokenStream {}
+```
+
+#### Custom Derive
+
+在`rust_test`目录下创建`rust_test_derive` lib 如下：
+```rs
+extern crate proc_macro;
+
+use proc_macro::TokenStream;
+use quote::quote;
+use syn;
+
+#[proc_macro_derive(HelloMarco)]
+pub fn hello_macro_derive(input: TokenStream) -> TokenStream {
+    let ast = syn::parse(input).unwrap();
+
+    impl_hello_macro(&ast)
+}
+
+fn impl_hello_macro(ast: &syn::DeriveInput) -> TokenStream {
+    let name = &ast.ident;
+    let gen = quote! {
+        impl HelloMarco for #name {
+            fn hello_macro() {
+                println!("Hello!, my name is {}!", stringify!(#name));
+            }
+        }
+    };
+    gen.into()
+}
+```
+并将这个项目的配置文件加入：
+```toml
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "1"
+quote = "1"
+```
+外面的`rust_test`项目内代码如下：
+```rs
+// lib.rs
+pub trait HelloMarco {
+    fn hello_macro();
+}
+
+// main.rs
+use rust_test::HelloMarco;
+use rust_test_derive::HelloMarco;
+
+#[derive(HelloMarco)]
+struct Pancakes;
+
+fn main() {
+    Pancakes::hello_macro();
+}
+```
+记得将`rust_test_derive`加入配置：`rust_test_derive = {path = "./rust_test_derive"}`。
+
+简单地说这段代码的原理就是通过调用Rust的编译器生成AST然后在拿到AST中关于类名的元数据，再从元数据生成一段新的`impl`后插入原来的代码。
+
+- Rust并不能在运行时知道类名，但是可以通过宏实现
+- Rust蛋疼的设定导致必须在一个crate里面完成宏定义
+- `proc_macro`是编译器读取代码的API
+- `syn`是用来生成AST的包，而`quote`生成代码
+
+初次之外还有*attribute-like macro*和*function-like macro*。前者类似于Python中web server对于网页路径对应的解析函数的装饰器，而后者类似于`macro_rules!`但是却依赖`#[proc_macro]`。
 
 # Other References
 
 - [如何看待 Rust 的应用前景？](https://www.zhihu.com/question/30407715/answer/48032883)里面说的关于Rust的各种features还有待我去体会到
 - [用Rust重写Linux内核模块体验](https://zhuanlan.zhihu.com/p/137077998)留用参考
 - [王垠对于Rust的分析](https://www.yinwang.org/blog-cn/2016/09/18/rust)
+  - 注：我不认为他这篇分析是好的，因为大多数集中在语法的分析而忽略了语法背后的设计考量。
