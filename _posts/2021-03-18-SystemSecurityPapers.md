@@ -33,9 +33,9 @@ To find vulnerabilities of SGX applications in four models:
 
 The design of COIN:
 
-![COIN Overview](/images/CCPapers/COIN2.png)
+![COIN Overview](assets/images/CCPapers/COIN2.png)
 
-![COIN Modules](/images/CCPapers/COIN3.png)
+![COIN Modules](assets/images/CCPapers/COIN3.png)
 
 - Emulation: QEMU
 - Symbolic execution: Triton (backed by z3)
@@ -85,7 +85,7 @@ Traditional TrustZone OSes and Applications is not easy to fuzz because they can
 
 ## Design & Method
 
-![Architecture](/images/CCPapers/PARTEMU2.png)
+![Architecture](assets/images/CCPapers/PARTEMU2.png)
 
 - Re-host the TZOS frimware
 - Choose the components to reuse/emulate carefully
