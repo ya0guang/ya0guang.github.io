@@ -132,3 +132,16 @@ Just like the previous paper, the main causes of the crashes can be attributed t
 
 - Normal-World Checks
 - Assumptions of Normal-World Call Sequence
+
+## Review
+
+### Strength
+
+- Solid work
+- Efforts taken to run TZOS and TA in emulation environment
+- Acceptable performance
+
+### Weakness
+
+- Low coverage
+- Crashes -X-> vulnerabilities

@@ -41,6 +41,7 @@ Creation Date: Sep, 2020
 - [王垠](https://www.yinwang.org/)
   - 最近才发现王垠大佬也在IU念过书
   - 虽然并非很认同他的一些观点，但是感觉从哲学的层面上他的思维和我很像:)
+- [Hongliang Tian](https://www.tatetian.io/) 真·全栈。可以作为偶像了
 
 ## SDR
 
