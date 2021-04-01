@@ -27,6 +27,7 @@ header:
 | carotid           | 颈动脉     |          |
 | watershed zone    | 分水岭带   |          |
 | choroid plexus    | 脉络丛     |          |
+| cranial           | 颅骨的     |          |
 
 dura
 
