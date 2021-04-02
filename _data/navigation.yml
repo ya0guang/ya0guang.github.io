@@ -7,7 +7,7 @@ main:
   - title: "About"
     url: /about/
   - title: "Notes"
-    url: /tiddly/notebook/output/index.html
+    url: /tiddly/output/index.html
   # - title: "Sample Posts"
   #   url: /year-archive/
   # - title: "Sample Collections"

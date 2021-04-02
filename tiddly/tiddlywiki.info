@@ -3,17 +3,22 @@
     "plugins": [
         "tiddlywiki/tiddlyweb",
         "tiddlywiki/filesystem",
-        "tiddlywiki/highlight"
+        "tiddlywiki/highlight",
+        "tiddlywiki/markdown"
     ],
     "themes": [
         "tiddlywiki/vanilla",
         "tiddlywiki/snowwhite"
     ],
+    "languages": [
+        "en-US",
+        "zh-CN"
+    ],
     "build": {
         "index": [
             "--rendertiddler",
             "$:/plugins/tiddlywiki/tiddlyweb/save/offline",
-            "index.html",
+            "notebook.html",
             "text/plain"
         ],
         "static": [
