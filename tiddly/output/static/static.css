@@ -393,7 +393,7 @@ summary {
 }html:-webkit-full-screen {
 	background-color: rgb(26, 26, 26);
 }body.tc-body {
-	font-size: 14px;
+	font-size: 15px;
 	line-height: 20px;
 	word-wrap: break-word;
 	
@@ -917,7 +917,7 @@ a.tc-tiddlylink:hover {
 	}.tc-sidebar-scrollable {
 		position: fixed;
 		top: 0px;
-		left: 770px;
+		left: 1000px;
 		bottom: 0;
 		right: 0;
 		overflow-y: auto;
@@ -927,12 +927,12 @@ a.tc-tiddlylink:hover {
 		padding: 71px 0 28px 42px;
 	}html[dir="rtl"] .tc-sidebar-scrollable {
 		left: auto;
-		right: 770px;
+		right: 1000px;
 	}.tc-story-river {
 		position: relative;
-		left: 0px;
+		left: 100px;
 		top: 0px;
-		width: 770px;
+		width: 670px;
 		padding: 42px 42px 42px 42px;
 	}.tc-story-river.tc-static-story-river {
 		margin-right: 0;
@@ -988,7 +988,7 @@ a.tc-tiddlylink:hover {
 }@media (min-width: 960px) {
 	.tc-tiddler-frame {
 		padding: 28px 42px 42px 42px;
-		width: 686px;
+		width: 900px;
 		border-radius: 2px;
 	}.tc-tiddler-info {
 		margin: 0 -42px 0 -42px;
@@ -1144,7 +1144,24 @@ a.tc-tiddlylink:hover {
 	padding: 0;
 }/*
 ** Adjustments for fluid-fixed mode
-*/@media (min-width: 960px) {}/*
+*/@media (min-width: 960px) {.tc-story-river {
+		padding-right: 0;
+		position: relative;
+		width: auto;
+		left: 0;
+		margin-left: 100px;
+		margin-right: 650px;
+	}.tc-tiddler-frame {
+		width: 100%;
+	}.tc-sidebar-scrollable {
+		left: auto;
+		bottom: 0;
+		right: 0;
+		width: 650px;
+	}body.tc-body .tc-storyview-zoomin-tiddler {
+		width: 100%;
+		width: calc(100% - 42px);
+	}}/*
 ** Toolbar buttons
 */.tc-page-controls svg.tc-image-new-button {
   fill: ;

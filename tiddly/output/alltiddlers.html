@@ -6,7 +6,7 @@
 <meta name="tiddlywiki-version" content="5.1.23" />
 <meta name="format-detection" content="telephone=no">
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
-<title>ya0guang's notebook — Backup Personality</title>
+<title>ya0guang's notebook — Personality Backup</title>
 <div id="styleArea">
 <style data-tiddler-title="$:/boot/boot.css" data-tiddler-type="text/css" data-tiddler-revision="0" data-tiddler-bag="default" type="text/css">/*
 Basic styles used before we boot up the parsing engine
@@ -406,7 +406,7 @@ summary {
 }html:-webkit-full-screen {
 	background-color: rgb(26, 26, 26);
 }body.tc-body {
-	font-size: 14px;
+	font-size: 15px;
 	line-height: 20px;
 	word-wrap: break-word;
 	
@@ -930,7 +930,7 @@ a.tc-tiddlylink:hover {
 	}.tc-sidebar-scrollable {
 		position: fixed;
 		top: 0px;
-		left: 770px;
+		left: 1000px;
 		bottom: 0;
 		right: 0;
 		overflow-y: auto;
@@ -940,12 +940,12 @@ a.tc-tiddlylink:hover {
 		padding: 71px 0 28px 42px;
 	}html[dir="rtl"] .tc-sidebar-scrollable {
 		left: auto;
-		right: 770px;
+		right: 1000px;
 	}.tc-story-river {
 		position: relative;
-		left: 0px;
+		left: 100px;
 		top: 0px;
-		width: 770px;
+		width: 670px;
 		padding: 42px 42px 42px 42px;
 	}.tc-story-river.tc-static-story-river {
 		margin-right: 0;
@@ -1001,7 +1001,7 @@ a.tc-tiddlylink:hover {
 }@media (min-width: 960px) {
 	.tc-tiddler-frame {
 		padding: 28px 42px 42px 42px;
-		width: 686px;
+		width: 900px;
 		border-radius: 2px;
 	}.tc-tiddler-info {
 		margin: 0 -42px 0 -42px;
@@ -1157,7 +1157,24 @@ a.tc-tiddlylink:hover {
 	padding: 0;
 }/*
 ** Adjustments for fluid-fixed mode
-*/@media (min-width: 960px) {}/*
+*/@media (min-width: 960px) {.tc-story-river {
+		padding-right: 0;
+		position: relative;
+		width: auto;
+		left: 0;
+		margin-left: 100px;
+		margin-right: 650px;
+	}.tc-tiddler-frame {
+		width: 100%;
+	}.tc-sidebar-scrollable {
+		left: auto;
+		bottom: 0;
+		right: 0;
+		width: 650px;
+	}body.tc-body .tc-storyview-zoomin-tiddler {
+		width: 100%;
+		width: calc(100% - 42px);
+	}}/*
 ** Toolbar buttons
 */.tc-page-controls svg.tc-image-new-button {
   fill: ;
@@ -2407,7 +2424,7 @@ Original highlight.js style (c) Ivan Sagalaev <maniac@softwaremaniacs.org>
 
 
 </button></span><span class=" tc-reveal" hidden="true"></span></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="permalink" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fpermalink" title="Set browser address bar to a direct link to this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">MetaTiddler</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
-<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href="#"></a>April 1, 2021 at 8:21 pm</div></div><div class=" tc-reveal">
+<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href="#"></a>1st April 2021 at 10:04pm</div></div><div class=" tc-reveal">
 <div class="tc-tags-wrapper"><span class="tc-tag-list-item">
 <span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
@@ -2417,7 +2434,7 @@ color:rgb(38, 38, 38);">
 <span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
 </div>
 
-<div class="tc-tiddler-body tc-reveal"><h1>配置文件</h1><ul><li><p>在 <code>tiddlywiki.info</code> 里面配置 <code>&quot;plugins&quot;: [ &quot;tiddlywiki/markdown&quot;],</code> 即可获得对于markdown的支持</p></li></ul><h1>尝试使用<a class="tc-tiddlylink tc-tiddlylink-missing" href="#TiddlyWiki">TiddlyWiki</a></h1><ul><li><p>在Tiddlywiki里面如果需要检索其他Tiddler的话，直接使用 <code>CamelCase</code> 的其他Tiddler的标题即可。</p></li><li><p>如若不想这个标题以一个Tiddler链接的形式在Tiddler内出现，则需要在前面加上<code>~</code>来避免自动识别</p></li></ul></div>
+<div class="tc-tiddler-body tc-reveal"><h1>配置文件</h1><ul><li><p>在 <code>tiddlywiki.info</code> 里面配置 <code>&quot;plugins&quot;: [ &quot;tiddlywiki/markdown&quot;],</code> 即可获得对于markdown的支持</p></li><li><p>Github pages saving?</p></li></ul><h1>尝试使用<a class="tc-tiddlylink tc-tiddlylink-missing" href="#TiddlyWiki">TiddlyWiki</a></h1><ul><li><p>在Tiddlywiki里面如果需要检索其他Tiddler的话，直接使用 <code>CamelCase</code> 的其他Tiddler的标题即可。</p></li><li><p>如若不想这个标题以一个Tiddler链接的形式在Tiddler内出现，则需要在前面加上<code>~</code>来避免自动识别</p></li></ul></div>
 
 <div class="tc-tiddler-plugin-info tc-reveal"><p>
 </p></div>
