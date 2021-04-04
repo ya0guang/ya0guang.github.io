@@ -1,0 +1,25 @@
+created: 20210404021233943
+modified: 20210404022504211
+tags: Paper Research SGX System
+title: GrapheneSGX
+type: text/vnd.tiddlywiki
+
+''Graphene-SGX: A Practical Library OS for Unmodified Applications on SGX''
+
+[[Paper|http://www.cs.unc.edu/~porter/pubs/graphene-sgx.pdf]] [[Code|https://github.com/oscarlab/graphene]]
+
+''LibOS in enclave + unmodified binary''
+
+<<<
+Intel SGX hardware enables applications to protect themselves from potentially-malicious OSes or hypervisors. In cloud computing and other systems, many users and applications could benefit from SGX. Unfortunately, current applications will not work out-of-the-box on SGX. Although previous work has shown that a library OS can execute unmodified applications on SGX, a belief has developed that a library OS will be ruinous for performance and TCB size, making application code modification an implicit prerequisite to adopting SGX.
+
+This paper demonstrates that these concerns are exaggerated, and that a fully-featured library OS can rapidly deploy unmodified applications on SGX with overheads comparable to applications modified to use “shim” layers. We present a port of Graphene to SGX, as well as a number of improvements to make the security benefits of SGX more usable, such as integrity support for dynamically-loaded libraries, and secure multi-process support. Graphene-SGX supports a wide range of unmodified applications, including Apache, GCC, and the R interpreter. The performance overheads of Graphene- SGX range from matching a Linux process to less than 2× in most single-process cases; these overheads are largely attributable to current SGX hardware or missed opportunities to optimize Graphene internals, and are not necessarily fundamental to leaving the application unmodified. Graphene-SGX is open-source and has been used concurrently by other groups for SGX research.
+<<<
+
+[img[graphene_arch.png]]
+
+* Graphene-SGX assumes trusted binary, so it cannot protect enclave from malicious code/vulnerable code
+* Graphene-SGX loads its enclave first, and let the enclave then load the so-called unmodified binary
+* Interfaces are re-implemented in LibOS or export to the OS (Ocall)
+* To improve performance, some Ocalls can be exitless. This is implemented through writing the arguments outside the enclave at a specific location (ocall stack) and the outside code can help execute with these args.
+

@@ -1,0 +1,32 @@
+created: 20210404003517941
+modified: 20210404021316743
+tags: Paper Security CS System
+title: A Study of Modern Linux API Usage and Compatibility: What to Support When You’re Supporting
+type: text/vnd.tiddlywiki
+
+''EuroSys'16 Best Paper''
+
+[[link|https://dl.acm.org/doi/10.1145/2901318.2901341]]
+
+This paper supports the author's following work, [[graphene(-SGX)|GrapheneSGX]].
+
+! Targeted Interfaces (APIs)
+
+* System Calls
+* Proc Filesystem
+
+! Method
+
+* Measured the download and dependency data of packages in Ubuntu 15.04. 
+* Statically analyzed what syscalls will be invoked in a package and what path will be accessed by a binary (hardcoded string)
+
+! Measurement
+
+* API Importance: A Metric for Individual APIs
+* Weighted Completeness: A System-Wide Metric (combined with #downloads)
+
+! Questions Answered
+
+* Which syscalls are more important than others?
+* Which syscalls can be deprecated? (some are rarely used)
+* Which syscalls should be supported for compatibility?

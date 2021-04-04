@@ -1,0 +1,18 @@
+created: 20210404004517173
+modified: 20210404015711103
+tags: CS SGX Security Research Paper
+title: Dynamic Binary Translation for SGX Enclaves (Ratel)
+type: text/vnd.tiddlywiki
+
+Old version: [[Binary Compatibility For SGX Enclaves|https://arxiv.org/abs/2009.01144]]
+
+[[Paper|https://arxiv.org/abs/2103.15289]] [[Code|https://github.com/ratel-enclave/ratel]]
+
+Yet another middleware to support unmodified binary to run in SGX enclave. This is done through dynamically rewrite binary inside the encalve.
+
+
+<<<
+Enclaves, such as those enabled by Intel SGX, offer a hardware primitive for shielding user-level applications from the OS. While enclaves are a useful starting point, code running in the enclave requires additional checks whenever control or data is transferred to/from the untrusted OS. The enclave-OS interface on SGX, however, can be extremely large if we wish to run existing unmodified binaries inside enclaves. This paper presents Ratel, a dynamic binary translation engine running inside SGX enclaves on Linux. Ratel offers complete interposition, the ability to interpose on all executed instructions in the enclave and monitor all interactions with the OS. Instruction-level interposition offers a general foundation for implementing a large variety of inline security monitors in the future.
+
+We take a principled approach in explaining why complete interposition on SGX is challenging. We draw attention to 5 design decisions in SGX that create fundamental trade-offs between performance and ensuring complete interposition, and we explain how to resolve them in the favor of complete interposition. To illustrate the utility of the Ratel framework, we present the first attempt to offer binary compatibility with existing software on SGX. We report that Ratel offers binary compatibility with over 200 programs we tested, including micro-benchmarks and real applications such as Linux shell utilities. Runtimes for two programming languages, namely Python and R, tested with standard benchmarks work out-of-the-box on Ratel without any specialized handling. 
+<<<

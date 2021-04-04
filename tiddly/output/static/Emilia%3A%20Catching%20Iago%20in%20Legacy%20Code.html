@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>Emilia: Catching Iago in Legacy Code: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Fuzz tc-tagged-SGX tc-tagged-Paper tc-tagged-Security tc-tagged-Research" data-tags="Fuzz SGX Paper Security Research" data-tiddler-title="Emilia: Catching Iago in Legacy Code"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">Emilia: Catching Iago in Legacy Code</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>April 2, 2021 at 10:55 am</div></div><div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Fuzz
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Paper
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Research
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Security
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+SGX
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><p><a class="tc-tiddlylink-external" href="https://security.csl.toronto.edu/wp-content/uploads/2021/01/rcui-ndss2021-emilia.pdf" rel="noopener noreferrer" target="_blank">PDF</a></p><h2 class="">Abstract</h2><blockquote class="tc-quote"><p>There has been interest in mechanisms that enable the secure use of legacy code to implement trusted code in a Trusted Execution Environment (TEE), such as Intel SGX. However, because legacy code generally assumes the presence of an operating system, this naturally raises the spectre of Iago attacks on the legacy code. We observe that not all legacy code is vulnerable to Iago attacks and that legacy code must use return values from system calls in an unsafe way to have Iago vulnerabilities.</p><p>Based on this observation, we develop Emilia, which automatically detects Iago vulnerabilities in legacy applications by fuzzing applications using system call return values. We use Emilia to discover 51 Iago vulnerabilities in 17 applications, and find that Iago vulnerabilities are widespread and common. We conduct an in-depth analysis of the vulnerabilities we found and conclude that while common, the majority (82.4%) can be mitigated with simple, stateless checks in the system call forwarding layer, while the rest are best fixed by finding and patching them in the legacy code. Finally, we study and evaluate different trade-offs in the design of Emilia.
+</p></blockquote><ul><li>Target: SGX Applications <strong>running inside a middleware</strong></li><li>Method: Fuzzing</li><li>Tool: <code>strace</code> (to intercept syscall return value)</li></ul><h2 class="">Fuzzing Strategies</h2><ol><li>Target selection (syscalls)</li><li>Extract branch conditions depending on the return value from syscalls</li><li>Random/valid/invalid return values</li><li>Different return fields</li></ol><h1 class="">Evaluation</h1><p><code>to be continued</code>
+</p></div>
+
+<div class="tc-tiddler-plugin-info tc-reveal"><p>
+</p></div>
+</div>
+
+</p>
+</section>
+</body>
+</html>
+
