@@ -1,2 +1,5 @@
-list: PapersByFields Neuroscience $:/TagManager TEEPapers SystemPapers SecurityPapersByTopic [[SGX Middleware (Papers)]] [[SGX Application Papers]] [[SGX Papers]] MetaTiddler
+created: 20210405140443372
+list: [[A Tale of Two Worlds: Assessing the Vulnerability of Enclave Shielding Runtimes]] TrustZonePapers SystemPapers [[Draft of 'SGX Papers']] [[PARTEMU: Enabling Dynamic Analysis of Real-World TrustZone Software Using Emulation]]
+modified: 20210405142829729
 title: $:/StoryList
+type: text/vnd.tiddlywiki

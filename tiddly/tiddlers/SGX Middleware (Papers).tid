@@ -1,6 +1,6 @@
 created: 20210402141906526
-modified: 20210404021232593
-tags: Paper Research Security SGX
+modified: 20210405133511472
+tags: Research Security SGX
 title: SGX Middleware (Papers)
 type: text/vnd.tiddlywiki
 
@@ -15,6 +15,7 @@ type: text/vnd.tiddlywiki
 * Ryoan [[Paper|https://www.usenix.org/conference/osdi16/technical-sessions/presentation/hunt]] [[Code|https://github.com/ut-osa/ryoan]] ''doesn't work''
 * [[RATEL|Dynamic Binary Translation for SGX Enclaves (Ratel)]] 
 * CAT `Need updates`
+* Civet [Paper|https://www.usenix.org/conference/usenixsecurity20/presentation/tsai] (graphene)
 
 !! Language-specific
 
@@ -29,6 +30,9 @@ type: text/vnd.tiddlywiki
 * Fortanix Rust EDP [[Code|https://github.com/fortanix/rust-sgx]]
 * Teaclave SGX SDK (Rust-SGX) [[Paper PDF|https://dingelish.com/ccs19.pdf]] [[Code|https://github.com/apache/incubator-teaclave-sgx-sdk]]
 * Panoply [[Code|https://github.com/shwetasshinde24/Panoply]] ''Inactive''
+
+! Parallel
+* EActor [[Paper|https://dl.acm.org/doi/pdf/10.1145/3274808.3274823]] [[Code|https://github.com/ibr-ds/EActors]]
 
 
 ! Attacks

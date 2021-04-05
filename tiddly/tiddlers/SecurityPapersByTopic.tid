@@ -1,18 +1,11 @@
 created: 20210402035545092
-modified: 20210404023836881
+modified: 20210405140605733
 tags: Research Security
 title: SecurityPapersByTopic
 type: text/vnd.tiddlywiki
 
 ! [[TEE|TEEPapers]]
-!! [[SGX|SGX Papers]]
-* [[SGX Middlewares|SGX Middleware (Papers)]]
-* [[SGX Applications|SGX Application Papers]]
-!! [[TrustZone|TrustZonePapers]]
-!! Other Archs
-
-
-
+{{TEEPapers}}
 
 ! [[Formal Method]]
 

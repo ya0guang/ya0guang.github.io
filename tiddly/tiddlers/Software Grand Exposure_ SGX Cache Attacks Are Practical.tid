@@ -1,0 +1,20 @@
+created: 20210404150754059
+modified: 20210404151156766
+tags: SGX SideChannel Research Security Paper Attack
+title: Software Grand Exposure: SGX Cache Attacks Are Practical
+type: text/vnd.tiddlywiki
+
+[[WOOT'17|]]
+
+<<<
+Intel SGX isolates the memory of security-critical applications from the untrusted OS. However, it has been speculated that SGX may be vulnerable to side-channel attacks through shared caches. We developed new cache attack techniques customized for SGX. Our attack differs from other SGX cache attacks in that it is easy to deploy and avoids known detection approaches. We demonstrate the effectiveness of our attack on two case studies: RSA decryption and genomic processing. While cache timing attacks against RSA and other cryptographic operations can be prevented by using appropriately hardened crypto libraries, the same cannot be easily done for other computations, such as genomic processing. Our second case study therefore shows that attacks on non-cryptographic but privacy sensitive operations are a serious threat. We analyze countermeasures and show that none of the known defenses eliminates the attack.
+<<<
+
+[img[SGXCacheAttack.png]]
+
+* L1 cache
+* Prime + Probe
+
+<<<
+ In Figure 2, the attacker will observe an increased access time for cache line 2. Since the attacker knows the code and access pattern of the victim, he knows that address X of the victim maps to cache line 2, and that the sensitive key-bit must be zero.
+<<<
