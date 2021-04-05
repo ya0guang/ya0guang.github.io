@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>COIN Attacks: On Insecurity of Enclave Untrusted Interfaces in SGX: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Attack tc-tagged-Paper tc-tagged-Research tc-tagged-Security tc-tagged-SGX" data-tags="Attack Paper Research Security SGX" data-tiddler-title="COIN Attacks: On Insecurity of Enclave Untrusted Interfaces in SGX"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">COIN Attacks: On Insecurity of Enclave Untrusted Interfaces in SGX</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>April 5, 2021 at 10:02 am</div></div><div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Attack
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Paper
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Research
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Security
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+SGX
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><ul><li><p><em>ASPLOS 2020</em></p></li><li><p><a class="tc-tiddlylink-external" href="http://ww2.cs.fsu.edu/~khandake/paper/coin_asplos_2020.pdf" rel="noopener noreferrer" target="_blank">Paper</a></p></li><li><p><a class="tc-tiddlylink-external" href="https://github.com/mustakimur/COIN-Attacks" rel="noopener noreferrer" target="_blank">Soruce Code</a></p></li></ul><blockquote><p>Intel SGX is a hardware-based trusted execution environment (TEE), which enables an application to compute on confidential data in a secure enclave. SGX assumes a powerful threat model, in which only the CPU itself is trusted; anything else is untrusted, including the memory, firmware, system software, etc. An enclave interacts with its host application through an exposed, enclave-specific, (usually) bi-directional interface. This interface is the main attack surface of the enclave. The attacker can invoke the interface in any order and inputs. It is thus imperative to secure it through careful design and defensive programming.</p><p>In this work, we systematically analyze the attack models against the enclave untrusted interfaces and summarized them into the COIN attacks -- Concurrent, Order, Inputs, and Nested. Together, these four models allow the attacker to invoke the enclave interface in any order with arbitrary inputs, including from multiple threads. We then build an extensible framework to test an enclave in the presence of COIN attacks with instruction emulation and concolic execution. We evaluated ten popular open-source SGX projects using eight vulnerability detection policies that cover information leaks, control-flow hijackings, and memory vulnerabilities. We found 52 vulnerabilities. In one case, we discovered an information leak that could reliably dump the entire enclave memory by manipulating the inputs. Our evaluation highlights the necessity of extensively testing an enclave before its deployment.</p></blockquote><h1>Target</h1><p><strong>To find vulnerabilities of SGX applications in four models:</strong></p><ul><li><p>Concurrent calls: multithread, race condition, improper lock…</p></li><li><p>Order: assumes the calling sequence</p></li><li><p>Input manipulation: bad OCALL return val &amp; ECALL arguments</p></li><li><p>Nested calls: calling OCALL that invokes ECALL, not implemented</p></li></ul><h2>Design &amp; Method</h2><p>The design of COIN:</p><p><img src="https://ya0guang.com/assets/images/CCPapers/COIN2.png" title="COIN Overview"></p><p><img src="https://ya0guang.com/assets/images/CCPapers/COIN3.png" title="COIN Modules"></p><ul><li><p>Emulation: QEMU</p></li><li><p>Symbolic execution: Triton (backed by z3)</p></li><li><p>Policy-based vulnerability discovery</p></li></ul><h2>Results</h2><p>COIN uses 8 policies to find the potential vulnerabilities:</p><ul><li><p>Heap info leak</p></li><li><p>Stack info leak</p></li><li><p>Ineffectual condition</p></li><li><p>Use after free</p></li><li><p>Double free</p></li><li><p>Stack overflow</p></li><li><p>Heap overflow</p></li><li><p>Null pointer dereference</p></li></ul><h2>Review</h2><h3>Strength</h3><ul><li><p>Symbolic execution + emulation</p></li><li><p>Policies can be configurable</p></li><li><p>Real world problems</p></li></ul><h3>Weakness</h3><ul><li><p><em>nested call</em> left unimplemented</p></li><li><p>May not be powerful enough to deal with complicate situations</p></li><li><p>Policies are mainly at relatively low-level</p></li></ul></div>
+
+<div class="tc-tiddler-plugin-info tc-reveal"><p>
+</p></div>
+</div>
+
+</p>
+</section>
+</body>
+</html>
+
