@@ -1,0 +1,17 @@
+created: 20210407012354187
+modified: 20210407012755839
+tags: Paper Research SGX System
+title: AccTEE: A WebAssembly-based Two-way Sandbox for Trusted Resource Accounting
+type: text/vnd.tiddlywiki
+
+[[Paper|https://dl.acm.org/doi/10.1145/3361525.3361541]]
+
+[[Code|https://github.com/ibr-ds/AccTEE]]
+
+WebAssembly in SGX
+
+<<<
+Remote computation has numerous use cases such as cloud computing, client-side web applications or volunteer computing. Typically, these computations are executed inside a sandboxed environment for two reasons: first, to isolate the execution in order to protect the host environment from unauthorised access, and second to control and restrict resource usage. Often, there is mutual distrust between entities providing the code and the ones executing it, owing to concerns over three potential problems: (i) loss of control over code and data by the providing entity, (ii) uncertainty of the integrity of the execution environment for customers, and (iii) a missing mutually trusted accounting of resource usage.
+
+In this paper we present AccTEE, a two-way sandbox that offers remote computation with resource accounting trusted by consumers and providers. AccTEE leverages two recent technologies: hardware-protected trusted execution environments, and Web-Assembly, a novel platform independent byte-code format. We show how AccTEE uses automated code instrumentation for fine-grained resource accounting while maintaining confidentiality and integrity of code and data. Our evaluation of AccTEE in three scenarios -- volunteer computing, serverless computing, and pay-by-computation for the web -- shows a maximum accounting overhead of 10%.
+<<<

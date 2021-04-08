@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>SGX_PF_Class: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-SGX tc-tagged-Analysis tc-tagged-Artifact" data-tags="SGX Analysis Artifact" data-tiddler-title="SGX_PF_Class"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">SGX_PF_Class</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>April 8, 2021 at 11:46 am</div></div><div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Analysis
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Artifact
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+SGX
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><p><a class="tc-tiddlylink-external" href="https://github.com/intel/linux-sgx/blob/master/sdk/protected_fs/sgx_tprotected_fs/protected_fs_file.h" rel="noopener noreferrer" target="_blank">https://github.com/intel/linux-sgx/blob/master/sdk/protected_fs/sgx_tprotected_fs/protected_fs_file.h</a></p><pre class="c hljs"><code><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">protected_fs_file</span>
+{</span>
+<span class="hljs-keyword">private</span>:
+    <span class="hljs-keyword">union</span> {
+        <span class="hljs-class"><span class="hljs-keyword">struct</span> {</span>
+            <span class="hljs-keyword">uint64_t</span> meta_data_node_number; <span class="hljs-comment">// for recovery purpose, so it is easy to write this node</span>
+            <span class="hljs-keyword">meta_data_node_t</span> file_meta_data; <span class="hljs-comment">// actual data from disk's meta data node</span>
+        };
+        <span class="hljs-keyword">recovery_node_t</span> meta_data_recovery_node;
+    };
+
+    <span class="hljs-keyword">meta_data_encrypted_t</span> encrypted_part_plain; <span class="hljs-comment">// encrypted part of meta data node, decrypted</span>
+    
+    <span class="hljs-keyword">file_mht_node_t</span> root_mht; <span class="hljs-comment">// the root of the mht is always needed (for files bigger than 3KB)</span>
+
+    FILE* file; <span class="hljs-comment">// OS's FILE pointer</span>
+    
+    <span class="hljs-keyword">open_mode_t</span> open_mode;
+    <span class="hljs-keyword">uint8_t</span> read_only;
+    <span class="hljs-keyword">int64_t</span> offset; <span class="hljs-comment">// current file position (user's view)</span>
+    <span class="hljs-keyword">bool</span> end_of_file; <span class="hljs-comment">// flag</span>
+
+    <span class="hljs-keyword">int64_t</span> real_file_size;
+    
+    <span class="hljs-keyword">bool</span> need_writing; <span class="hljs-comment">// flag</span>
+    <span class="hljs-keyword">uint32_t</span> last_error; <span class="hljs-comment">// last operation error</span>
+    protected_fs_status_e file_status;
+    
+    <span class="hljs-keyword">sgx_thread_mutex_t</span> mutex;
+
+    <span class="hljs-keyword">uint8_t</span> use_user_kdk_key;
+    <span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span> user_kdk_key; <span class="hljs-comment">// recieved from user, used instead of the seal key</span>
+
+    <span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span> cur_key;
+    <span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span> session_master_key;
+    <span class="hljs-keyword">uint32_t</span> master_key_count;
+    
+    <span class="hljs-keyword">char</span> recovery_filename[RECOVERY_FILE_MAX_LEN]; <span class="hljs-comment">// might include full path to the file</span>
+
+    lru_cache cache;
+
+    <span class="hljs-comment">// these don't change after init...</span>
+    <span class="hljs-keyword">sgx_iv_t</span> empty_iv;
+    <span class="hljs-keyword">sgx_report_t</span> report;
+
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">init_fields</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">cleanup_filename</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* src, <span class="hljs-keyword">char</span>* dest)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">parse_mode</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* mode)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">file_recovery</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* filename)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">init_existing_file</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* filename, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* clean_filename, <span class="hljs-keyword">const</span> <span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span>* import_key)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">init_new_file</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* clean_filename)</span></span>;
+    
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">generate_secure_blob</span><span class="hljs-params">(<span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span>* key, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* label, <span class="hljs-keyword">uint64_t</span> physical_node_number, <span class="hljs-keyword">sgx_aes_gcm_128bit_tag_t</span>* output)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">generate_secure_blob_from_user_kdk</span><span class="hljs-params">(<span class="hljs-keyword">bool</span> restore)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">init_session_master_key</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">derive_random_node_key</span><span class="hljs-params">(<span class="hljs-keyword">uint64_t</span> physical_node_number)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">generate_random_meta_data_key</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">restore_current_meta_data_key</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span>* import_key)</span></span>;
+    
+    
+    <span class="hljs-function"><span class="hljs-keyword">file_data_node_t</span>* <span class="hljs-title">get_data_node</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">file_data_node_t</span>* <span class="hljs-title">read_data_node</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">file_data_node_t</span>* <span class="hljs-title">append_data_node</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">file_mht_node_t</span>* <span class="hljs-title">get_mht_node</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">file_mht_node_t</span>* <span class="hljs-title">read_mht_node</span><span class="hljs-params">(<span class="hljs-keyword">uint64_t</span> mht_node_number)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">file_mht_node_t</span>* <span class="hljs-title">append_mht_node</span><span class="hljs-params">(<span class="hljs-keyword">uint64_t</span> mht_node_number)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">write_recovery_file</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">set_update_flag</span><span class="hljs-params">(<span class="hljs-keyword">bool</span> flush_to_disk)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">clear_update_flag</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">update_all_data_and_mht_nodes</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">update_meta_data_node</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">write_all_changes_to_disk</span><span class="hljs-params">(<span class="hljs-keyword">bool</span> flush_to_disk)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">erase_recovery_file</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">internal_flush</span><span class="hljs-params">(<span class="hljs-comment">/*bool mc,*/</span> <span class="hljs-keyword">bool</span> flush_to_disk)</span></span>;
+
+<span class="hljs-keyword">public</span>:
+    protected_fs_file(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* filename, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* mode, <span class="hljs-keyword">const</span> <span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span>* import_key, <span class="hljs-keyword">const</span> <span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span>* kdk_key);
+    ~protected_fs_file();
+
+    <span class="hljs-function"><span class="hljs-keyword">size_t</span> <span class="hljs-title">write</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span>* ptr, <span class="hljs-keyword">size_t</span> <span class="hljs-built_in">size</span>, <span class="hljs-keyword">size_t</span> count)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">size_t</span> <span class="hljs-title">read</span><span class="hljs-params">(<span class="hljs-keyword">void</span>* ptr, <span class="hljs-keyword">size_t</span> <span class="hljs-built_in">size</span>, <span class="hljs-keyword">size_t</span> count)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">int64_t</span> <span class="hljs-title">tell</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">seek</span><span class="hljs-params">(<span class="hljs-keyword">int64_t</span> new_offset, <span class="hljs-keyword">int</span> origin)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">get_eof</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">uint32_t</span> <span class="hljs-title">get_error</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">clear_error</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">int32_t</span> <span class="hljs-title">clear_cache</span><span class="hljs-params">()</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">flush</span><span class="hljs-params">(<span class="hljs-comment">/*bool mc*/</span>)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">pre_close</span><span class="hljs-params">(<span class="hljs-keyword">sgx_key_128bit_t</span>* key, <span class="hljs-keyword">bool</span> <span class="hljs-keyword">import</span>)</span></span>;
+    <span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int32_t</span> <span class="hljs-title">remove</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* filename)</span></span>;
+};</code></pre></div>
+
+<div class="tc-tiddler-plugin-info tc-reveal"><p>
+</p></div>
+</div>
+
+</p>
+</section>
+</body>
+</html>
+

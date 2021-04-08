@@ -1,0 +1,70 @@
+created: 20210408144000899
+modified: 20210408164750608
+tags: Analysis SGX Artifact
+title: SDK_PFImplementations
+type: text/vnd.tiddlywiki
+
+The inner implementations are in [[https://github.com/intel/linux-sgx/blob/master/sdk/protected_fs/sgx_tprotected_fs/sgx_tprotected_fs.cpp]].
+
+
+! See also:
+[[SDK_PF_New]] (`protected_fs_file::protected_fs_file`)
+
+! SDK_ProtectedFileClass
+
+[[SGX_PF_Class]]
+
+!! Internal APIs
+
+!! Open
+
+# new `protected_fs_file` ([[SDK_PF_New]])
+# if no error, return handle
+
+```c
+static SGX_FILE* sgx_fopen_internal(const char* filename, const char* mode, const sgx_key_128bit_t *auto_key, const sgx_key_128bit_t *kdk_key)
+{
+	protected_fs_file* file = NULL;
+
+	if (filename == NULL || mode == NULL)
+	{
+		errno = EINVAL;
+		return NULL;
+	}
+
+	try {
+		file = new protected_fs_file(filename, mode, auto_key, kdk_key);
+	}
+	catch (std::bad_alloc& e) {
+		(void)e; // remove warning
+		errno = ENOMEM;
+		return NULL;
+	}
+
+	if (file->get_error() != SGX_FILE_STATUS_OK)
+	{
+		errno = file->get_error();
+		delete file;
+		file = NULL;
+	}
+
+	return (SGX_FILE*)file;
+}
+```
+
+!! Write
+
+```c
+size_t sgx_fwrite(const void* ptr, size_t size, size_t count, SGX_FILE* stream)
+{
+	if (ptr == NULL || stream == NULL || size == 0 || count == 0)
+		return 0;
+
+	protected_fs_file* file = (protected_fs_file*)stream;
+
+	return file->write(ptr, size, count);
+}
+```
+
+[[Write in PF Class|SDK_PF_Write]]
+

@@ -1,0 +1,15 @@
+created: 20210406014823025
+modified: 20210406153712634
+tags: Artifact SGX System Research
+title: Virtualization in SGX
+type: text/vnd.tiddlywiki
+
+! Documents
+
+[[Virtualizing Intel® Software Guard Extensions with KVM and QEMU|https://software.intel.com/content/www/us/en/develop/articles/virtualizing-intel-software-guard-extensions-with-kvm-and-qemu.html]]
+
+! Official Repo
+
+[[SGX-qemu|https://github.com/intel/qemu-sgx]]
+
+[[SGX-kvm|https://github.com/intel/kvm-sgx]]

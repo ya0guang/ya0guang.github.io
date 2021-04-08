@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>SDK_PFImplementations: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Analysis tc-tagged-SGX tc-tagged-Artifact" data-tags="Analysis SGX Artifact" data-tiddler-title="SDK_PFImplementations"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">SDK_PFImplementations</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>April 8, 2021 at 12:47 pm</div></div><div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Analysis
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Artifact
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+SGX
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><p>The inner implementations are in <a class="tc-tiddlylink-external" href="https://github.com/intel/linux-sgx/blob/master/sdk/protected_fs/sgx_tprotected_fs/sgx_tprotected_fs.cpp" rel="noopener noreferrer" target="_blank">https://github.com/intel/linux-sgx/blob/master/sdk/protected_fs/sgx_tprotected_fs/sgx_tprotected_fs.cpp</a>.</p><h1 class="">See also:</h1><p><a class="tc-tiddlylink tc-tiddlylink-resolves" href="SDK_PF_New.html">SDK_PF_New</a> (<code>protected_fs_file::protected_fs_file</code>)</p><h1 class="">SDK_ProtectedFileClass</h1><p><a class="tc-tiddlylink tc-tiddlylink-resolves" href="SGX_PF_Class.html">SGX_PF_Class</a></p><h2 class="">Internal APIs</h2><h2 class="">Open</h2><ol><li>new <code>protected_fs_file</code> (<a class="tc-tiddlylink tc-tiddlylink-resolves" href="SDK_PF_New.html">SDK_PF_New</a>)</li><li>if no error, return handle</li></ol><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> SGX_FILE* <span class="hljs-title">sgx_fopen_internal</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* filename, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* mode, <span class="hljs-keyword">const</span> <span class="hljs-keyword">sgx_key_128bit_t</span> *auto_key, <span class="hljs-keyword">const</span> <span class="hljs-keyword">sgx_key_128bit_t</span> *kdk_key)</span>
+</span>{
+    protected_fs_file* file = <span class="hljs-literal">NULL</span>;
+
+    <span class="hljs-keyword">if</span> (filename == <span class="hljs-literal">NULL</span> || mode == <span class="hljs-literal">NULL</span>)
+    {
+        errno = EINVAL;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+    }
+
+    <span class="hljs-keyword">try</span> {
+        file = <span class="hljs-keyword">new</span> protected_fs_file(filename, mode, auto_key, kdk_key);
+    }
+    <span class="hljs-keyword">catch</span> (<span class="hljs-built_in">std</span>::bad_alloc&amp; e) {
+        (<span class="hljs-keyword">void</span>)e; <span class="hljs-comment">// remove warning</span>
+        errno = ENOMEM;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+    }
+
+    <span class="hljs-keyword">if</span> (file-&gt;get_error() != SGX_FILE_STATUS_OK)
+    {
+        errno = file-&gt;get_error();
+        <span class="hljs-keyword">delete</span> file;
+        file = <span class="hljs-literal">NULL</span>;
+    }
+
+    <span class="hljs-keyword">return</span> (SGX_FILE*)file;
+}</code></pre><h2 class="">Write</h2><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">size_t</span> <span class="hljs-title">sgx_fwrite</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span>* ptr, <span class="hljs-keyword">size_t</span> <span class="hljs-built_in">size</span>, <span class="hljs-keyword">size_t</span> count, SGX_FILE* stream)</span>
+</span>{
+    <span class="hljs-keyword">if</span> (ptr == <span class="hljs-literal">NULL</span> || stream == <span class="hljs-literal">NULL</span> || <span class="hljs-built_in">size</span> == <span class="hljs-number">0</span> || count == <span class="hljs-number">0</span>)
+        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+
+    protected_fs_file* file = (protected_fs_file*)stream;
+
+    <span class="hljs-keyword">return</span> file-&gt;<span class="hljs-built_in">write</span>(ptr, <span class="hljs-built_in">size</span>, count);
+}</code></pre><p><a class="tc-tiddlylink tc-tiddlylink-resolves" href="SDK_PF_Write.html">Write in PF Class</a></p></div>
+
+<div class="tc-tiddler-plugin-info tc-reveal"><p>
+</p></div>
+</div>
+
+</p>
+</section>
+</body>
+</html>
+

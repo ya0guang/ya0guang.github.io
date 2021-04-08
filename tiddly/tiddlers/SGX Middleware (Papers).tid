@@ -1,5 +1,5 @@
 created: 20210402141906526
-modified: 20210405133511472
+modified: 20210407012632308
 tags: Research Security SGX
 title: SGX Middleware (Papers)
 type: text/vnd.tiddlywiki
@@ -21,6 +21,7 @@ type: text/vnd.tiddlywiki
 
 * Uranus: Java [[Paper PDF|https://i.cs.hku.hk/~heming/papers/asiaccs20-uranus.pdf]] [[Code|https://github.com/hku-systems/uranus]]
 * Teaclave: Python [[Code|https://github.com/apache/incubator-teaclave]]
+* [[AccTEE|AccTEE: A WebAssembly-based Two-way Sandbox for Trusted Resource Accounting]] 
 
 ! SDK/API/Runtimes
 
@@ -33,6 +34,7 @@ type: text/vnd.tiddlywiki
 
 ! Parallel
 * EActor [[Paper|https://dl.acm.org/doi/pdf/10.1145/3274808.3274823]] [[Code|https://github.com/ibr-ds/EActors]]
+* [[Chancel|CHANCEL: Efficient Multi-client Isolation Under Adversarial Programs]] [[Paper|https://www.ndss-symposium.org/ndss-paper/chancel-efficient-multi-client-isolation-under-adversarial-programs/]] ''Source Code Unavailable''
 
 
 ! Attacks
