@@ -1,2 +1,2 @@
-list: SDK_PFImplementations SDK_PF_Write SGX_PF_Class SDK_PF_New [[AccTEE: A WebAssembly-based Two-way Sandbox for Trusted Resource Accounting]] [[DIFFUZZ: Differential Fuzzing for Side-Channel Analysis]] $:/Import [[Agamotto: Accelerating Kernel Driver Fuzzing with Lightweight Virtual Machine Checkpoints]] [[SGX Middleware (Papers)]] [[SGX Papers]]
+list: SDK_PFUserInterfaces SDK_PFImplementations [[SGX Middleware (Papers)]] [[SGX Papers]]
 title: $:/StoryList

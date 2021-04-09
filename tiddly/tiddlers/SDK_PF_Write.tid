@@ -1,14 +1,27 @@
 created: 20210408154920575
-modified: 20210408164753547
+modified: 20210409150338695
 tags: Analysis Artifact SGX
 title: SDK_PF_Write
 type: text/vnd.tiddlywiki
 
 See also: [[C++ fwrite|http://www.cplusplus.com/reference/cstdio/fwrite/]]
 
+Note that write only do memory cope but doesn't actually write to the disk.
 
+# check data to write within enclave
+# check if the destination can be written
+# check if there is empty place left in the [[meta data region|SDK_PF_metadata]]. If so then write
+# write data to the [[data node|SDK_PF_DataNode]](`file_data_node_t`) iteratively, see below
+# return count
 
-```c
+!! Write data
+
+# [[create a new data node]] if needed
+# write to `file_data_node->plain.data[offset_in_node]`
+# update file size
+# update writing status and mht (Merkle Hash Tree) info
+
+```cpp
 size_t protected_fs_file::write(const void* ptr, size_t size, size_t count)
 {
 	if (ptr == NULL || size == 0 || count == 0)

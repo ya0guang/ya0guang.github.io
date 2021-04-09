@@ -1,0 +1,32 @@
+created: 20210409133334687
+modified: 20210409140522728
+tags: Artifact Analysis SGX
+title: SDK_PF_DataNode
+type: text/vnd.tiddlywiki
+
+! Struct definition
+
+[[SDK Code|https://github.com/intel/linux-sgx/blob/master/sdk/protected_fs/sgx_tprotected_fs/protected_fs_file.h#L94]]
+
+```c
+typedef struct _file_data_node
+{
+	/* these are exactly the same as file_mht_node_t above, any change should apply to both (both are saved in the cache as void*) */
+	uint8_t type;
+	uint64_t data_node_number;
+	file_mht_node_t* parent;
+	bool need_writing;
+	bool new_node;
+	union {
+		struct {
+			uint64_t physical_node_number;
+			encrypted_node_t encrypted; // the actual data from the disk
+		};
+		recovery_node_t recovery_node;
+	};
+	/* from here the structures are different */
+	data_node_t plain; // decrypted data
+} file_data_node_t;
+```
+
+This struct is nearly the same as `file_mht_node_t`, it seems like these are duplicated but working code.

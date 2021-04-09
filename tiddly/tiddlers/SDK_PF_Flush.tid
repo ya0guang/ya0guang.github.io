@@ -1,0 +1,67 @@
+created: 20210409145518544
+modified: 20210409150329448
+tags: Artifact SGX Analysis
+title: SDK_PF_Flush
+type: text/vnd.tiddlywiki
+
+! Steps
+
+# Write recovery file and set flags if needed
+# Update data and mht nodes if needed
+# Update meta data node and update flags
+# Write data to the disk
+
+
+* Perform the actual data write in `protected_fs_file::write_all_changes_to_disk`. 
+* LRU cache is used here for performance.
+
+```cpp
+bool protected_fs_file::internal_flush(/*bool mc,*/ bool flush_to_disk)
+{
+	if (need_writing == false) // no changes at all
+		return true;
+
+	if (encrypted_part_plain.size > MD_USER_DATA_SIZE && root_mht.need_writing == true) // otherwise it's just one write - the meta-data node
+	{
+		if (_RECOVERY_HOOK_(0) || write_recovery_file() != true)
+		{
+			file_status = SGX_FILE_STATUS_FLUSH_ERROR;
+			return false;
+		}
+
+		if (_RECOVERY_HOOK_(1) || set_update_flag(flush_to_disk) != true)
+		{
+			file_status = SGX_FILE_STATUS_FLUSH_ERROR;
+			return false;
+		}
+
+		if (_RECOVERY_HOOK_(2) || update_all_data_and_mht_nodes() != true)
+		{
+			clear_update_flag();
+			file_status = SGX_FILE_STATUS_CRYPTO_ERROR; // this is something that shouldn't happen, can't fix this...
+			return false;
+		}
+	}
+
+	if (_RECOVERY_HOOK_(3) || update_meta_data_node() != true)
+	{
+		clear_update_flag();
+		file_status = SGX_FILE_STATUS_CRYPTO_ERROR; // this is something that shouldn't happen, can't fix this...
+		return false;
+	}
+
+	if (_RECOVERY_HOOK_(4) || write_all_changes_to_disk(flush_to_disk) != true)
+	{
+		//if (mc == false)
+			file_status = SGX_FILE_STATUS_WRITE_TO_DISK_FAILED; // special case, need only to repeat write_all_changes_to_disk in order to repair it
+		//else
+			//file_status = SGX_FILE_STATUS_WRITE_TO_DISK_FAILED_NEED_MC; // special case, need to repeat write_all_changes_to_disk AND increase the monotonic counter in order to repair it
+
+		return false;
+	}
+
+	need_writing = false;
+
+	return true;
+}
+```

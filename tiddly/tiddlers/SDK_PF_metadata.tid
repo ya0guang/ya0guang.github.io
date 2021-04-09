@@ -1,0 +1,23 @@
+created: 20210409133605440
+modified: 20210409150341001
+tags: Analysis SGX Artifact
+title: SDK_PF_metadata
+type: text/vnd.tiddlywiki
+
+! Struct definition
+
+```c
+typedef struct _meta_data_encrypted
+{
+	char          clean_filename[FILENAME_MAX_LEN];
+	int64_t       size;
+	
+	sgx_mc_uuid_t mc_uuid; // not used
+	uint32_t      mc_value; // not used
+
+	sgx_aes_gcm_128bit_key_t mht_key;
+	sgx_aes_gcm_128bit_tag_t mht_gmac;
+
+	uint8_t       data[MD_USER_DATA_SIZE];
+} meta_data_encrypted_t;
+```

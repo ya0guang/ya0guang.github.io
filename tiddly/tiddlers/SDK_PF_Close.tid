@@ -1,0 +1,82 @@
+created: 20210409142641243
+modified: 20210409145620772
+tags: Analysis Artifact SGX
+title: SDK_PF_Close
+type: text/vnd.tiddlywiki
+
+[[Code in SDK|https://github.com/intel/linux-sgx/blob/master/sdk/protected_fs/sgx_tprotected_fs/file_init.cpp]]
+
+
+!! Flush
+* [[Flush|SDK_PF_Flush]] if status is `OK`.
+
+```cpp
+bool protected_fs_file::pre_close(sgx_key_128bit_t* key, bool import)
+{
+	int32_t result32 = 0;
+	bool retval = true;
+	sgx_status_t status = SGX_SUCCESS;
+
+	sgx_thread_mutex_lock(&mutex);
+
+	if (import == true)
+	{
+		if (use_user_kdk_key == 1) // import file is only needed for auto-key
+			retval = false;
+		else
+			need_writing = true; // will re-encrypt the neta-data node with local key
+	}
+
+	if (file_status != SGX_FILE_STATUS_OK)
+	{
+		sgx_thread_mutex_unlock(&mutex);
+		clear_error(); // last attempt to fix it
+		sgx_thread_mutex_lock(&mutex);
+	}
+	else // file_status == SGX_FILE_STATUS_OK
+	{
+		internal_flush(/*false,*/ true);
+	}
+
+	if (file_status != SGX_FILE_STATUS_OK)
+		retval = false;
+
+	if (file != NULL)
+	{
+		status = u_sgxprotectedfs_fclose(&result32, file);
+		if (status != SGX_SUCCESS || result32 != 0)
+		{
+			last_error = (status != SGX_SUCCESS) ? status : 
+						 (result32 != -1) ? result32 : SGX_ERROR_FILE_CLOSE_FAILED;
+			retval = false;
+		}
+
+		file = NULL;
+	}
+
+	if (file_status == SGX_FILE_STATUS_OK && 
+		last_error == SGX_SUCCESS) // else...maybe something bad happened and the recovery file will be needed
+		erase_recovery_file();
+
+	if (key != NULL)
+	{
+		if (use_user_kdk_key == 1) // export key is only used for auto-key
+		{
+			retval = false;
+		}
+		else
+		{
+			if (restore_current_meta_data_key(NULL) == true)
+				memcpy(key, cur_key, sizeof(sgx_key_128bit_t));
+			else
+				retval = false;
+		}
+	}
+
+	file_status = SGX_FILE_STATUS_CLOSED;
+
+	sgx_thread_mutex_unlock(&mutex);
+
+	return retval;
+}
+```

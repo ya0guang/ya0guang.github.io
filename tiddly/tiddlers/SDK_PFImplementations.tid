@@ -1,11 +1,29 @@
 created: 20210408144000899
-modified: 20210408164750608
+modified: 20210409150334564
 tags: Analysis SGX Artifact
 title: SDK_PFImplementations
 type: text/vnd.tiddlywiki
 
-The inner implementations are in [[https://github.com/intel/linux-sgx/blob/master/sdk/protected_fs/sgx_tprotected_fs/sgx_tprotected_fs.cpp]].
+The implementations are in [[https://github.com/intel/linux-sgx/tree/master/sdk/protected_fs/sgx_tprotected_fs]].
 
+
+! High Level Organization
+
+Protected files are objects in SGX SDK's implementation. The opened PFs contains important fields like key, report and file pointer received from the OS. Data in the file is maintained as Merkle Hash Tree Nodes, and each node contains node number and encrypted/decrypted data in its struct. Besides, metadata is also stored in a meta node, which includes MAC, key, file id and version info about CPU/ISV/PF. The encryption scheme is ''rijndael 128 GCM'' (AES 128 GCM) algorithm. To ensure PF operations are atomic, it also recruits mutex mechanism.
+
+All the internal interfaces in the enclave relies on the untrusted code to perform file operations by OS. Those interfaces are in [[https://github.com/intel/linux-sgx/tree/master/sdk/protected_fs/sgx_uprotected_fs]], and are of less interest.
+
+!! Encryption
+
+```cpp
+sgx_status_t sgx_rijndael128GCM_encrypt(const sgx_aes_gcm_128bit_key_t *p_key, const uint8_t *p_src, uint32_t src_len,  uint8_t *p_dst, const uint8_t *p_iv, uint32_t iv_len, const uint8_t *p_aad, uint32_t aad_len,  sgx_aes_gcm_128bit_tag_t *p_out_mac)
+```
+
+!! Decryption
+
+```cpp
+sgx_status_t sgx_rijndael128GCM_decrypt(const sgx_aes_gcm_128bit_key_t *p_key, const uint8_t *p_src, uint32_t src_len, uint8_t *p_dst, const uint8_t *p_iv, uint32_t iv_len, const uint8_t *p_aad, uint32_t aad_len, const sgx_aes_gcm_128bit_tag_t *p_in_mac)
+```
 
 ! See also:
 [[SDK_PF_New]] (`protected_fs_file::protected_fs_file`)
@@ -68,3 +86,39 @@ size_t sgx_fwrite(const void* ptr, size_t size, size_t count, SGX_FILE* stream)
 
 [[Write in PF Class|SDK_PF_Write]]
 
+!! Close
+
+```cpp
+int32_t sgx_fclose(SGX_FILE* stream)
+{
+	return sgx_fclose_internal(stream, NULL, false);
+}
+```
+
+```cpp
+
+static int32_t sgx_fclose_internal(SGX_FILE* stream, sgx_key_128bit_t *key, bool import)
+{
+	int32_t retval = 0;
+
+	if (stream == NULL)
+		return EOF;
+
+	protected_fs_file* file = (protected_fs_file*)stream;
+
+	if (file->pre_close(key, import) == false)
+		retval = 1;
+
+	delete file;
+
+	return retval;
+}
+```
+
+[[Close in PF Class|SDK_PF_Close]]
+
+!! Flush
+
+Flush performs the actual encryption and write. 
+
+[[Flush in PF|SDK_PF_Flush]]
