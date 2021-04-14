@@ -1,0 +1,31 @@
+created: 20210414014809847
+modified: 20210414035134564
+tags: Analysis Artifact SGX TODO
+title: Graphene-SGX PF Implementation
+type: text/vnd.tiddlywiki
+
+* The implementation of PF can be found [[here|https://github.com/oscarlab/graphene/tree/master/Pal/src/host/Linux-SGX/protected-files]].
+* Just like the Intel PF, there are a set of user interfaces and another set of functions as internal implementation.
+* `ipf` stands for //Intel Protected File//. They are internal implementation of PF, just like [[which in the SGX SDK|SDK_PFImplementations]].
+
+! User Interfaces
+
+!! `pf_open`
+
+First we need to know how a PF is opened.
+
+Function call trace: 
+
+* [[file_open|https://github.com/oscarlab/graphene/blob/master/Pal/src/host/Linux-SGX/db_files.c#L33]] -> 
+* [[load_protected_file|https://github.com/oscarlab/graphene/blob/189f99f62bc6cbd5d368b1ef26760f71ffe4e967/Pal/src/host/Linux-SGX/enclave_pf.c#L533]] ->
+* [[open_protected_file|https://github.com/oscarlab/graphene/blob/189f99f62bc6cbd5d368b1ef26760f71ffe4e967/Pal/src/host/Linux-SGX/enclave_pf.c#L514]] ->
+* [[pf_open|https://github.com/oscarlab/graphene/blob/189f99f62bc6cbd5d368b1ef26760f71ffe4e967/Pal/src/host/Linux-SGX/protected-files/protected_files.c#L1191]] -> 
+* [[ipf_open|https://github.com/oscarlab/graphene/blob/189f99f62bc6cbd5d368b1ef26760f71ffe4e967/Pal/src/host/Linux-SGX/protected-files/protected_files.c#L163]]
+
+! Callbacks 
+
+''First of all'', several callback function pointers are set beforehand and will be used later in read & write, encryption and decryption.
+
+All the call back function pointers are set to callbacks from `enclave_pf.c`.
+
+[[Graphene-SGX PF Callbacks]]

@@ -1,0 +1,92 @@
+created: 20210414002804675
+modified: 20210414015955742
+tags: Analysis Artifact SGX
+title: Graphene-SGX PF
+type: text/vnd.tiddlywiki
+
+The protected file system is first initialized by function `pal_linux_main` (in [[db_main.c|https://github.com/oscarlab/graphene/blob/master/Pal/src/host/Linux-SGX/db_main.c]]).
+
+! PF initialization
+
+The init function is `init_protected_files` in [[enclave_pf.c|https://github.com/oscarlab/graphene/blob/master/Pal/src/host/Linux-SGX/enclave_pf.c]].
+
+```c
+int init_protected_files(void) {
+    int ret;
+    pf_debug_f debug_callback = NULL;
+
+#ifdef DEBUG
+    debug_callback = cb_debug;
+#endif
+
+    pf_set_callbacks(cb_read, cb_write, cb_truncate, cb_aes_gcm_encrypt, cb_aes_gcm_decrypt,
+                     cb_random, debug_callback);
+
+    /* if wrap key is not hard-coded in the manifest, assume that it was received from parent or
+     * it will be provisioned after local/remote attestation; otherwise read it from manifest */
+    char* protected_files_key_str = NULL;
+    ret = toml_string_in(g_pal_state.manifest_root, "sgx.protected_files_key",
+                         &protected_files_key_str);
+    if (ret < 0) {
+        log_error("Cannot parse \'sgx.protected_files_key\' "
+                  "(the value must be put in double quotes!)\n");
+        return -PAL_ERROR_INVAL;
+    }
+
+    if (protected_files_key_str) {
+        if (strlen(protected_files_key_str) != PF_KEY_SIZE * 2) {
+            log_error("Malformed \'sgx.protected_files_key\' value in the manifest\n");
+            free(protected_files_key_str);
+            return -PAL_ERROR_INVAL;
+        }
+
+        memset(g_pf_wrap_key, 0, sizeof(g_pf_wrap_key));
+        for (size_t i = 0; i < strlen(protected_files_key_str); i++) {
+            int8_t val = hex2dec(protected_files_key_str[i]);
+            if (val < 0) {
+                log_error("Malformed \'sgx.protected_files_key\' value in the manifest\n");
+                free(protected_files_key_str);
+                return -PAL_ERROR_INVAL;
+            }
+            g_pf_wrap_key[i / 2] = g_pf_wrap_key[i / 2] * 16 + (uint8_t)val;
+        }
+
+        free(protected_files_key_str);
+        g_pf_wrap_key_set = true;
+    }
+
+    if (register_protected_files() < 0) {
+        log_error("Malformed protected files found in manifest\n");
+    }
+
+    return 0;
+}
+```
+
+Modify this function if RA/LA to pass the key to PFs
+
+# Set callback functions which will be invoked for encryption and decryption (''when are they called?'')
+# Read PF key from manifest
+# Register protected files
+
+! Open in Graphene SGX
+
+It will check if the file to open is a PF first. See code in `db_files.c`:
+
+```c
+static int file_open(PAL_HANDLE* handle, const char* type, const char* uri, int access, int share,
+                     int create, int options) {
+// MISSING CODE ...
+
+        pf = load_protected_file(path, (int*)&hdl->file.fd, st.st_size, pf_mode, pf_create, pf);
+        if (pf) {
+            pf->refcount++;
+            if (pf_mode & PF_FILE_MODE_WRITE) {
+                pf->writable_fd = fd;
+            }
+        } else {
+
+// MISSING CODE ...
+```
+
+See also [[Graphene-SGX PF Implementation]] for more details.

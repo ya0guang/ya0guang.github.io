@@ -1,0 +1,179 @@
+created: 20210414022232598
+modified: 20210414022245608
+tags: Analysis Artifact SGX
+title: Graphene-SGX PF Callbacks
+type: text/vnd.tiddlywiki
+
+```c
+/* Host callbacks */
+static pf_read_f     g_cb_read     = NULL;
+static pf_write_f    g_cb_write    = NULL;
+static pf_truncate_f g_cb_truncate = NULL;
+static pf_debug_f    g_cb_debug    = NULL;
+
+static pf_aes_gcm_encrypt_f g_cb_aes_gcm_encrypt = NULL;
+static pf_aes_gcm_decrypt_f g_cb_aes_gcm_decrypt = NULL;
+static pf_random_f          g_cb_random          = NULL;
+```
+
+!! read
+
+`g_cb_read` is used in `ipf_read_node`:
+
+```c
+static bool ipf_read_node(pf_context_t* pf, pf_handle_t handle, uint64_t node_number, void* buffer,
+                          uint32_t node_size) {
+    uint64_t offset = node_number * node_size;
+
+    pf_status_t status = g_cb_read(handle, buffer, offset, node_size);
+    if (PF_FAILURE(status)) {
+        pf->last_error = status;
+        return false;
+    }
+
+    return true;
+}
+```
+
+This callback function is used in PF:
+
+```c
+/* Callbacks for protected files handling */
+static pf_status_t cb_read(pf_handle_t handle, void* buffer, uint64_t offset, size_t size) {
+    int fd = *(int*)handle;
+    size_t buffer_offset = 0;
+    size_t to_read = size;
+    while (to_read > 0) {
+        ssize_t read = ocall_pread(fd, buffer + buffer_offset, to_read, offset + buffer_offset);
+        if (read == -EINTR)
+            continue;
+
+        if (read < 0) {
+            log_error("cb_read(%d, %p, %lu, %lu): read failed: %ld\n", fd, buffer, offset,
+                      size, read);
+            return PF_STATUS_CALLBACK_FAILED;
+        }
+
+        /* EOF is an error condition, we want to read exactly `size` bytes */
+        if (read == 0) {
+            log_error("cb_read(%d, %p, %lu, %lu): EOF\n", fd, buffer, offset, size);
+            return PF_STATUS_CALLBACK_FAILED;
+        }
+
+        to_read -= read;
+        buffer_offset += read;
+    }
+    return PF_STATUS_SUCCESS;
+}
+```
+
+!! write
+
+`g_cb_write` is used in `ipf_write_file`.
+
+```c
+static bool ipf_write_file(pf_context_t* pf, pf_handle_t handle, uint64_t offset, void* buffer,
+                           uint32_t size) {
+    pf_status_t status = g_cb_write(handle, buffer, offset, size);
+    if (PF_FAILURE(status)) {
+        pf->last_error = status;
+        return false;
+    }
+
+    return true;
+}
+```
+
+This callback function is used in PF:
+
+```c
+static pf_status_t cb_write(pf_handle_t handle, const void* buffer, uint64_t offset, size_t size) {
+    int fd = *(int*)handle;
+    size_t buffer_offset = 0;
+    size_t to_write = size;
+    while (to_write > 0) {
+        ssize_t written = ocall_pwrite(fd, buffer + buffer_offset, to_write,
+                                       offset + buffer_offset);
+        if (written == -EINTR)
+            continue;
+
+        if (written < 0) {
+            log_error("cb_write(%d, %p, %lu, %lu): write failed: %ld\n", fd, buffer, offset,
+                      size, written);
+            return PF_STATUS_CALLBACK_FAILED;
+        }
+
+        /* EOF is an error condition, we want to write exactly `size` bytes */
+        if (written == 0) {
+            log_error("cb_write(%d, %p, %lu, %lu): EOF\n", fd, buffer, offset, size);
+            return PF_STATUS_CALLBACK_FAILED;
+        }
+
+        to_write -= written;
+        buffer_offset += written;
+    }
+    return PF_STATUS_SUCCESS;
+}
+```
+
+!! truncate
+
+Not used in the implementation, it's less interesting.
+
+!! encrypt
+
+`g_cb_aes_gcm_encrypt` is used in several places, including `ipf_import_metadata_key`, `ipf_update_all_data_and_mht_nodes`, `ipf_update_all_data_and_mht_nodes`, `ipf_update_metadata_node`, all in file `protected_files.c`. This function is mainly called when data needs updates or init.
+
+The callback is merely calling AES GCM function to encrypt.
+
+```c
+static pf_status_t cb_aes_gcm_encrypt(const pf_key_t* key, const pf_iv_t* iv, const void* aad,
+                                      size_t aad_size, const void* input, size_t input_size,
+                                      void* output, pf_mac_t* mac) {
+    int ret = lib_AESGCMEncrypt((const uint8_t*)key, sizeof(*key), (const uint8_t*)iv, input,
+                                input_size, aad, aad_size, output, (uint8_t*)mac, sizeof(*mac));
+    if (ret != 0) {
+        log_error("lib_AESGCMEncrypt failed: %d\n", ret);
+        return PF_STATUS_CALLBACK_FAILED;
+    }
+    return PF_STATUS_SUCCESS;
+}
+```
+
+!! decrypt
+
+`g_cb_aes_gcm_decrypt` is used in `ipf_init_existing_file`, `ipf_read_data_node`, `ipf_read_mht_node`.
+
+Likewise, its callback is:
+
+```c
+static pf_status_t cb_aes_gcm_decrypt(const pf_key_t* key, const pf_iv_t* iv, const void* aad,
+                                      size_t aad_size, const void* input, size_t input_size,
+                                      void* output, const pf_mac_t* mac) {
+    int ret = lib_AESGCMDecrypt((const uint8_t*)key, sizeof(*key), (const uint8_t*)iv, input,
+                                input_size, aad, aad_size, output, (const uint8_t*)mac,
+                                sizeof(*mac));
+    if (ret != 0) {
+        log_error("lib_AESGCMDecrypt failed: %d\n", ret);
+        return PF_STATUS_CALLBACK_FAILED;
+    }
+    return PF_STATUS_SUCCESS;
+}
+```
+
+!! random 
+
+`g_cb_random` is used in `ipf_import_metadata_key`, `ipf_generate_random_key`. 
+
+The callback calls `_DkRandomBitsRead`, which reads in random bits from a random device.
+
+```c
+static pf_status_t cb_random(uint8_t* buffer, size_t size) {
+    int ret = _DkRandomBitsRead(buffer, size);
+    if (ret < 0) {
+        log_error("_DkRandomBitsRead failed: %d\n", ret);
+        return PF_STATUS_CALLBACK_FAILED;
+    }
+    return PF_STATUS_SUCCESS;
+}
+```

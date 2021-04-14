@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>Graphene-SGX PF Callbacks: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Analysis tc-tagged-Artifact tc-tagged-SGX" data-tags="Analysis Artifact SGX" data-tiddler-title="Graphene-SGX PF Callbacks"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">Graphene-SGX PF Callbacks</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>April 13, 2021 at 10:22 pm</div></div><div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Analysis
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Artifact
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+SGX
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><pre class="c hljs"><code><span class="hljs-comment">/* Host callbacks */</span>
+<span class="hljs-keyword">static</span> pf_read_f     g_cb_read     = <span class="hljs-literal">NULL</span>;
+<span class="hljs-keyword">static</span> pf_write_f    g_cb_write    = <span class="hljs-literal">NULL</span>;
+<span class="hljs-keyword">static</span> pf_truncate_f g_cb_truncate = <span class="hljs-literal">NULL</span>;
+<span class="hljs-keyword">static</span> pf_debug_f    g_cb_debug    = <span class="hljs-literal">NULL</span>;
+
+<span class="hljs-keyword">static</span> pf_aes_gcm_encrypt_f g_cb_aes_gcm_encrypt = <span class="hljs-literal">NULL</span>;
+<span class="hljs-keyword">static</span> pf_aes_gcm_decrypt_f g_cb_aes_gcm_decrypt = <span class="hljs-literal">NULL</span>;
+<span class="hljs-keyword">static</span> pf_random_f          g_cb_random          = <span class="hljs-literal">NULL</span>;</code></pre><h2 class="">read</h2><p><code>g_cb_read</code> is used in <code>ipf_read_node</code>:</p><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">bool</span> <span class="hljs-title">ipf_read_node</span><span class="hljs-params">(<span class="hljs-keyword">pf_context_t</span>* pf, <span class="hljs-keyword">pf_handle_t</span> handle, <span class="hljs-keyword">uint64_t</span> node_number, <span class="hljs-keyword">void</span>* <span class="hljs-built_in">buffer</span>,
+                          <span class="hljs-keyword">uint32_t</span> node_size)</span> </span>{
+    <span class="hljs-keyword">uint64_t</span> offset = node_number * node_size;
+
+    <span class="hljs-keyword">pf_status_t</span> status = g_cb_read(handle, <span class="hljs-built_in">buffer</span>, offset, node_size);
+    <span class="hljs-keyword">if</span> (PF_FAILURE(status)) {
+        pf-&gt;last_error = status;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+}</code></pre><p>This callback function is used in PF:</p><pre class="c hljs"><code><span class="hljs-comment">/* Callbacks for protected files handling */</span>
+<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">pf_status_t</span> <span class="hljs-title">cb_read</span><span class="hljs-params">(<span class="hljs-keyword">pf_handle_t</span> handle, <span class="hljs-keyword">void</span>* <span class="hljs-built_in">buffer</span>, <span class="hljs-keyword">uint64_t</span> offset, <span class="hljs-keyword">size_t</span> <span class="hljs-built_in">size</span>)</span> </span>{
+    <span class="hljs-keyword">int</span> fd = *(<span class="hljs-keyword">int</span>*)handle;
+    <span class="hljs-keyword">size_t</span> buffer_offset = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">size_t</span> to_read = <span class="hljs-built_in">size</span>;
+    <span class="hljs-keyword">while</span> (to_read &gt; <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">ssize_t</span> <span class="hljs-built_in">read</span> = ocall_pread(fd, <span class="hljs-built_in">buffer</span> + buffer_offset, to_read, offset + buffer_offset);
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">read</span> == -EINTR)
+            <span class="hljs-keyword">continue</span>;
+
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">read</span> &lt; <span class="hljs-number">0</span>) {
+            log_error(<span class="hljs-string">"cb_read(%d, %p, %lu, %lu): read failed: %ld\n"</span>, fd, <span class="hljs-built_in">buffer</span>, offset,
+                      <span class="hljs-built_in">size</span>, <span class="hljs-built_in">read</span>);
+            <span class="hljs-keyword">return</span> PF_STATUS_CALLBACK_FAILED;
+        }
+
+        <span class="hljs-comment">/* EOF is an error condition, we want to read exactly `size` bytes */</span>
+        <span class="hljs-keyword">if</span> (<span class="hljs-built_in">read</span> == <span class="hljs-number">0</span>) {
+            log_error(<span class="hljs-string">"cb_read(%d, %p, %lu, %lu): EOF\n"</span>, fd, <span class="hljs-built_in">buffer</span>, offset, <span class="hljs-built_in">size</span>);
+            <span class="hljs-keyword">return</span> PF_STATUS_CALLBACK_FAILED;
+        }
+
+        to_read -= <span class="hljs-built_in">read</span>;
+        buffer_offset += <span class="hljs-built_in">read</span>;
+    }
+    <span class="hljs-keyword">return</span> PF_STATUS_SUCCESS;
+}</code></pre><h2 class="">write</h2><p><code>g_cb_write</code> is used in <code>ipf_write_file</code>.</p><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">bool</span> <span class="hljs-title">ipf_write_file</span><span class="hljs-params">(<span class="hljs-keyword">pf_context_t</span>* pf, <span class="hljs-keyword">pf_handle_t</span> handle, <span class="hljs-keyword">uint64_t</span> offset, <span class="hljs-keyword">void</span>* <span class="hljs-built_in">buffer</span>,
+                           <span class="hljs-keyword">uint32_t</span> <span class="hljs-built_in">size</span>)</span> </span>{
+    <span class="hljs-keyword">pf_status_t</span> status = g_cb_write(handle, <span class="hljs-built_in">buffer</span>, offset, <span class="hljs-built_in">size</span>);
+    <span class="hljs-keyword">if</span> (PF_FAILURE(status)) {
+        pf-&gt;last_error = status;
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+}</code></pre><p>This callback function is used in PF:</p><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">pf_status_t</span> <span class="hljs-title">cb_write</span><span class="hljs-params">(<span class="hljs-keyword">pf_handle_t</span> handle, <span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span>* <span class="hljs-built_in">buffer</span>, <span class="hljs-keyword">uint64_t</span> offset, <span class="hljs-keyword">size_t</span> <span class="hljs-built_in">size</span>)</span> </span>{
+    <span class="hljs-keyword">int</span> fd = *(<span class="hljs-keyword">int</span>*)handle;
+    <span class="hljs-keyword">size_t</span> buffer_offset = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">size_t</span> to_write = <span class="hljs-built_in">size</span>;
+    <span class="hljs-keyword">while</span> (to_write &gt; <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">ssize_t</span> written = ocall_pwrite(fd, <span class="hljs-built_in">buffer</span> + buffer_offset, to_write,
+                                       offset + buffer_offset);
+        <span class="hljs-keyword">if</span> (written == -EINTR)
+            <span class="hljs-keyword">continue</span>;
+
+        <span class="hljs-keyword">if</span> (written &lt; <span class="hljs-number">0</span>) {
+            log_error(<span class="hljs-string">"cb_write(%d, %p, %lu, %lu): write failed: %ld\n"</span>, fd, <span class="hljs-built_in">buffer</span>, offset,
+                      <span class="hljs-built_in">size</span>, written);
+            <span class="hljs-keyword">return</span> PF_STATUS_CALLBACK_FAILED;
+        }
+
+        <span class="hljs-comment">/* EOF is an error condition, we want to write exactly `size` bytes */</span>
+        <span class="hljs-keyword">if</span> (written == <span class="hljs-number">0</span>) {
+            log_error(<span class="hljs-string">"cb_write(%d, %p, %lu, %lu): EOF\n"</span>, fd, <span class="hljs-built_in">buffer</span>, offset, <span class="hljs-built_in">size</span>);
+            <span class="hljs-keyword">return</span> PF_STATUS_CALLBACK_FAILED;
+        }
+
+        to_write -= written;
+        buffer_offset += written;
+    }
+    <span class="hljs-keyword">return</span> PF_STATUS_SUCCESS;
+}</code></pre><h2 class="">truncate</h2><p>Not used in the implementation, it's less interesting.</p><h2 class="">encrypt</h2><p><code>g_cb_aes_gcm_encrypt</code> is used in several places, including <code>ipf_import_metadata_key</code>, <code>ipf_update_all_data_and_mht_nodes</code>, <code>ipf_update_all_data_and_mht_nodes</code>, <code>ipf_update_metadata_node</code>, all in file <code>protected_files.c</code>. This function is mainly called when data needs updates or init.</p><p>The callback is merely calling AES GCM function to encrypt.</p><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">pf_status_t</span> <span class="hljs-title">cb_aes_gcm_encrypt</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">pf_key_t</span>* key, <span class="hljs-keyword">const</span> <span class="hljs-keyword">pf_iv_t</span>* iv, <span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span>* aad,
+                                      <span class="hljs-keyword">size_t</span> aad_size, <span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span>* input, <span class="hljs-keyword">size_t</span> input_size,
+                                      <span class="hljs-keyword">void</span>* output, <span class="hljs-keyword">pf_mac_t</span>* mac)</span> </span>{
+    <span class="hljs-keyword">int</span> ret = lib_AESGCMEncrypt((<span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span>*)key, <span class="hljs-keyword">sizeof</span>(*key), (<span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span>*)iv, input,
+                                input_size, aad, aad_size, output, (<span class="hljs-keyword">uint8_t</span>*)mac, <span class="hljs-keyword">sizeof</span>(*mac));
+    <span class="hljs-keyword">if</span> (ret != <span class="hljs-number">0</span>) {
+        log_error(<span class="hljs-string">"lib_AESGCMEncrypt failed: %d\n"</span>, ret);
+        <span class="hljs-keyword">return</span> PF_STATUS_CALLBACK_FAILED;
+    }
+    <span class="hljs-keyword">return</span> PF_STATUS_SUCCESS;
+}</code></pre><h2 class="">decrypt</h2><p><code>g_cb_aes_gcm_decrypt</code> is used in <code>ipf_init_existing_file</code>, <code>ipf_read_data_node</code>, <code>ipf_read_mht_node</code>.</p><p>Likewise, its callback is:</p><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">pf_status_t</span> <span class="hljs-title">cb_aes_gcm_decrypt</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">pf_key_t</span>* key, <span class="hljs-keyword">const</span> <span class="hljs-keyword">pf_iv_t</span>* iv, <span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span>* aad,
+                                      <span class="hljs-keyword">size_t</span> aad_size, <span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span>* input, <span class="hljs-keyword">size_t</span> input_size,
+                                      <span class="hljs-keyword">void</span>* output, <span class="hljs-keyword">const</span> <span class="hljs-keyword">pf_mac_t</span>* mac)</span> </span>{
+    <span class="hljs-keyword">int</span> ret = lib_AESGCMDecrypt((<span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span>*)key, <span class="hljs-keyword">sizeof</span>(*key), (<span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span>*)iv, input,
+                                input_size, aad, aad_size, output, (<span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span>*)mac,
+                                <span class="hljs-keyword">sizeof</span>(*mac));
+    <span class="hljs-keyword">if</span> (ret != <span class="hljs-number">0</span>) {
+        log_error(<span class="hljs-string">"lib_AESGCMDecrypt failed: %d\n"</span>, ret);
+        <span class="hljs-keyword">return</span> PF_STATUS_CALLBACK_FAILED;
+    }
+    <span class="hljs-keyword">return</span> PF_STATUS_SUCCESS;
+}</code></pre><h2 class="">random </h2><p><code>g_cb_random</code> is used in <code>ipf_import_metadata_key</code>, <code>ipf_generate_random_key</code>. </p><p>The callback calls <code>_DkRandomBitsRead</code>, which reads in random bits from a random device.</p><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">pf_status_t</span> <span class="hljs-title">cb_random</span><span class="hljs-params">(<span class="hljs-keyword">uint8_t</span>* <span class="hljs-built_in">buffer</span>, <span class="hljs-keyword">size_t</span> <span class="hljs-built_in">size</span>)</span> </span>{
+    <span class="hljs-keyword">int</span> ret = _DkRandomBitsRead(<span class="hljs-built_in">buffer</span>, <span class="hljs-built_in">size</span>);
+    <span class="hljs-keyword">if</span> (ret &lt; <span class="hljs-number">0</span>) {
+        log_error(<span class="hljs-string">"_DkRandomBitsRead failed: %d\n"</span>, ret);
+        <span class="hljs-keyword">return</span> PF_STATUS_CALLBACK_FAILED;
+    }
+    <span class="hljs-keyword">return</span> PF_STATUS_SUCCESS;
+}</code></pre></div>
+
+<div class="tc-tiddler-plugin-info tc-reveal"><p>
+</p></div>
+</div>
+
+</p>
+</section>
+</body>
+</html>
+
