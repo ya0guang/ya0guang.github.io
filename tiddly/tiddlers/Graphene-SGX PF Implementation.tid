@@ -1,8 +1,20 @@
 created: 20210414014809847
-modified: 20210414035134564
-tags: Analysis Artifact SGX TODO
+modified: 20210414144502380
+tags: Analysis Artifact SGX
 title: Graphene-SGX PF Implementation
 type: text/vnd.tiddlywiki
+
+! High-level Overview
+
+# Protected file operations trapped into the libOS
+# LibOS calls the corresponding user-level functions (`pf_*`)
+# The user-level functions invokes it's internal Intel PF functions (`ipf_*`)
+# Callback the actual functions which does the operation (`cb_*`)
+
+* PF is stateful and it's maintained by `pf_context`
+* Integrity guaranteed by MHT
+
+! Gadgets
 
 * The implementation of PF can be found [[here|https://github.com/oscarlab/graphene/tree/master/Pal/src/host/Linux-SGX/protected-files]].
 * Just like the Intel PF, there are a set of user interfaces and another set of functions as internal implementation.
@@ -10,17 +22,7 @@ type: text/vnd.tiddlywiki
 
 ! User Interfaces
 
-!! `pf_open`
-
-First we need to know how a PF is opened.
-
-Function call trace: 
-
-* [[file_open|https://github.com/oscarlab/graphene/blob/master/Pal/src/host/Linux-SGX/db_files.c#L33]] -> 
-* [[load_protected_file|https://github.com/oscarlab/graphene/blob/189f99f62bc6cbd5d368b1ef26760f71ffe4e967/Pal/src/host/Linux-SGX/enclave_pf.c#L533]] ->
-* [[open_protected_file|https://github.com/oscarlab/graphene/blob/189f99f62bc6cbd5d368b1ef26760f71ffe4e967/Pal/src/host/Linux-SGX/enclave_pf.c#L514]] ->
-* [[pf_open|https://github.com/oscarlab/graphene/blob/189f99f62bc6cbd5d368b1ef26760f71ffe4e967/Pal/src/host/Linux-SGX/protected-files/protected_files.c#L1191]] -> 
-* [[ipf_open|https://github.com/oscarlab/graphene/blob/189f99f62bc6cbd5d368b1ef26760f71ffe4e967/Pal/src/host/Linux-SGX/protected-files/protected_files.c#L163]]
+[[Graphene-SGX PF User Interfaces]]
 
 ! Callbacks 
 
@@ -28,4 +30,16 @@ Function call trace:
 
 All the call back function pointers are set to callbacks from `enclave_pf.c`.
 
-[[Graphene-SGX PF Callbacks]]
+* [[Graphene-SGX PF Callbacks]]
+
+! Internal data structures
+
+They are very similar to which in SGX SDK.
+
+* [[Graphene-SGX PF Data Structure]]
+
+! Internal implementation
+
+Functions starting with name `ipf_`.
+
+[[Graphene-SGX PF Internal]]

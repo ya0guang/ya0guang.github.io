@@ -1,0 +1,116 @@
+created: 20210414144429470
+modified: 20210414144443043
+tags: Analysis Artifact SGX
+title: Graphene-SGX PF User Interfaces
+type: text/vnd.tiddlywiki
+
+All these functions will first check if the PF subsystem is correctly initialized (callback functions set).
+
+!! `pf_open`
+
+First we need to know how a PF is opened.
+
+```c
+pf_status_t pf_open(pf_handle_t handle, const char* path, uint64_t underlying_size,
+                    pf_file_mode_t mode, bool create, const pf_key_t* key, pf_context_t** context) {
+    if (!g_initialized)
+        return PF_STATUS_UNINITIALIZED;
+
+    pf_status_t status;
+    *context = ipf_open(path, mode, create, handle, underlying_size, key, &status);
+    return status;
+}
+```
+
+Function call trace: 
+
+* [[file_open|https://github.com/oscarlab/graphene/blob/master/Pal/src/host/Linux-SGX/db_files.c#L33]] -> 
+* [[load_protected_file|https://github.com/oscarlab/graphene/blob/189f99f62bc6cbd5d368b1ef26760f71ffe4e967/Pal/src/host/Linux-SGX/enclave_pf.c#L533]] ->
+* [[open_protected_file|https://github.com/oscarlab/graphene/blob/189f99f62bc6cbd5d368b1ef26760f71ffe4e967/Pal/src/host/Linux-SGX/enclave_pf.c#L514]] ->
+* [[pf_open|https://github.com/oscarlab/graphene/blob/189f99f62bc6cbd5d368b1ef26760f71ffe4e967/Pal/src/host/Linux-SGX/protected-files/protected_files.c#L1191]] -> 
+* [[ipf_open|https://github.com/oscarlab/graphene/blob/189f99f62bc6cbd5d368b1ef26760f71ffe4e967/Pal/src/host/Linux-SGX/protected-files/protected_files.c#L163]]
+
+!! `pf_close`
+
+Just like `pf_open`, this function will be invoked in `unload_protected_file` or when error occurs and file needs to be closed.
+
+```c
+pf_status_t pf_close(pf_context_t* pf) {
+    if (!g_initialized)
+        return PF_STATUS_UNINITIALIZED;
+
+    if (ipf_close(pf))
+        return PF_STATUS_SUCCESS;
+    return pf->last_error;
+}
+```
+
+!! `pf_get_size`
+
+This function is invoked in function related to file mapping, like `pf_file_map` in `db_files.c`. __Not of great interest.__
+
+!! `pf_set_size`
+
+To truncate a file, also not very interesting.
+
+!! `pf_read`
+
+`pf_read` and `pf_wirte` have similar logic: seek to an appropriate position in the file and then `read` or `wirte`.
+
+```c
+pf_status_t pf_read(pf_context_t* pf, uint64_t offset, size_t size, void* output,
+                    size_t* bytes_read) {
+    if (!g_initialized)
+        return PF_STATUS_UNINITIALIZED;
+
+    if (!size) {
+        *bytes_read = 0;
+        return PF_STATUS_SUCCESS;
+    }
+
+    if (!ipf_seek(pf, offset))
+        return pf->last_error;
+
+    if (pf->end_of_file || pf->offset == pf->encrypted_part_plain.size) {
+        pf->end_of_file = true;
+        *bytes_read = 0;
+        return PF_STATUS_SUCCESS;
+    }
+
+    size_t bytes = ipf_read(pf, output, size);
+    if (!bytes)
+        return pf->last_error;
+
+    *bytes_read = bytes;
+    return PF_STATUS_SUCCESS;
+}
+```
+
+!! `pf_write`
+
+```c
+pf_status_t pf_write(pf_context_t* pf, uint64_t offset, size_t size, const void* input) {
+    if (!g_initialized)
+        return PF_STATUS_UNINITIALIZED;
+
+    if (!ipf_seek(pf, offset))
+        return pf->last_error;
+
+    if (ipf_write(pf, input, size) != size)
+        return pf->last_error;
+    return PF_STATUS_SUCCESS;
+}
+```
+
+!! `pf_flush`
+
+```c
+pf_status_t pf_flush(pf_context_t* pf) {
+    if (!g_initialized)
+        return PF_STATUS_UNINITIALIZED;
+
+    if (!ipf_internal_flush(pf))
+        return pf->last_error;
+    return PF_STATUS_SUCCESS;
+}
+```
