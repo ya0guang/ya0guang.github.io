@@ -17,7 +17,7 @@
 
 <section class="tc-story-river tc-static-story-river">
 <p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Analysis tc-tagged-Artifact tc-tagged-SGX" data-tags="Analysis Artifact SGX" data-tiddler-title="Graphene-SGX PF Internal"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">Graphene-SGX PF Internal</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
-<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>April 14, 2021 at 9:37 pm</div></div><div class=" tc-reveal">
+<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>April 16, 2021 at 10:34 am</div></div><div class=" tc-reveal">
 <div class="tc-tags-wrapper"><span class="tc-tag-list-item">
 <span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
@@ -39,7 +39,7 @@ SGX
 <span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
 </div>
 
-<div class="tc-tiddler-body tc-reveal"><p>These functions performs essential operations on protected files. The implementations seem like transporting the official Intel SGX SDK <code>cpp</code> code to <code>c</code> at graphene side.</p><h2 class=""><code>ipf_open</code></h2><ol><li>Create and initialize(<code>ipf_init_fields</code>) a <code>pf</code>(<code>pf_context_t</code>)</li><li>Check validity of key, path, handle(<em>fd</em>), size</li><li>Check if it needs to create a new file or the file exits</li><li>Return <code>pf</code></li></ol><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">pf_context_t</span>* <span class="hljs-title">ipf_open</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* path, <span class="hljs-keyword">pf_file_mode_t</span> mode, <span class="hljs-keyword">bool</span> create, <span class="hljs-keyword">pf_handle_t</span> file,
+<div class="tc-tiddler-body tc-reveal"><p>These functions performs essential operations on protected files. The implementations seem like transporting the official Intel SGX SDK <code>cpp</code> code to <code>c</code> at graphene side.</p><ul><li>LRU cache is used for data/mht nodes iteration</li></ul><h2 class=""><code>ipf_open</code></h2><ol><li>Create and initialize(<code>ipf_init_fields</code>) a <code>pf</code>(<code>pf_context_t</code>)</li><li>Check validity of key, path, handle(<em>fd</em>), size</li><li>Check if it needs to create a new file or the file exits</li><li>Return <code>pf</code></li></ol><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">pf_context_t</span>* <span class="hljs-title">ipf_open</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* path, <span class="hljs-keyword">pf_file_mode_t</span> mode, <span class="hljs-keyword">bool</span> create, <span class="hljs-keyword">pf_handle_t</span> file,
                               <span class="hljs-keyword">uint64_t</span> real_size, <span class="hljs-keyword">const</span> <span class="hljs-keyword">pf_key_t</span>* kdk_key, <span class="hljs-keyword">pf_status_t</span>* status)</span> </span>{
     *status = PF_STATUS_NO_MEMORY;
     <span class="hljs-keyword">pf_context_t</span>* pf = <span class="hljs-built_in">calloc</span>(<span class="hljs-number">1</span>, <span class="hljs-keyword">sizeof</span>(*pf));
@@ -325,7 +325,7 @@ out:
     }
 
     <span class="hljs-keyword">return</span> file_data_node;
-}</code></pre><h2 class=""><code>ipf_read_data_node</code></h2><p>This function first reads the ciphertext of a node by specifying a node number and a pf, then decrypt the ciphertext using the callback function to get the plaintext.  Besides, add what have been read to LRU cache.</p><h2 class=""><code>ipf_close</code></h2><ul><li>called by <code>pf_close</code></li><li>invokes <code>ipf_internal_flush</code> if the status is not <code>PF_STATUS_SUCCESS</code></li><li>also do some cleaning jobs on the LRU cache</li></ul><h2 class=""><code>ipf_internal_flush</code></h2><ul><li></li></ul><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">bool</span> <span class="hljs-title">ipf_internal_flush</span><span class="hljs-params">(<span class="hljs-keyword">pf_context_t</span>* pf)</span> </span>{
+}</code></pre><h2 class=""><code>ipf_read_data_node</code></h2><p>This function first reads the ciphertext of a node by specifying a node number and a pf, then decrypt the ciphertext using the callback function to get the plaintext.  Besides, add what have been read to LRU cache.</p><h2 class=""><code>ipf_close</code></h2><ul><li>called by <code>pf_close</code></li><li>invokes <code>ipf_internal_flush</code> if the status is not <code>PF_STATUS_SUCCESS</code></li><li>also do some cleaning jobs on the LRU cache</li></ul><h2 class=""><code>ipf_internal_flush</code></h2><ol><li>Check if writing is needed (for mht and other nodes)</li><li>Update data/mht/meta nodes</li><li>Write to disk</li></ol><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">bool</span> <span class="hljs-title">ipf_internal_flush</span><span class="hljs-params">(<span class="hljs-keyword">pf_context_t</span>* pf)</span> </span>{
     <span class="hljs-keyword">if</span> (!pf-&gt;need_writing) {
         <span class="hljs-comment">// no changes at all</span>
         DEBUG_PF(<span class="hljs-string">"no need to write\n"</span>);
@@ -359,7 +359,136 @@ out:
     pf-&gt;need_writing = <span class="hljs-literal">false</span>;
 
     <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
-}</code></pre></div>
+}</code></pre><h2 class=""><code>ipf_update_all_data_and_mht_nodes</code></h2><p>This function is very complex. It iterates all nodes with <code>need_writing</code> flag set and do corresponding change/encryption/update</p><ol><li>Iterate all data nodes needing writing: generate a key for the node, store the key in its parent mht node and encrypt data, then store the gmac in the mht node</li><li>Iterate all mht nodes needing writing: put these mht nodes into an array and sort them</li><li>Iterate this array from the last node to the first: like what have been done to the data nodes, mht nodes also need to be maintained in a similar way.</li></ol><pre class="c hljs"><code>static bool ipf_update_all_data_and_mht_nodes(pf_context_t* pf) {
+    bool ret = false;
+    file_node_t** mht_array = NULL;
+    file_node_t* file_mht_node;
+    pf_status_t status;
+    void* data = lruc_get_first(pf-&gt;cache);
+
+    // 1. encrypt the changed data
+    // 2. set the IV+GMAC in the parent MHT
+    // [3. set the need_writing flag for all the parents]
+    while (data != NULL) {
+        if (((file_node_t*)data)-&gt;type == FILE_DATA_NODE_TYPE) {
+            file_node_t* data_node = (file_node_t*)data;
+
+            if (data_node-&gt;need_writing) {
+                gcm_crypto_data_t* gcm_crypto_data =
+                    &amp;data_node-&gt;parent-&gt;decrypted.mht
+                         .data_nodes_crypto[data_node-&gt;node_number % ATTACHED_DATA_NODES_COUNT];
+
+                if (!ipf_generate_random_key(pf, &amp;gcm_crypto_data-&gt;key))
+                    goto out;
+
+                // encrypt the data, this also saves the gmac of the operation in the mht crypto
+                // node
+                status = g_cb_aes_gcm_encrypt(&amp;gcm_crypto_data-&gt;key, &amp;g_empty_iv, NULL, 0,  // aad
+                                              data_node-&gt;decrypted.data.data, PF_NODE_SIZE,
+                                              data_node-&gt;encrypted.cipher, &amp;gcm_crypto_data-&gt;gmac);
+                if (PF_FAILURE(status)) {
+                    pf-&gt;last_error = status;
+                    goto out;
+                }
+
+                file_mht_node = data_node-&gt;parent;
+#ifdef DEBUG
+                // this loop should do nothing, add it here just to be safe
+                while (file_mht_node-&gt;node_number != 0) {
+                    assert(file_mht_node-&gt;need_writing == true);
+                    file_mht_node = file_mht_node-&gt;parent;
+                }
+#endif
+            }
+        }
+        data = lruc_get_next(pf-&gt;cache);
+    }
+
+    size_t dirty_count = 0;
+
+    // count dirty mht nodes
+    data = lruc_get_first(pf-&gt;cache);
+    while (data != NULL) {
+        if (((file_node_t*)data)-&gt;type == FILE_MHT_NODE_TYPE) {
+            if (((file_node_t*)data)-&gt;need_writing)
+                dirty_count++;
+        }
+        data = lruc_get_next(pf-&gt;cache);
+    }
+
+    // add all the mht nodes that needs writing to a list
+    mht_array = malloc(dirty_count * sizeof(*mht_array));
+    if (!mht_array) {
+        pf-&gt;last_error = PF_STATUS_NO_MEMORY;
+        goto out;
+    }
+
+    data = lruc_get_first(pf-&gt;cache);
+    uint64_t dirty_idx = 0;
+    while (data != NULL) {
+        if (((file_node_t*)data)-&gt;type == FILE_MHT_NODE_TYPE) {
+            file_mht_node = (file_node_t*)data;
+
+            if (file_mht_node-&gt;need_writing)
+                mht_array[dirty_idx++] = file_mht_node;
+        }
+
+        data = lruc_get_next(pf-&gt;cache);
+    }
+
+    if (dirty_count &gt; 0)
+        sort_nodes(mht_array, 0, dirty_count - 1);
+
+    // update the gmacs in the parents from last node to first (bottom layers first)
+    for (dirty_idx = dirty_count; dirty_idx &gt; 0; dirty_idx--) {
+        file_mht_node = mht_array[dirty_idx - 1];
+
+        gcm_crypto_data_t* gcm_crypto_data =
+            &amp;file_mht_node-&gt;parent-&gt;decrypted.mht
+                 .mht_nodes_crypto[(file_mht_node-&gt;node_number - 1) % CHILD_MHT_NODES_COUNT];
+
+        if (!ipf_generate_random_key(pf, &amp;gcm_crypto_data-&gt;key)) {
+            goto out;
+        }
+
+        status = g_cb_aes_gcm_encrypt(&amp;gcm_crypto_data-&gt;key, &amp;g_empty_iv, NULL, 0,
+                                      &amp;file_mht_node-&gt;decrypted.mht, PF_NODE_SIZE,
+                                      &amp;file_mht_node-&gt;encrypted.cipher, &amp;gcm_crypto_data-&gt;gmac);
+        if (PF_FAILURE(status)) {
+            pf-&gt;last_error = status;
+            goto out;
+        }
+    }
+
+    // update mht root gmac in the meta data node
+    if (!ipf_generate_random_key(pf, &amp;pf-&gt;encrypted_part_plain.mht_key))
+        goto out;
+
+    status = g_cb_aes_gcm_encrypt(&amp;pf-&gt;encrypted_part_plain.mht_key, &amp;g_empty_iv,
+                                  NULL, 0,
+                                  &amp;pf-&gt;root_mht.decrypted.mht, PF_NODE_SIZE,
+                                  &amp;pf-&gt;root_mht.encrypted.cipher,
+                                  &amp;pf-&gt;encrypted_part_plain.mht_gmac);
+    if (PF_FAILURE(status)) {
+        pf-&gt;last_error = status;
+        goto out;
+    }
+
+    ret = true;
+
+out:
+    free(mht_array);
+    return ret;
+}
+''''
+
+!! `ipf_update_metadata_node`
+
+This function first generate a random key (derived from user's KDK) and encrypt the metadata node using this key. 
+
+!! `ipf_write_all_changes_to_disk`
+
+Write all nodes in `pf` back to the disk. It will first write data and child mht nodes, then root mht node, and last, write the metadata node.</code></pre></div>
 
 <div class="tc-tiddler-plugin-info tc-reveal"><p>
 </p></div>
