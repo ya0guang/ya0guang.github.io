@@ -1,7 +1,7 @@
 ---
 layout: single
-title: Rust 学习笔记 (To Be Continued)
-date: 2021-03-11 23:10:07
+title: Rust 学习笔记
+date: 2021-04-17 23:10:07
 categories: "Notes"
 tags:
 - Rust
@@ -14,7 +14,9 @@ header:
 
 > 虽然目前只看了~~两~~十章，但我已经从代码中嗅到了了浓郁的Rust的香~~锈~~味。
 
-基本看完了现在。
+~~基本~~看完了现在。
+
+在一个较为清闲的周末早上，我决定把最后一章看完。
 
 创建时间：2021-01-09 21:10:07
 
@@ -2808,6 +2810,211 @@ fn main() {
 - `syn`是用来生成AST的包，而`quote`生成代码
 
 初次之外还有*attribute-like macro*和*function-like macro*。前者类似于Python中web server对于网页路径对应的解析函数的装饰器，而后者类似于`macro_rules!`但是却依赖`#[proc_macro]`。
+
+# Final Project: Multithreaded Web Server
+
+这几行小代码可以实现一个tiny webserver。
+
+```rs
+use std::net::TcpListener;
+use std::net::TcpStream;
+use std::io::prelude::*;
+use std::fs;
+
+fn main() {
+    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+
+    for stream in listener.incoming() {
+        let stream = stream.unwrap();
+
+        println!("connection established!");
+        handle_connection(stream);
+    }
+}
+
+fn handle_connection(mut stream: TcpStream) {
+    let mut buffer = [0; 1024];
+    stream.read(&mut buffer).unwrap();
+
+    let get = b"GET / HTTP/1.1\r\n";
+
+    let (status_line, filename) = if buffer.starts_with(get) {
+        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
+    } else {
+        ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")
+    };
+
+    println!("Request from client: {}", String::from_utf8_lossy(&buffer));
+
+    let content = fs::read_to_string(filename).unwrap();
+
+    let response = format!("{} \r\nContent-Length: {}\r\n\r\n{}", status_line, content.len(), content);
+    stream.write(response.as_bytes()).unwrap();
+    stream.flush().unwrap();
+}
+```
+
+但是如果在`handle_connection`中的任务如若比较繁重则无法高效地服务于多用户。下面使用线程池来对这段代码改进。
+
+```rs
+// file: src/bin/main.rs
+use std::net::TcpListener;
+use std::net::TcpStream;
+use std::io::prelude::*;
+use std::fs;
+use std::time::Duration;
+use std::thread;
+use server::ThreadPool;
+
+fn main() {
+    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+    let pool = ThreadPool::new(4);
+
+
+    //or stream in listener.incoming().take(2) {
+    for stream in listener.incoming() {
+        let stream = stream.unwrap();
+
+        println!("[Server:] connection established!");
+        pool.execute(|| {
+            handle_connection(stream);
+        });
+    }
+}
+
+fn handle_connection(mut stream: TcpStream) {
+    let mut buffer = [0; 1024];
+    stream.read(&mut buffer).unwrap();
+
+    let get = b"GET / HTTP/1.1\r\n";
+    let sleep = b"GET /sleep HTTP/1.1\r\n";
+
+    let (status_line, filename) = if buffer.starts_with(get) {
+        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
+    } else if buffer.starts_with(sleep) {
+        thread::sleep(Duration::from_secs(5));
+        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
+    } else {
+        ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")
+    };
+
+    println!("Request from client: {}", String::from_utf8_lossy(&buffer));
+
+    let content = fs::read_to_string(filename).unwrap();
+
+    let response = format!("{} \r\nContent-Length: {}\r\n\r\n{}", status_line, content.len(), content);
+    stream.write(response.as_bytes()).unwrap();
+    stream.flush().unwrap();
+}
+
+// file: src/lib.rs
+use std::thread;
+use std::sync::mpsc;
+use std::sync::Arc;
+use std::sync::Mutex;
+
+pub struct ThreadPool {
+    workers: Vec<Worker>,
+    sender: mpsc::Sender<Message>,
+}
+
+type Job = Box<dyn FnOnce() + Send + 'static>;
+
+enum Message {
+    NewJob(Job),
+    Terminate,
+}
+
+struct Worker {
+    id: usize,
+    job: Option<thread::JoinHandle<()>>,
+}
+
+impl Worker {
+    fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Message>>>) -> Worker {
+        let job = thread::spawn(move || loop {
+            let message = receiver.lock().unwrap().recv().unwrap();
+
+            match message {
+                Message::NewJob(job) => {
+                    println!("Worker {} got a job; exec...", id);
+                    job();
+                }
+                Message::Terminate => {
+                    println!("Worker {} told me to stop work", id);
+                    break;
+                }
+            }
+
+        });
+
+        Worker {
+            id,
+            job: Some(job),
+        }
+    }
+}
+
+impl ThreadPool {
+    /// Creates a new thread pool
+    /// 
+    /// # Panics
+    /// 
+    /// size cannot be zero or negetive
+    pub fn new(size: usize) -> ThreadPool {
+        assert!(size > 0);
+
+        let (sender, receiver) = mpsc::channel();
+        let receiver = Arc::new(Mutex::new(receiver));
+
+        let mut workers = Vec::with_capacity(size);
+
+        for i in 0..size {
+            workers.push(Worker::new(i, Arc::clone(&receiver)))
+        }
+
+        ThreadPool {
+            workers,
+            sender,
+        }
+    }
+
+    pub fn execute<F>(&self, f: F)
+    where F: FnOnce() + Send + 'static {
+        let job = Box::new(f);
+
+        self.sender.send(Message::NewJob(job)).unwrap();
+    }
+}
+
+impl Drop for ThreadPool {
+    fn drop(&mut self) {
+        println!("Sending terminate msg to workers");
+
+        for _ in &self.workers {
+            self.sender.send(Message::Terminate).unwrap();
+        }
+
+        for worker in &mut self.workers {
+            println!("Shutting down worker {}", worker.id);
+            
+            if let Some(thread) = worker.job.take() {
+                thread.join().unwrap();
+            }
+        }
+    }
+}
+```
+
+- 这个程序实现了线程池模型的web server，思路和用C++的实现基本相同
+- 提供了graceful clean，但是没有实现`Signal`机制下的结束
+- 使用了高级特性，比如之前接触到的channel，`Arc`，`Mutex`等等。
+
+# Epilogue
+
+基本上本人对于Rust PL这本书的学习就告一段落了，然而对于编程语言的学习似乎还没有办法停止。Rust确实是一门非常酷炫的语言，它在简洁的同时做到了非常“啰嗦”，这真的是一种非常矛盾的特点，大概安全的代价就是啰嗦吧。为了避免敲键盘到手酸，此处安利一下VSCode里面的`tabnine`插件，可以让你少敲很多代码的！
+
+那么，代价是什么呢？
 
 # Other References
 
