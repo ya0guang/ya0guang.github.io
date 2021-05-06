@@ -1,5 +1,5 @@
 created: 20210402141906526
-modified: 20210407012632308
+modified: 20210506154659730
 tags: Research Security SGX
 title: SGX Middleware (Papers)
 type: text/vnd.tiddlywiki
@@ -9,13 +9,14 @@ type: text/vnd.tiddlywiki
 !! Container-like
 
 * [[Graphene-SGX|GrapheneSGX]] [[Paper|http://www.cs.unc.edu/~porter/pubs/graphene-sgx.pdf]] [[Code|https://github.com/oscarlab/graphene]]
-* SGX-LKL [[Paper|https://arxiv.org/abs/1908.11143]] [[Code|https://github.com/lsds/sgx-lkl]]
-* Occlum [[Paper|https://arxiv.org/abs/2001.07450]] [[Code|https://github.com/occlum/occlum]]
+* [[Occlum|Occlum: Secure and Efficient Multitasking Inside a Single Enclave of Intel SGX]] [[Paper|https://arxiv.org/abs/2001.07450]] [[Code|https://github.com/occlum/occlum]]
 * Scone [[Official Website|https://sconedocs.github.io/]] [[Paper PDF|https://www.usenix.org/system/files/conference/osdi16/osdi16-arnautov.pdf]] ''Source Code Unavailable''
-* Ryoan [[Paper|https://www.usenix.org/conference/osdi16/technical-sessions/presentation/hunt]] [[Code|https://github.com/ut-osa/ryoan]] ''doesn't work''
+* Ryoan [[Paper|https://www.usenix.org/conference/osdi16/technical-sessions/presentation/hunt]] [[Code|https://github.com/ut-osa/ryoan]] ''doesn't work now''
+* [[Chancel|CHANCEL: Efficient Multi-client Isolation Under Adversarial Programs]]
+* SGX-LKL [[Paper|https://arxiv.org/abs/1908.11143]] [[Code|https://github.com/lsds/sgx-lkl]]
 * [[RATEL|Dynamic Binary Translation for SGX Enclaves (Ratel)]] 
 * CAT `Need updates`
-* Civet [Paper|https://www.usenix.org/conference/usenixsecurity20/presentation/tsai] (graphene)
+* Civet [[Paper|https://www.usenix.org/conference/usenixsecurity20/presentation/tsai]] (graphene)
 
 !! Language-specific
 

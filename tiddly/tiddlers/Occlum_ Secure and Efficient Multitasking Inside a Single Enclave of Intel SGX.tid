@@ -1,0 +1,45 @@
+created: 20210506143259193
+modified: 20210506154033452
+tags: Paper Research Security SGX Defense System
+title: Occlum: Secure and Efficient Multitasking Inside a Single Enclave of Intel SGX
+type: text/vnd.tiddlywiki
+
+''ASPLOS'20''
+
+* [[Paper|https://dl.acm.org/doi/10.1145/3373376.3378469]]
+* [[arxiv|https://arxiv.org/abs/2001.07450]]
+* [[Code|https://github.com/occlum/occlum]]
+
+! Abstract 
+
+
+<<<
+
+Intel Software Guard Extensions (SGX) enables user-level code to create private memory regions called enclaves, whose code and data are protected by the CPU from software and hardware attacks outside the enclaves. Recent work introduces library operating systems (LibOSes) to SGX so that legacy applications can run inside enclaves with few or even no modifications. As virtually any non-trivial application demands multiple processes, it is essential for LibOSes to support multitasking. However, none of the existing SGX LibOSes support multitasking both securely and efficiently.
+
+This paper presents Occlum, a system that enables secure and efficient multitasking on SGX. We implement the LibOS processes as SFI-Isolated Processes (SIPs). SFI is a software instrumentation technique for sandboxing untrusted modules (called domains). We design a novel SFI scheme named MPX-based, Multi-Domain SFI (MMDSFI) and leverage MMDSFI to enforce the isolation of SIPs. We also design an independent verifier to ensure the security guarantees of MMDSFI. With SIPs safely sharing the single address space of an enclave, the LibOS can implement multitasking efficiently. The Occlum LibOS outperforms the state-of-the-art SGX LibOS on multitasking-heavy workloads by up to 6,600x on micro-benchmarks and up to 500x on application benchmarks.
+
+<<<
+
+! Motivation & Target & Model
+
+* Modern services are highly interdependent, therefore putting some service into the enclave requires some other corresponding services
+* One Library OS to serve multiple process in ONE enclave
+* Separation between LibOS and processes, and among processes
+* Adversarial binary leaks no sensitive info
+* Injecting new code is prevented, but control flow may not be guaranteed
+
+! Design
+
+[img[https://raw.githubusercontent.com/occlum/occlum/master/docs/images/arch_overview.png]]
+
+* SFI to isolate processes (MMDSFI)
+* Memory access and control flow are restricted
+* Thus enhance performance of certain tasks: avoid enclave creation, `fork` -> `spawn`
+
+! Method
+
+* Two pseudo-instructions: `cfi_label` and `cfi-guard` to indicate a valid call site and check if the site is valid, respectively.
+* Binary is generated outside of enclave (using Occlum's instrumented compilier) and verified in the enclave
+
+
