@@ -1,13 +1,13 @@
 created: 20210402140010650
-modified: 20210405181105805
+modified: 20210503152550942
 tags: Research Security SGX Iago
 title: SGX Papers
 type: text/vnd.tiddlywiki
 
 ! Meta
 
-[[Awesome SGX|https://github.com/Maxul/Awesome-SGX-Open-Source]]
-[[SGX Review|https://maxul.github.io/2020/09/26/SGX-Review/]]
+* [[Awesome SGX|https://github.com/Maxul/Awesome-SGX-Open-Source]]
+* [[SGX Review|https://maxul.github.io/2020/09/26/SGX-Review/]]
 
 ! Official Documents
 
@@ -30,3 +30,6 @@ type: text/vnd.tiddlywiki
 
 ! See also:
 <<list-links "[tag[SGX]tag[Paper]!tag[Defense]!tag[Attack]!tag[Application]]">>
+
+! Related materials other than paper
+<<list-links "[tag[SGX]!tag[Paper]]">>
