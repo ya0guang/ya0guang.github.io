@@ -64,10 +64,10 @@ struct syscallentry * get_syscall_entry(unsigned int callno, bool do32)
 ![img](/assets/images/Xuanice/gef_before_ret.jpg)
 
 首先，在return的时候，函数`get_syscall_entry`并没有做任何更改返回值（存放在`rax`）中的事情。此时的`rax`为：
-![img](assets/images/Xuanice/rax_at_return.jpg)
+![img](/assets/images/Xuanice/rax_at_return.jpg)
 
 但是，在返回后出鬼了！注意这里的`rax`已经变成了奇奇怪怪的形状。然而元凶竟然是一个奇奇怪怪的`cbqe`指令！
-![img](assets/images/Xuanice/after_return.jpg)
+![img](/assets/images/Xuanice/after_return.jpg)
 
 查证[资料](https://80x86.dev/instruction/cdqe)后发现其作用是对于`EAX`的*signed extension*。这也就意味着`RAX`的高位会被抹去，和我们观测到的现象一样。
 
