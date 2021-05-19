@@ -17,6 +17,7 @@ Creation Date: Sep, 2020
 
 - [Matthias Felleisen's Thoughts](https://felleisen.org/matthias/Thoughts/index.html)
 - [小小整理网站](https://smallcollation.blogspot.com/#gsc.tab=0)
+- [速度语言网]https://www.languageweb.net/
 
 # Paper Writing
 

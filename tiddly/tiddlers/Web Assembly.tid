@@ -1,0 +1,12 @@
+created: 20210518145243168
+modified: 20210519010401651
+tags: Artifact System CS
+title: Web Assembly
+type: text/vnd.tiddlywiki
+
+! Resources
+
+* [[Mozillla Document|https://developer.mozilla.org/en-US/docs/WebAssembly]] more about how to use (in web)
+* [[WA Community|https://webassembly.github.io/]] more about language itself (specification)
+* [[Online Compilier|https://wasdk.github.io/WasmFiddle/]]
+* [[Micro Runtime|https://github.com/bytecodealliance/wasm-micro-runtime]]
