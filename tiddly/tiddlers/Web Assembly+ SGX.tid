@@ -1,0 +1,21 @@
+created: 20210519184859182
+modified: 20210523151951047
+tags: SGX Research Paper Artifact
+title: Web Assembly+ SGX
+type: text/vnd.tiddlywiki
+
+! Twine: An Embedded Trusted Runtime for WebAssembly
+
+* [[Paper|https://arxiv.org/abs/2103.15860]]
+* [[Code|https://github.com/JamesMenetrey/unine-twine]]
+
+<<<
+WebAssembly is an increasingly popular lightweight binary instruction format, which can be efficiently embedded and sandboxed. Languages like C, C++, Rust, Go, and many others can be compiled into WebAssembly. This paper describes Twine, a WebAssembly trusted runtime designed to execute unmodified, language-independent applications. We leverage Intel SGX to build the runtime environment without dealing with language-specific, complex APIs. While SGX hardware provides secure execution within the processor, Twine provides a secure, sandboxed software runtime nested within an SGX enclave, featuring a WebAssembly system interface (WASI) for compatibility with unmodified WebAssembly applications. We evaluate Twine with a large set of general-purpose benchmarks and real-world applications. In particular, we used Twine to implement a secure, trusted version of SQLite, a well-known full-fledged embeddable database. We believe that such a trusted database would be a reasonable component to build many larger application services. Our evaluation shows that SQLite can be fully executed inside an SGX enclave via WebAssembly and existing system interface, with similar average performance overheads. We estimate that the performance penalties measured are largely compensated by the additional security guarantees and its full compatibility with standard WebAssembly. An in-depth analysis of our results indicates that performance can be greatly improved by modifying some of the underlying libraries. We describe and implement one such modification in the paper, showing up to 4.1× speedup. Twine is open-source, available at GitHub along with instructions to reproduce our experiments.
+<<<
+
+* 1st General purpose WASM runtime in SGX enclave?
+* Support SQLite
+* Implemented PF
+
+
+爲什麽他可以發頂會？

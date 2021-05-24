@@ -1,0 +1,21 @@
+created: 20210523221515340
+modified: 20210524031223120
+tags: $:/tags/Macro
+title: collapse
+type: text/vnd.tiddlywiki
+
+\define collapse(tiddler:"SomeTiddler")
+<$reveal type="nomatch" state="$:/state/SampleReveal2" text="show">
+
+<$button set="$:/state/SampleReveal2" setTo="show">Go♂Deeper</$button>
+
+</$reveal>
+<$reveal type="match" state="$:/state/SampleReveal2" text="show">
+
+<$button set="$:/state/SampleReveal2" setTo="hide">Hide me</$button>
+
+{{$tiddler$}}
+
+</$reveal>
+
+\end

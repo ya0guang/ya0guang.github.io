@@ -1,0 +1,153 @@
+created: 20210524030407084
+modified: 20210524030405951
+tags: 
+title: wasm_runtime_env_init
+type: text/vnd.tiddlywiki
+
+!!! The  symbols are a static array of `NativeSymbol`
+```c
+typedef struct NativeSymbol {
+    const char *symbol;
+    void *func_ptr;
+    const char *signature;
+    /* attachment which can be retrieved in native API by
+       calling wasm_runtime_get_function_attachment(exec_env) */
+    void *attachment;
+} NativeSymbol;
+```
+
+!!! `wasm_native_init`
+
+```c
+bool
+wasm_native_init()
+{
+    NativeSymbol *native_symbols;
+    uint32 n_native_symbols;
+
+#if WASM_ENABLE_LIBC_BUILTIN != 0
+    n_native_symbols = get_libc_builtin_export_apis(&native_symbols);
+    if (!wasm_native_register_natives("env",
+                                      native_symbols, n_native_symbols))
+        return false;
+#endif /* WASM_ENABLE_LIBC_BUILTIN */
+
+#if WASM_ENABLE_SPEC_TEST
+    n_native_symbols = get_spectest_export_apis(&native_symbols);
+    if (!wasm_native_register_natives("spectest",
+                                      native_symbols, n_native_symbols))
+        return false;
+#endif /* WASM_ENABLE_SPEC_TEST */
+
+#if WASM_ENABLE_LIBC_WASI != 0
+    n_native_symbols = get_libc_wasi_export_apis(&native_symbols);
+    if (!wasm_native_register_natives("wasi_unstable",
+                                      native_symbols, n_native_symbols))
+        return false;
+    if (!wasm_native_register_natives("wasi_snapshot_preview1",
+                                      native_symbols, n_native_symbols))
+        return false;
+#endif
+
+#if WASM_ENABLE_BASE_LIB != 0
+    n_native_symbols = get_base_lib_export_apis(&native_symbols);
+    if (n_native_symbols > 0
+        && !wasm_native_register_natives("env",
+                                         native_symbols, n_native_symbols))
+        return false;
+#endif
+
+#if WASM_ENABLE_APP_FRAMEWORK != 0
+    n_native_symbols = get_ext_lib_export_apis(&native_symbols);
+    if (n_native_symbols > 0
+        && !wasm_native_register_natives("env",
+                                         native_symbols, n_native_symbols))
+        return false;
+#endif
+
+#if WASM_ENABLE_LIB_PTHREAD != 0
+    if (!lib_pthread_init())
+        return false;
+
+    n_native_symbols = get_lib_pthread_export_apis(&native_symbols);
+    if (n_native_symbols > 0
+        && !wasm_native_register_natives("env",
+                                         native_symbols, n_native_symbols))
+        return false;
+#endif
+
+#if WASM_ENABLE_LIBC_EMCC != 0
+    n_native_symbols = get_libc_emcc_export_apis(&native_symbols);
+    if (n_native_symbols > 0
+        && !wasm_native_register_natives("env",
+                                         native_symbols, n_native_symbols))
+        return false;
+#endif /* WASM_ENABLE_LIBC_EMCC */
+
+    return true;
+}
+```
+
+!!! `register_natives`
+
+Regestered functions are organized as a linked list, each module holds several functions imported from a specific library:
+
+```c
+typedef struct NativeSymbolsNode {
+    struct NativeSymbolsNode *next;
+    const char *module_name;
+    NativeSymbol *native_symbols;
+    uint32 n_native_symbols;
+    bool call_conv_raw;
+} NativeSymbolsNode, *NativeSymbolsList;
+```
+
+```c
+static bool
+register_natives(const char *module_name,
+                 NativeSymbol *native_symbols,
+                 uint32 n_native_symbols,
+                 bool call_conv_raw)
+{
+    NativeSymbolsNode *node;
+#if ENABLE_SORT_DEBUG != 0
+    struct timeval start;
+    struct timeval end;
+    unsigned long timer;
+#endif
+
+    if (!(node = wasm_runtime_malloc(sizeof(NativeSymbolsNode))))
+        return false;
+#if WASM_ENABLE_MEMORY_TRACING != 0
+    os_printf("Register native, size: %u\n", sizeof(NativeSymbolsNode));
+#endif
+
+    node->module_name = module_name;
+    node->native_symbols = native_symbols;
+    node->n_native_symbols = n_native_symbols;
+    node->call_conv_raw = call_conv_raw;
+
+    /* Add to list head */
+    node->next = g_native_symbols_list;
+    g_native_symbols_list = node;
+
+#if ENABLE_SORT_DEBUG != 0
+    gettimeofday(&start, NULL);
+#endif
+
+#if ENABLE_QUICKSORT == 0
+    sort_symbol_ptr(native_symbols, n_native_symbols);
+#else
+    quick_sort_symbols(native_symbols, 0, (int)(n_native_symbols - 1));
+#endif
+
+#if ENABLE_SORT_DEBUG != 0
+    gettimeofday(&end, NULL);
+    timer = 1000000 * (end.tv_sec - start.tv_sec)
+            + (end.tv_usec - start.tv_usec);
+    LOG_ERROR("module_name: %s, nums: %d, sorted used: %ld us",
+              module_name, n_native_symbols, timer);
+#endif
+    return true;
+}
+```
