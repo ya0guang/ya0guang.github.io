@@ -1,0 +1,368 @@
+created: 20210524215002179
+modified: 20210524215002241
+tags: 
+title: WAMR `load_from_sections`
+type: text/vnd.tiddlywiki
+
+```c
+static bool
+load_from_sections(WASMModule *module, WASMSection *sections,
+                   char *error_buf, uint32 error_buf_size)
+{
+    WASMExport *export;
+    WASMSection *section = sections;
+    const uint8 *buf, *buf_end, *buf_code = NULL, *buf_code_end = NULL,
+                *buf_func = NULL, *buf_func_end = NULL;
+    WASMGlobal *aux_data_end_global = NULL, *aux_heap_base_global = NULL;
+    WASMGlobal *aux_stack_top_global = NULL, *global;
+    uint32 aux_data_end = (uint32)-1, aux_heap_base = (uint32)-1;
+    uint32 aux_stack_top = (uint32)-1, global_index, func_index, i;
+    uint32 aux_data_end_global_index = (uint32)-1;
+    uint32 aux_heap_base_global_index = (uint32)-1;
+    WASMType *func_type;
+
+    /* Find code and function sections if have */
+    while (section) {
+        if (section->section_type == SECTION_TYPE_CODE) {
+            buf_code = section->section_body;
+            buf_code_end = buf_code + section->section_body_size;
+        }
+        else if (section->section_type == SECTION_TYPE_FUNC) {
+            buf_func = section->section_body;
+            buf_func_end = buf_func + section->section_body_size;
+        }
+        section = section->next;
+    }
+
+    section = sections;
+    while (section) {
+        buf = section->section_body;
+        buf_end = buf + section->section_body_size;
+        LOG_DEBUG("load section, type: %d", section->section_type);
+        switch (section->section_type) {
+            case SECTION_TYPE_USER:
+                /* unsupported user section, ignore it. */
+                if (!load_user_section(buf, buf_end, module, error_buf, error_buf_size))
+                    return false;
+                break;
+            case SECTION_TYPE_TYPE:
+                if (!load_type_section(buf, buf_end, module, error_buf, error_buf_size))
+                    return false;
+                break;
+            case SECTION_TYPE_IMPORT:
+                if (!load_import_section(buf, buf_end, module, error_buf, error_buf_size))
+                    return false;
+                break;
+            case SECTION_TYPE_FUNC:
+                if (!load_function_section(buf, buf_end, buf_code, buf_code_end,
+                            module, error_buf, error_buf_size))
+                    return false;
+                break;
+            case SECTION_TYPE_TABLE:
+                if (!load_table_section(buf, buf_end, module, error_buf, error_buf_size))
+                    return false;
+                break;
+            case SECTION_TYPE_MEMORY:
+                if (!load_memory_section(buf, buf_end, module, error_buf, error_buf_size))
+                    return false;
+                break;
+            case SECTION_TYPE_GLOBAL:
+                if (!load_global_section(buf, buf_end, module, error_buf, error_buf_size))
+                    return false;
+                break;
+            case SECTION_TYPE_EXPORT:
+                if (!load_export_section(buf, buf_end, module, error_buf, error_buf_size))
+                    return false;
+                break;
+            case SECTION_TYPE_START:
+                if (!load_start_section(buf, buf_end, module, error_buf, error_buf_size))
+                    return false;
+                break;
+            case SECTION_TYPE_ELEM:
+                if (!load_table_segment_section(buf, buf_end, module, error_buf, error_buf_size))
+                    return false;
+                break;
+            case SECTION_TYPE_CODE:
+                if (!load_code_section(buf, buf_end, buf_func, buf_func_end,
+                                       module, error_buf, error_buf_size))
+                    return false;
+                break;
+            case SECTION_TYPE_DATA:
+                if (!load_data_segment_section(buf, buf_end, module, error_buf, error_buf_size))
+                    return false;
+                break;
+#if WASM_ENABLE_BULK_MEMORY != 0
+            case SECTION_TYPE_DATACOUNT:
+                if (!load_datacount_section(buf, buf_end, module, error_buf, error_buf_size))
+                    return false;
+                break;
+#endif
+            default:
+                set_error_buf(error_buf, error_buf_size,
+                              "invalid section id");
+                return false;
+        }
+
+        section = section->next;
+    }
+
+    module->aux_data_end_global_index = (uint32)-1;
+    module->aux_heap_base_global_index = (uint32)-1;
+    module->aux_stack_top_global_index = (uint32)-1;
+
+    /* Resolve auxiliary data/stack/heap info and reset memory info */
+    export = module->exports;
+    for (i = 0; i < module->export_count; i++, export++) {
+        if (export->kind == EXPORT_KIND_GLOBAL) {
+            if (!strcmp(export->name, "__heap_base")) {
+                global_index = export->index - module->import_global_count;
+                global = module->globals + global_index;
+                if (global->type == VALUE_TYPE_I32
+                    && !global->is_mutable
+                    && global->init_expr.init_expr_type ==
+                            INIT_EXPR_TYPE_I32_CONST) {
+                    aux_heap_base_global = global;
+                    aux_heap_base = global->init_expr.u.i32;
+                    aux_heap_base_global_index = export->index;
+                    LOG_VERBOSE("Found aux __heap_base global, value: %d",
+                                aux_heap_base);
+                }
+            }
+            else if (!strcmp(export->name, "__data_end")) {
+                global_index = export->index - module->import_global_count;
+                global = module->globals + global_index;
+                if (global->type == VALUE_TYPE_I32
+                    && !global->is_mutable
+                    && global->init_expr.init_expr_type ==
+                            INIT_EXPR_TYPE_I32_CONST) {
+                    aux_data_end_global = global;
+                    aux_data_end = global->init_expr.u.i32;
+                    aux_data_end_global_index = export->index;
+                    LOG_VERBOSE("Found aux __data_end global, value: %d",
+                                aux_data_end);
+
+                    aux_data_end = align_uint(aux_data_end, 16);
+                }
+            }
+
+            /* For module compiled with -pthread option, the global is:
+                [0] stack_top       <-- 0
+                [1] tls_pointer
+                [2] tls_size
+                [3] data_end        <-- 3
+                [4] global_base
+                [5] heap_base       <-- 5
+                [6] dso_handle
+
+                For module compiled without -pthread option:
+                [0] stack_top       <-- 0
+                [1] data_end        <-- 1
+                [2] global_base
+                [3] heap_base       <-- 3
+                [4] dso_handle
+            */
+            if (aux_data_end_global && aux_heap_base_global
+                && aux_data_end <= aux_heap_base) {
+                module->aux_data_end_global_index = aux_data_end_global_index;
+                module->aux_data_end = aux_data_end;
+                module->aux_heap_base_global_index = aux_heap_base_global_index;
+                module->aux_heap_base = aux_heap_base;
+
+                /* Resolve aux stack top global */
+                for (global_index = 0; global_index < module->global_count;
+                     global_index++) {
+                    global = module->globals + global_index;
+                    if (global->is_mutable /* heap_base and data_end is
+                                              not mutable */
+                        && global->type == VALUE_TYPE_I32
+                        && global->init_expr.init_expr_type ==
+                                    INIT_EXPR_TYPE_I32_CONST
+                        && (uint32)global->init_expr.u.i32 <= aux_heap_base) {
+                        aux_stack_top_global = global;
+                        aux_stack_top = (uint32)global->init_expr.u.i32;
+                        module->aux_stack_top_global_index =
+                                module->import_global_count + global_index;
+                        module->aux_stack_bottom = aux_stack_top;
+                        module->aux_stack_size = aux_stack_top > aux_data_end
+                                                 ? aux_stack_top - aux_data_end
+                                                 : aux_stack_top;
+                        LOG_VERBOSE("Found aux stack top global, value: %d, "
+                                    "global index: %d, stack size: %d",
+                                    aux_stack_top, global_index,
+                                    module->aux_stack_size);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+    module->malloc_function = (uint32)-1;
+    module->free_function = (uint32)-1;
+
+    /* Resolve malloc/free function exported by wasm module */
+    export = module->exports;
+    for (i = 0; i < module->export_count; i++, export++) {
+        if (export->kind == EXPORT_KIND_FUNC) {
+            if (!strcmp(export->name, "malloc")
+                && export->index >= module->import_function_count) {
+                func_index = export->index - module->import_function_count;
+                func_type = module->functions[func_index]->func_type;
+                if (func_type->param_count == 1
+                    && func_type->result_count == 1
+                    && func_type->types[0] == VALUE_TYPE_I32
+                    && func_type->types[1] == VALUE_TYPE_I32) {
+                    bh_assert(module->malloc_function == (uint32)-1);
+                    module->malloc_function = export->index;
+                    LOG_VERBOSE("Found malloc function, name: %s, index: %u",
+                                export->name, export->index);
+                }
+            }
+            else if (!strcmp(export->name, "__new")
+                     && export->index >= module->import_function_count) {
+                /* __new && __pin for AssemblyScript */
+                func_index = export->index - module->import_function_count;
+                func_type = module->functions[func_index]->func_type;
+                if (func_type->param_count == 2
+                    && func_type->result_count == 1
+                    && func_type->types[0] == VALUE_TYPE_I32
+                    && func_type->types[1] == VALUE_TYPE_I32
+                    && func_type->types[2] == VALUE_TYPE_I32) {
+                    uint32 j;
+                    WASMExport *export_tmp;
+
+                    bh_assert(module->malloc_function == (uint32)-1);
+                    module->malloc_function = export->index;
+                    LOG_VERBOSE("Found malloc function, name: %s, index: %u",
+                                export->name, export->index);
+
+                    /* resolve retain function.
+                        If not find, reset malloc function index */
+                    export_tmp = module->exports;
+                    for (j = 0; j < module->export_count; j++, export_tmp++) {
+                        if ((export_tmp->kind == EXPORT_KIND_FUNC)
+                            && (!strcmp(export_tmp->name, "__retain")
+                                || !strcmp(export_tmp->name, "__pin"))
+                            && (export_tmp->index
+                                >= module->import_function_count)) {
+                            func_index = export_tmp->index
+                                            - module->import_function_count;
+                            func_type =
+                                    module->functions[func_index]->func_type;
+                            if (func_type->param_count == 1
+                                && func_type->result_count == 1
+                                && func_type->types[0] == VALUE_TYPE_I32
+                                && func_type->types[1] == VALUE_TYPE_I32) {
+                                bh_assert(
+                                    module->retain_function == (uint32)-1);
+                                module->retain_function = export_tmp->index;
+                                LOG_VERBOSE(
+                                    "Found retain function, name: %s, index: %u",
+                                    export_tmp->name, export_tmp->index);
+                                break;
+                            }
+                        }
+                    }
+                    if (j == module->export_count) {
+                        module->malloc_function = (uint32)-1;
+                        LOG_VERBOSE("Can't find retain function,"
+                                    "reset malloc function index to -1");
+                    }
+                }
+            }
+            else if (((!strcmp(export->name, "free"))
+                      || (!strcmp(export->name, "__release"))
+                      || (!strcmp(export->name, "__unpin")))
+                     && export->index >= module->import_function_count) {
+                func_index = export->index - module->import_function_count;
+                func_type = module->functions[func_index]->func_type;
+                if (func_type->param_count == 1
+                    && func_type->result_count == 0
+                    && func_type->types[0] == VALUE_TYPE_I32) {
+                    bh_assert(module->free_function == (uint32)-1);
+                    module->free_function = export->index;
+                    LOG_VERBOSE("Found free function, name: %s, index: %u",
+                                export->name, export->index);
+                }
+            }
+        }
+    }
+
+#if WASM_ENABLE_FAST_INTERP != 0 && WASM_ENABLE_LABELS_AS_VALUES != 0
+    handle_table = wasm_interp_get_handle_table();
+#endif
+
+    for (i = 0; i < module->function_count; i++) {
+        WASMFunction *func = module->functions[i];
+        if (!wasm_loader_prepare_bytecode(module, func, i,
+                                          error_buf, error_buf_size)) {
+            return false;
+        }
+    }
+
+    if (!module->possible_memory_grow) {
+        WASMMemoryImport *memory_import;
+        WASMMemory *memory;
+
+        if (aux_data_end_global
+            && aux_heap_base_global
+            && aux_stack_top_global) {
+            uint64 init_memory_size;
+            uint32 shrunk_memory_size = align_uint(aux_heap_base, 8);
+
+            if (module->import_memory_count) {
+                memory_import = &module->import_memories[0].u.memory;
+                init_memory_size = (uint64)memory_import->num_bytes_per_page *
+                                   memory_import->init_page_count;
+                if (shrunk_memory_size <= init_memory_size) {
+                    /* Reset memory info to decrease memory usage */
+                    memory_import->num_bytes_per_page = shrunk_memory_size;
+                    memory_import->init_page_count = 1;
+                    LOG_VERBOSE("Shrink import memory size to %d",
+                                shrunk_memory_size);
+                }
+            }
+            if (module->memory_count) {
+                memory = &module->memories[0];
+                init_memory_size = (uint64)memory->num_bytes_per_page *
+                                   memory->init_page_count;
+                if (shrunk_memory_size <= init_memory_size) {
+                    /* Reset memory info to decrease memory usage */
+                    memory->num_bytes_per_page = shrunk_memory_size;
+                    memory->init_page_count = 1;
+                    LOG_VERBOSE("Shrink memory size to %d", shrunk_memory_size);
+                }
+            }
+        }
+
+#if WASM_ENABLE_MULTI_MODULE == 0
+        if (module->import_memory_count) {
+            memory_import = &module->import_memories[0].u.memory;
+            /* Memory init page count cannot be larger than 65536, we don't
+               check integer overflow again. */
+            memory_import->num_bytes_per_page *= memory_import->init_page_count;
+            memory_import->init_page_count = memory_import->max_page_count = 1;
+        }
+        if (module->memory_count) {
+            /* Memory init page count cannot be larger than 65536, we don't
+               check integer overflow again. */
+            memory = &module->memories[0];
+            memory->num_bytes_per_page *= memory->init_page_count;
+            memory->init_page_count = memory->max_page_count = 1;
+        }
+#endif
+    }
+
+#if WASM_ENABLE_MEMORY_TRACING != 0
+    wasm_runtime_dump_module_mem_consumption(module);
+#endif
+    return true;
+}
+```
+
+!!!! `wasm_loader_prepare_bytecode`
+
+This is a very complex function. It will go through the bytecode of the whole function and ''generate relarted operations?''
+
+Location: `wasm-micro-runtime/core/iwasm/interpreter/wasm_mini_loader.c`

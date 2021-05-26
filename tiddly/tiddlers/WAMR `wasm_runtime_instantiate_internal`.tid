@@ -1,0 +1,793 @@
+created: 20210525032433690
+modified: 20210525145453046
+tags: Analysis Artifact System NotFinish
+title: WAMR `wasm_runtime_instantiate_internal`
+type: text/vnd.tiddlywiki
+
+The instantiation can be divided to two types: Interpreter and AOT. They are instantiated by different functions:
+
+```c
+WASMModuleInstanceCommon *
+wasm_runtime_instantiate_internal(WASMModuleCommon *module, bool is_sub_inst,
+                                  uint32 stack_size, uint32 heap_size,
+                                  char *error_buf, uint32 error_buf_size)
+{
+#if WASM_ENABLE_INTERP != 0
+    if (module->module_type == Wasm_Module_Bytecode)
+        return (WASMModuleInstanceCommon*)
+               wasm_instantiate((WASMModule*)module, is_sub_inst,
+                                stack_size, heap_size,
+                                error_buf, error_buf_size);
+#endif
+#if WASM_ENABLE_AOT != 0
+    if (module->module_type == Wasm_Module_AoT)
+        return (WASMModuleInstanceCommon*)
+               aot_instantiate((AOTModule*)module, is_sub_inst,
+                               stack_size, heap_size,
+                               error_buf, error_buf_size);
+#endif
+    set_error_buf(error_buf, error_buf_size,
+                  "Instantiate module failed, invalid module type");
+    return NULL;
+}
+```
+
+! `wasm_instantiate`
+
+The instantiation includes a lot of memory checks. E.g. the segments is in the loader and there offset/offset+length are within the region (not exceeds its predetermined sizes)
+
+# Instantiate the globals
+# Instantiate memory/table/function count (import + module)
+# ''Instantiate memory/table/function''
+# Initialize the global data
+# Check if the functions/globals are linked correctly `check_linked_symbol`
+# Initialize the memory data with data segment section
+# Initialize the table data with table segment section, may also lookup globles to find related type info
+# Initialize the thread related data: stack size, MM fnctions, WASI, etc.
+
+```c
+WASMModuleInstance*
+wasm_instantiate(WASMModule *module, bool is_sub_inst,
+                 uint32 stack_size, uint32 heap_size,
+                 char *error_buf, uint32 error_buf_size)
+{
+    WASMModuleInstance *module_inst;
+    WASMGlobalInstance *globals = NULL, *global;
+    uint32 global_count, global_data_size = 0, i;
+    uint32 base_offset, length;
+    uint8 *global_data, *global_data_end;
+#if WASM_ENABLE_MULTI_MODULE != 0
+    bool ret = false;
+#endif
+
+    if (!module)
+        return NULL;
+
+    /* Check heap size */
+    heap_size = align_uint(heap_size, 8);
+    if (heap_size > APP_HEAP_SIZE_MAX)
+        heap_size = APP_HEAP_SIZE_MAX;
+
+    /* Allocate the memory */
+    if (!(module_inst = runtime_malloc(sizeof(WASMModuleInstance),
+                                       error_buf, error_buf_size))) {
+        return NULL;
+    }
+
+    module_inst->module = module;
+
+#if WASM_ENABLE_MULTI_MODULE != 0
+    module_inst->sub_module_inst_list =
+      &module_inst->sub_module_inst_list_head;
+    ret = sub_module_instantiate(module, module_inst, stack_size, heap_size,
+                                 error_buf, error_buf_size);
+    if (!ret) {
+        LOG_DEBUG("build a sub module list failed");
+        goto fail;
+    }
+#endif
+
+    /* Instantiate global firstly to get the mutable data size */
+    global_count = module->import_global_count + module->global_count;
+    if (global_count
+        && !(globals = globals_instantiate(module, module_inst,
+                                           &global_data_size,
+                                           error_buf, error_buf_size))) {
+        goto fail;
+    }
+    module_inst->global_count = global_count;
+    module_inst->globals = globals;
+
+    module_inst->memory_count =
+        module->import_memory_count + module->memory_count;
+    module_inst->table_count =
+        module->import_table_count + module->table_count;
+    module_inst->function_count =
+        module->import_function_count + module->function_count;
+
+    /* export */
+    module_inst->export_func_count = get_export_count(module, EXPORT_KIND_FUNC);
+#if WASM_ENABLE_MULTI_MODULE != 0
+    module_inst->export_tab_count = get_export_count(module, EXPORT_KIND_TABLE);
+    module_inst->export_mem_count = get_export_count(module, EXPORT_KIND_MEMORY);
+    module_inst->export_glob_count = get_export_count(module, EXPORT_KIND_GLOBAL);
+#endif
+
+    if (global_count > 0) {
+        if (!(module_inst->global_data = runtime_malloc
+                    (global_data_size, error_buf, error_buf_size))) {
+            goto fail;
+        }
+    }
+
+    /* Instantiate memories/tables/functions */
+    if ((module_inst->memory_count > 0
+         && !(module_inst->memories =
+                memories_instantiate(module,
+                                     module_inst,
+                                     heap_size, error_buf, error_buf_size)))
+        || (module_inst->table_count > 0
+            && !(module_inst->tables =
+                   tables_instantiate(module,
+                                      module_inst,
+                                      error_buf, error_buf_size)))
+        || (module_inst->function_count > 0
+            && !(module_inst->functions =
+                   functions_instantiate(module,
+                                         module_inst,
+                                         error_buf, error_buf_size)))
+        || (module_inst->export_func_count > 0
+            && !(module_inst->export_functions = export_functions_instantiate(
+                   module, module_inst, module_inst->export_func_count,
+                   error_buf, error_buf_size)))
+#if WASM_ENABLE_MULTI_MODULE != 0
+        || (module_inst->export_glob_count > 0
+            && !(module_inst->export_globals = export_globals_instantiate(
+                   module, module_inst, module_inst->export_glob_count,
+                   error_buf, error_buf_size)))
+#endif
+    ) {
+        goto fail;
+    }
+
+    if (global_count > 0) {
+        /* Initialize the global data */
+        global_data = module_inst->global_data;
+        global_data_end = global_data + global_data_size;
+        global = globals;
+        for (i = 0; i < global_count; i++, global++) {
+            switch (global->type) {
+                case VALUE_TYPE_I32:
+                case VALUE_TYPE_F32:
+#if WASM_ENABLE_REF_TYPES != 0
+                case VALUE_TYPE_FUNCREF:
+                case VALUE_TYPE_EXTERNREF:
+#endif
+                    *(int32*)global_data = global->initial_value.i32;
+                    global_data += sizeof(int32);
+                    break;
+                case VALUE_TYPE_I64:
+                case VALUE_TYPE_F64:
+                    bh_memcpy_s(global_data, (uint32)(global_data_end - global_data),
+                                &global->initial_value.i64, sizeof(int64));
+                    global_data += sizeof(int64);
+                    break;
+                default:
+                    bh_assert(0);
+            }
+        }
+        bh_assert(global_data == global_data_end);
+    }
+
+    if (!check_linked_symbol(module_inst, error_buf, error_buf_size)) {
+        goto fail;
+    }
+
+    /* Initialize the memory data with data segment section */
+    module_inst->default_memory =
+      module_inst->memory_count ? module_inst->memories[0] : NULL;
+
+    for (i = 0; i < module->data_seg_count; i++) {
+        WASMMemoryInstance *memory = NULL;
+        uint8 *memory_data = NULL;
+        uint32 memory_size = 0;
+        WASMDataSeg *data_seg = module->data_segments[i];
+
+#if WASM_ENABLE_BULK_MEMORY != 0
+        if (data_seg->is_passive)
+            continue;
+#endif
+
+        /* has check it in loader */
+        memory = module_inst->memories[data_seg->memory_index];
+        bh_assert(memory);
+
+        memory_data = memory->memory_data;
+        memory_size = memory->num_bytes_per_page * memory->cur_page_count;
+        bh_assert(memory_data || memory_size == 0);
+
+        bh_assert(data_seg->base_offset.init_expr_type
+                    == INIT_EXPR_TYPE_I32_CONST
+                  || data_seg->base_offset.init_expr_type
+                       == INIT_EXPR_TYPE_GET_GLOBAL);
+
+        if (data_seg->base_offset.init_expr_type
+            == INIT_EXPR_TYPE_GET_GLOBAL) {
+            if (!check_global_init_expr(module,
+                                        data_seg->base_offset.u.global_index,
+                                        error_buf, error_buf_size)) {
+                goto fail;
+            }
+
+            if (!globals
+                || globals[data_seg->base_offset.u.global_index].type
+                     != VALUE_TYPE_I32) {
+                set_error_buf(error_buf, error_buf_size,
+                              "data segment does not fit");
+                goto fail;
+            }
+
+            data_seg->base_offset.u.i32 =
+                globals[data_seg->base_offset.u.global_index]
+                .initial_value.i32;
+        }
+
+        /* check offset */
+        base_offset = (uint32)data_seg->base_offset.u.i32;
+        if (base_offset > memory_size) {
+            LOG_DEBUG("base_offset(%d) > memory_size(%d)", base_offset,
+                      memory_size);
+#if WASM_ENABLE_REF_TYPES != 0
+            set_error_buf(error_buf, error_buf_size,
+                          "out of bounds memory access");
+#else
+            set_error_buf(error_buf, error_buf_size,
+                          "data segment does not fit");
+#endif
+            goto fail;
+        }
+
+        /* check offset + length(could be zero) */
+        length = data_seg->data_length;
+        if (base_offset + length > memory_size) {
+            LOG_DEBUG("base_offset(%d) + length(%d) > memory_size(%d)",
+                      base_offset, length, memory_size);
+#if WASM_ENABLE_REF_TYPES != 0
+            set_error_buf(error_buf, error_buf_size,
+                          "out of bounds memory access");
+#else
+            set_error_buf(error_buf, error_buf_size,
+                          "data segment does not fit");
+#endif
+            goto fail;
+        }
+
+        if (memory_data) {
+            bh_memcpy_s(memory_data + base_offset, memory_size - base_offset,
+                        data_seg->data, length);
+        }
+    }
+
+    /* Initialize the table data with table segment section */
+    module_inst->default_table =
+      module_inst->table_count ? module_inst->tables[0] : NULL;
+    /* in case there is no table */
+    for (i = 0; module_inst->table_count > 0 && i < module->table_seg_count;
+         i++) {
+        WASMTableSeg *table_seg = module->table_segments + i;
+        /* has check it in loader */
+        WASMTableInstance *table = module_inst->tables[table_seg->table_index];
+        bh_assert(table);
+
+#if WASM_ENABLE_REF_TYPES != 0
+        if (table->elem_type != VALUE_TYPE_FUNCREF
+            && table->elem_type != VALUE_TYPE_EXTERNREF) {
+            set_error_buf(error_buf, error_buf_size,
+                          "elements segment does not fit");
+            goto fail;
+        }
+#endif
+
+        uint32 *table_data = (uint32 *)table->base_addr;
+#if WASM_ENABLE_MULTI_MODULE != 0
+        table_data = table->table_inst_linked
+                        ? (uint32 *)table->table_inst_linked->base_addr
+                        : table_data;
+#endif
+        bh_assert(table_data);
+
+#if WASM_ENABLE_REF_TYPES != 0
+        if (!wasm_elem_is_active(table_seg->mode))
+            continue;
+#endif
+
+        /* init vec(funcidx) or vec(expr) */
+        bh_assert(
+          table_seg->base_offset.init_expr_type == INIT_EXPR_TYPE_I32_CONST
+          || table_seg->base_offset.init_expr_type == INIT_EXPR_TYPE_GET_GLOBAL
+#if WASM_ENABLE_REF_TYPES != 0
+          || table_seg->base_offset.init_expr_type == INIT_EXPR_TYPE_FUNCREF_CONST
+          || table_seg->base_offset.init_expr_type == INIT_EXPR_TYPE_REFNULL_CONST
+#endif
+        );
+
+        if (table_seg->base_offset.init_expr_type
+            == INIT_EXPR_TYPE_GET_GLOBAL) {
+            if (!check_global_init_expr(module,
+                                        table_seg->base_offset.u.global_index,
+                                        error_buf, error_buf_size)) {
+                goto fail;
+            }
+
+            if (!globals
+                || globals[table_seg->base_offset.u.global_index].type
+                   != VALUE_TYPE_I32) {
+                set_error_buf(error_buf, error_buf_size,
+                              "elements segment does not fit");
+                goto fail;
+            }
+
+            table_seg->base_offset.u.i32 =
+              globals[table_seg->base_offset.u.global_index].initial_value.i32;
+        }
+
+        /* check offset since length might negative */
+        if ((uint32)table_seg->base_offset.u.i32 > table->cur_size) {
+            LOG_DEBUG("base_offset(%d) > table->cur_size(%d)",
+                      table_seg->base_offset.u.i32, table->cur_size);
+#if WASM_ENABLE_REF_TYPES != 0
+            set_error_buf(error_buf, error_buf_size,
+                          "out of bounds table access");
+#else
+            set_error_buf(error_buf, error_buf_size,
+                          "elements segment does not fit");
+#endif
+            goto fail;
+        }
+
+        /* check offset + length(could be zero) */
+        length = table_seg->function_count;
+        if ((uint32)table_seg->base_offset.u.i32 + length > table->cur_size) {
+            LOG_DEBUG("base_offset(%d) + length(%d)> table->cur_size(%d)",
+                      table_seg->base_offset.u.i32, length, table->cur_size);
+#if WASM_ENABLE_REF_TYPES != 0
+            set_error_buf(error_buf, error_buf_size,
+                          "out of bounds table access");
+#else
+            set_error_buf(error_buf, error_buf_size,
+                          "elements segment does not fit");
+#endif
+            goto fail;
+        }
+
+        /**
+         * Check function index in the current module inst for now.
+         * will check the linked table inst owner in future.
+         * so loader check is enough
+         */
+        bh_memcpy_s(
+          table_data + table_seg->base_offset.u.i32,
+          (uint32)((table->cur_size - (uint32)table_seg->base_offset.u.i32)
+                   * sizeof(uint32)),
+          table_seg->func_indexes, (uint32)(length * sizeof(uint32)));
+    }
+
+    /* module instance type */
+    module_inst->module_type = Wasm_Module_Bytecode;
+
+    /* Initialize the thread related data */
+    if (stack_size == 0)
+        stack_size = DEFAULT_WASM_STACK_SIZE;
+#if WASM_ENABLE_SPEC_TEST != 0
+    if (stack_size < 48 *1024)
+        stack_size = 48 * 1024;
+#endif
+    module_inst->default_wasm_stack_size = stack_size;
+
+    if (module->malloc_function != (uint32)-1) {
+        module_inst->malloc_function =
+            &module_inst->functions[module->malloc_function];
+    }
+
+    if (module->free_function != (uint32)-1) {
+        module_inst->free_function =
+            &module_inst->functions[module->free_function];
+    }
+
+    if (module->retain_function != (uint32)-1) {
+        module_inst->retain_function =
+            &module_inst->functions[module->retain_function];
+    }
+
+#if WASM_ENABLE_LIBC_WASI != 0
+    /* The sub-instance will get the wasi_ctx from main-instance */
+    if (!is_sub_inst) {
+        if (!wasm_runtime_init_wasi((WASMModuleInstanceCommon*)module_inst,
+                                    module->wasi_args.dir_list,
+                                    module->wasi_args.dir_count,
+                                    module->wasi_args.map_dir_list,
+                                    module->wasi_args.map_dir_count,
+                                    module->wasi_args.env,
+                                    module->wasi_args.env_count,
+                                    module->wasi_args.argv,
+                                    module->wasi_args.argc,
+                                    error_buf, error_buf_size)) {
+            goto fail;
+        }
+    }
+#endif
+
+    if (module->start_function != (uint32)-1) {
+        /* TODO: fix start function can be import function issue */
+        if (module->start_function >= module->import_function_count)
+            module_inst->start_function =
+                &module_inst->functions[module->start_function];
+    }
+
+    /* Execute __post_instantiate function */
+    if (!execute_post_inst_function(module_inst)
+        || !execute_start_function(module_inst)) {
+        set_error_buf(error_buf, error_buf_size,
+                      module_inst->cur_exception);
+        goto fail;
+    }
+
+#if WASM_ENABLE_BULK_MEMORY != 0
+#if WASM_ENABLE_LIBC_WASI != 0
+    if (!module->is_wasi_module) {
+#endif
+        /* Only execute the memory init function for main instance because
+            the data segments will be dropped once initialized.
+        */
+        if (!is_sub_inst) {
+            if (!execute_memory_init_function(module_inst)) {
+                set_error_buf(error_buf, error_buf_size,
+                              module_inst->cur_exception);
+                goto fail;
+            }
+        }
+#if WASM_ENABLE_LIBC_WASI != 0
+    }
+#endif
+#endif
+
+#if WASM_ENABLE_MEMORY_TRACING != 0
+    wasm_runtime_dump_module_inst_mem_consumption
+                    ((WASMModuleInstanceCommon *)module_inst);
+#endif
+    (void)global_data_end;
+    return module_inst;
+fail:
+    wasm_deinstantiate(module_inst, false);
+    return NULL;
+}
+```
+
+!! Instantiate the globals
+
+```c
+struct WASMGlobalInstance {
+    /* value type, VALUE_TYPE_I32/I64/F32/F64 */
+    uint8 type;
+    /* mutable or constant */
+    bool is_mutable;
+    /* data offset to base_addr of WASMMemoryInstance */
+    uint32 data_offset;
+    /* initial value */
+    WASMValue initial_value;
+#if WASM_ENABLE_MULTI_MODULE != 0
+    /* just for import, keep the reference here */
+    WASMModuleInstance *import_module_inst;
+    WASMGlobalInstance *import_global_inst;
+#endif
+};
+```
+
+Here the imported globals and the globals form the global section will be instantiated differently.
+
+```c
+static WASMGlobalInstance *
+globals_instantiate(const WASMModule *module,
+                    WASMModuleInstance *module_inst,
+                    uint32 *p_global_data_size, char *error_buf,
+                    uint32 error_buf_size)
+{
+    WASMImport *import;
+    uint32 global_data_offset = 0;
+    uint32 i, global_count =
+        module->import_global_count + module->global_count;
+    uint64 total_size = sizeof(WASMGlobalInstance) * (uint64)global_count;
+    WASMGlobalInstance *globals, *global;
+
+    if (!(globals = runtime_malloc(total_size,
+                                   error_buf, error_buf_size))) {
+        return NULL;
+    }
+
+    /* instantiate globals from import section */
+    global = globals;
+    import = module->import_globals;
+    for (i = 0; i < module->import_global_count; i++, import++) {
+        WASMGlobalImport *global_import = &import->u.global;
+        global->type = global_import->type;
+        global->is_mutable = global_import->is_mutable;
+#if WASM_ENABLE_MULTI_MODULE != 0
+        if (global_import->import_module) {
+            if (!(global->import_module_inst = get_sub_module_inst(
+                    module_inst, global_import->import_module))) {
+                set_error_buf(error_buf, error_buf_size, "unknown global");
+                return NULL;
+            }
+
+            if (!(global->import_global_inst = wasm_lookup_global(
+                    global->import_module_inst, global_import->field_name))) {
+                set_error_buf(error_buf, error_buf_size, "unknown global");
+                return NULL;
+            }
+
+            /* The linked global instance has been initialized, we
+               just need to copy the value. */
+            bh_memcpy_s(&(global->initial_value), sizeof(WASMValue),
+                        &(global_import->import_global_linked->init_expr),
+                        sizeof(WASMValue));
+        }
+        else
+#endif
+        {
+            /* native globals share their initial_values in one module */
+            bh_memcpy_s(&(global->initial_value), sizeof(WASMValue),
+                        &(global_import->global_data_linked),
+                        sizeof(WASMValue));
+        }
+        global->data_offset = global_data_offset;
+        global_data_offset += wasm_value_type_size(global->type);
+
+        global++;
+    }
+
+    /* instantiate globals from global section */
+    for (i = 0; i < module->global_count; i++) {
+        InitializerExpression *init_expr = &(module->globals[i].init_expr);
+
+        global->type = module->globals[i].type;
+        global->is_mutable = module->globals[i].is_mutable;
+        global->data_offset = global_data_offset;
+
+        global_data_offset += wasm_value_type_size(global->type);
+
+        if (init_expr->init_expr_type == INIT_EXPR_TYPE_GET_GLOBAL) {
+            if (!check_global_init_expr(module, init_expr->u.global_index,
+                                        error_buf, error_buf_size)) {
+                return NULL;
+            }
+
+            bh_memcpy_s(
+              &(global->initial_value), sizeof(WASMValue),
+              &(globals[init_expr->u.global_index].initial_value),
+              sizeof(globals[init_expr->u.global_index].initial_value));
+        }
+#if WASM_ENABLE_REF_TYPES != 0
+        else if (init_expr->init_expr_type == INIT_EXPR_TYPE_REFNULL_CONST) {
+            global->initial_value.u32 = (uint32)NULL_REF;
+        }
+#endif
+        else {
+            bh_memcpy_s(&(global->initial_value), sizeof(WASMValue),
+                        &(init_expr->u), sizeof(init_expr->u));
+        }
+        global++;
+    }
+
+    bh_assert((uint32)(global - globals) == global_count);
+    *p_global_data_size = global_data_offset;
+    (void)module_inst;
+    return globals;
+}
+```
+
+!! Memroy 
+
+!!! Memory instance struct
+
+What's the memory layout? What's the different between memory and heap?
+
+```c
+struct WASMMemoryInstance {
+    /* Module type */
+    uint32 module_type;
+    /* Shared memory flag */
+    bool is_shared;
+    /* Number bytes per page */
+    uint32 num_bytes_per_page;
+    /* Current page count */
+    uint32 cur_page_count;
+    /* Maximum page count */
+    uint32 max_page_count;
+
+    /* Heap data base address */
+    uint8 *heap_data;
+    /* Heap data end address */
+    uint8 *heap_data_end;
+    /* The heap created */
+    void *heap_handle;
+
+#if WASM_ENABLE_MULTI_MODULE != 0
+    /* to indicate which module instance create it */
+    WASMModuleInstance *owner;
+#endif
+
+#if WASM_ENABLE_SHARED_MEMORY != 0
+    /* mutex lock for the memory, used in atomic operation */
+    korp_mutex mem_lock;
+#endif
+
+    /* Memory data end address */
+    uint8 *memory_data_end;
+
+    /* Memory data begin address, the layout is: memory data + heap data
+       Note: when memory is re-allocated, the heap data and memory data
+             must be copied to new memory also. */
+    uint8 *memory_data;
+};
+```
+
+! `aot_instantiate`
+
+Seems like it's much simpler than the previous instantiation function. 
+
+```c
+AOTModuleInstance*
+aot_instantiate(AOTModule *module, bool is_sub_inst,
+                uint32 stack_size, uint32 heap_size,
+                char *error_buf, uint32 error_buf_size)
+{
+    AOTModuleInstance *module_inst;
+    const uint32 module_inst_struct_size =
+        offsetof(AOTModuleInstance, global_table_data.bytes);
+    const uint64 module_inst_mem_inst_size =
+        (uint64)module->memory_count * sizeof(AOTMemoryInstance);
+    uint64 total_size, table_size = 0;
+    uint8 *p;
+    uint32 i;
+
+    /* Check heap size */
+    heap_size = align_uint(heap_size, 8);
+    if (heap_size > APP_HEAP_SIZE_MAX)
+        heap_size = APP_HEAP_SIZE_MAX;
+
+    total_size = (uint64)module_inst_struct_size + module_inst_mem_inst_size
+                 + module->global_data_size;
+
+    /*
+     * calculate size of table data
+     */
+    for (i = 0; i != module->import_table_count; ++i) {
+        table_size += offsetof(AOTTableInstance, data);
+        table_size +=
+          (uint64)sizeof(uint32)
+          * (uint64)aot_get_imp_tbl_data_slots(module->import_tables + i);
+    }
+
+    for (i = 0; i != module->table_count; ++i) {
+        table_size += offsetof(AOTTableInstance, data);
+        table_size += (uint64)sizeof(uint32)
+                      * (uint64)aot_get_tbl_data_slots(module->tables + i);
+    }
+    total_size += table_size;
+
+    /* Allocate module instance, global data, table data and heap data */
+    if (!(module_inst = runtime_malloc(total_size,
+                                       error_buf, error_buf_size))) {
+        return NULL;
+    }
+
+    module_inst->module_type = Wasm_Module_AoT;
+    module_inst->aot_module.ptr = module;
+
+    /* Initialize global info */
+    p = (uint8*)module_inst + module_inst_struct_size +
+                              module_inst_mem_inst_size;
+    module_inst->global_data.ptr = p;
+    module_inst->global_data_size = module->global_data_size;
+    if (!global_instantiate(module_inst, module, error_buf, error_buf_size))
+        goto fail;
+
+    /* Initialize table info */
+    p += module->global_data_size;
+    module_inst->tables.ptr = p;
+    module_inst->table_count =
+      module->table_count + module->import_table_count;
+    /* Set all elements to -1 to mark them as uninitialized elements */
+    memset(module_inst->tables.ptr, 0xff, (uint32)table_size);
+    if (!table_instantiate(module_inst, module, error_buf, error_buf_size))
+        goto fail;
+
+    /* Initialize memory space */
+    if (!memories_instantiate(module_inst, module, heap_size,
+                              error_buf, error_buf_size))
+        goto fail;
+
+    /* Initialize function pointers */
+    if (!init_func_ptrs(module_inst, module, error_buf, error_buf_size))
+        goto fail;
+
+    /* Initialize function type indexes */
+    if (!init_func_type_indexes(module_inst, module, error_buf, error_buf_size))
+        goto fail;
+
+    if (!create_exports(module_inst, module, error_buf, error_buf_size))
+        goto fail;
+
+#if WASM_ENABLE_LIBC_WASI != 0
+    if (!is_sub_inst) {
+        if (!wasm_runtime_init_wasi((WASMModuleInstanceCommon*)module_inst,
+                                    module->wasi_args.dir_list,
+                                    module->wasi_args.dir_count,
+                                    module->wasi_args.map_dir_list,
+                                    module->wasi_args.map_dir_count,
+                                    module->wasi_args.env,
+                                    module->wasi_args.env_count,
+                                    module->wasi_args.argv,
+                                    module->wasi_args.argc,
+                                    error_buf, error_buf_size))
+            goto fail;
+    }
+#endif
+
+    /* Initialize the thread related data */
+    if (stack_size == 0)
+        stack_size = DEFAULT_WASM_STACK_SIZE;
+#if WASM_ENABLE_SPEC_TEST != 0
+    if (stack_size < 48 *1024)
+        stack_size = 48 * 1024;
+#endif
+    module_inst->default_wasm_stack_size = stack_size;
+
+#if WASM_ENABLE_PERF_PROFILING != 0
+    total_size = (uint64)sizeof(AOTFuncPerfProfInfo) *
+                 (module->import_func_count + module->func_count);
+    if (!(module_inst->func_perf_profilings.ptr =
+                runtime_malloc(total_size, error_buf, error_buf_size))) {
+        goto fail;
+    }
+#endif
+
+    /* Execute __post_instantiate function and start function*/
+    if (!execute_post_inst_function(module_inst)
+        || !execute_start_function(module_inst)) {
+        set_error_buf(error_buf, error_buf_size,
+                      module_inst->cur_exception);
+        goto fail;
+    }
+
+#if WASM_ENABLE_BULK_MEMORY != 0
+#if WASM_ENABLE_LIBC_WASI != 0
+    if (!module->is_wasi_module) {
+#endif
+        /* Only execute the memory init function for main instance because
+            the data segments will be dropped once initialized.
+        */
+        if (!is_sub_inst) {
+            if (!execute_memory_init_function(module_inst)) {
+                set_error_buf(error_buf, error_buf_size,
+                              module_inst->cur_exception);
+                goto fail;
+            }
+        }
+#if WASM_ENABLE_LIBC_WASI != 0
+    }
+#endif
+#endif
+
+#if WASM_ENABLE_MEMORY_TRACING != 0
+    wasm_runtime_dump_module_inst_mem_consumption
+                    ((WASMModuleInstanceCommon *)module_inst);
+#endif
+
+    return module_inst;
+
+fail:
+    aot_deinstantiate(module_inst, is_sub_inst);
+    return NULL;
+}
+```

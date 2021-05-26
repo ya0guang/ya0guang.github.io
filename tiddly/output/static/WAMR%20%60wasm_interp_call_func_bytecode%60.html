@@ -1,0 +1,2558 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>WAMR `wasm_interp_call_func_bytecode`: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Analysis tc-tagged-Artifact tc-tagged-System" data-tags="Analysis Artifact System" data-tiddler-title="WAMR `wasm_interp_call_func_bytecode`"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">WAMR `wasm_interp_call_func_bytecode`</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>May 26, 2021 at 11:01 am</div></div><div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Analysis
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Artifact
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+System
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span>
+<span class="hljs-title">wasm_interp_call_func_bytecode</span><span class="hljs-params">(WASMModuleInstance *<span class="hljs-keyword">module</span>,
+                               WASMExecEnv *exec_env,
+                               WASMFunctionInstance *cur_func,
+                               WASMInterpFrame *prev_frame)</span>
+</span>{
+  WASMMemoryInstance *memory = <span class="hljs-keyword">module</span>-&gt;default_memory;
+  uint32 num_bytes_per_page = memory ? memory-&gt;num_bytes_per_page : <span class="hljs-number">0</span>;
+  uint8 *global_data = <span class="hljs-keyword">module</span>-&gt;global_data;
+  uint32 linear_mem_size = memory ? num_bytes_per_page * memory-&gt;cur_page_count : <span class="hljs-number">0</span>;
+  WASMType **wasm_types = <span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;types;
+  WASMGlobalInstance *globals = <span class="hljs-keyword">module</span>-&gt;globals, *global;
+  uint8 opcode_IMPDEP = WASM_OP_IMPDEP;
+  WASMInterpFrame *frame = <span class="hljs-literal">NULL</span>;
+  <span class="hljs-comment">/* Points to this special opcode so as to jump to the call_method_from_entry.  */</span>
+  <span class="hljs-keyword">register</span> uint8  *frame_ip = &amp;opcode_IMPDEP; <span class="hljs-comment">/* cache of frame-&gt;ip */</span>
+  <span class="hljs-keyword">register</span> uint32 *frame_lp = <span class="hljs-literal">NULL</span>;  <span class="hljs-comment">/* cache of frame-&gt;lp */</span>
+  <span class="hljs-keyword">register</span> uint32 *frame_sp = <span class="hljs-literal">NULL</span>;  <span class="hljs-comment">/* cache of frame-&gt;sp */</span>
+  WASMBranchBlock *frame_csp = <span class="hljs-literal">NULL</span>;
+  BlockAddr *cache_items;
+  uint8 *frame_ip_end = frame_ip + <span class="hljs-number">1</span>;
+  uint8 opcode;
+  uint32 i, depth, cond, count, fidx, tidx, lidx, frame_size = <span class="hljs-number">0</span>;
+  uint64 all_cell_num = <span class="hljs-number">0</span>;
+  int32 val;
+  uint8 *else_addr, *end_addr, *maddr = <span class="hljs-literal">NULL</span>;
+  uint32 local_idx, local_offset, global_idx;
+  uint8 local_type, *global_addr;
+  uint32 cache_index, type_index, cell_num;
+  uint8 value_type;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LABELS_AS_VALUES != 0</span>
+  <span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> HANDLE_OPCODE(op) &amp;&amp;HANDLE_##op</span>
+  DEFINE_GOTO_TABLE (<span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span> *, handle_table);
+  <span class="hljs-meta">#<span class="hljs-meta-keyword">undef</span> HANDLE_OPCODE</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LABELS_AS_VALUES == 0</span>
+  <span class="hljs-keyword">while</span> (frame_ip &lt; frame_ip_end) {
+    opcode = *frame_ip++;
+    <span class="hljs-keyword">switch</span> (opcode) {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+      FETCH_OPCODE_AND_DISPATCH ();
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+      <span class="hljs-comment">/* control instructions */</span>
+      HANDLE_OP (WASM_OP_UNREACHABLE):
+        wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"unreachable"</span>);
+        <span class="hljs-keyword">goto</span> got_exception;
+
+      HANDLE_OP (WASM_OP_NOP):
+        HANDLE_OP_END ();
+
+      HANDLE_OP (EXT_OP_BLOCK):
+        read_leb_uint32(frame_ip, frame_ip_end, type_index);
+        cell_num = wasm_types[type_index]-&gt;ret_cell_num;
+        <span class="hljs-keyword">goto</span> handle_op_block;
+
+      HANDLE_OP (WASM_OP_BLOCK):
+        value_type = *frame_ip++;
+        cell_num = wasm_value_type_cell_num(value_type);
+handle_op_block:
+        cache_index = ((<span class="hljs-keyword">uintptr_t</span>)frame_ip) &amp; (<span class="hljs-keyword">uintptr_t</span>)(BLOCK_ADDR_CACHE_SIZE - <span class="hljs-number">1</span>);
+        cache_items = exec_env-&gt;block_addr_cache[cache_index];
+        <span class="hljs-keyword">if</span> (cache_items[<span class="hljs-number">0</span>].start_addr == frame_ip) {
+          end_addr = cache_items[<span class="hljs-number">0</span>].end_addr;
+        }
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (cache_items[<span class="hljs-number">1</span>].start_addr == frame_ip) {
+          end_addr = cache_items[<span class="hljs-number">1</span>].end_addr;
+        }
+        <span class="hljs-keyword">else</span> {
+          end_addr = <span class="hljs-literal">NULL</span>;
+        }
+        PUSH_CSP(LABEL_TYPE_BLOCK, cell_num, end_addr);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (EXT_OP_LOOP):
+        read_leb_uint32(frame_ip, frame_ip_end, type_index);
+        cell_num = wasm_types[type_index]-&gt;param_cell_num;
+        <span class="hljs-keyword">goto</span> handle_op_loop;
+
+      HANDLE_OP (WASM_OP_LOOP):
+        value_type = *frame_ip++;
+        cell_num = wasm_value_type_cell_num(value_type);
+handle_op_loop:
+        PUSH_CSP(LABEL_TYPE_LOOP, cell_num, frame_ip);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (EXT_OP_IF):
+        read_leb_uint32(frame_ip, frame_ip_end, type_index);
+        cell_num = wasm_types[type_index]-&gt;ret_cell_num;
+        <span class="hljs-keyword">goto</span> handle_op_if;
+
+      HANDLE_OP (WASM_OP_IF):
+        value_type = *frame_ip++;
+        cell_num = wasm_value_type_cell_num(value_type);
+handle_op_if:
+        cache_index = ((<span class="hljs-keyword">uintptr_t</span>)frame_ip) &amp; (<span class="hljs-keyword">uintptr_t</span>)(BLOCK_ADDR_CACHE_SIZE - <span class="hljs-number">1</span>);
+        cache_items = exec_env-&gt;block_addr_cache[cache_index];
+        <span class="hljs-keyword">if</span> (cache_items[<span class="hljs-number">0</span>].start_addr == frame_ip) {
+          else_addr = cache_items[<span class="hljs-number">0</span>].else_addr;
+          end_addr = cache_items[<span class="hljs-number">0</span>].end_addr;
+        }
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (cache_items[<span class="hljs-number">1</span>].start_addr == frame_ip) {
+          else_addr = cache_items[<span class="hljs-number">1</span>].else_addr;
+          end_addr = cache_items[<span class="hljs-number">1</span>].end_addr;
+        }
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (!wasm_loader_find_block_addr((BlockAddr*)exec_env-&gt;block_addr_cache,
+                                              frame_ip, (uint8*)<span class="hljs-number">-1</span>,
+                                              LABEL_TYPE_IF,
+                                              &amp;else_addr, &amp;end_addr)) {
+          wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"find block address failed"</span>);
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+
+        cond = (uint32)POP_I32();
+
+        <span class="hljs-keyword">if</span> (cond) { <span class="hljs-comment">/* if branch is met */</span>
+          PUSH_CSP(LABEL_TYPE_IF, cell_num, end_addr);
+        }
+        <span class="hljs-keyword">else</span> { <span class="hljs-comment">/* if branch is not met */</span>
+          <span class="hljs-comment">/* if there is no else branch, go to the end addr */</span>
+          <span class="hljs-keyword">if</span> (else_addr == <span class="hljs-literal">NULL</span>) {
+            frame_ip = end_addr + <span class="hljs-number">1</span>;
+          }
+          <span class="hljs-comment">/* if there is an else branch, go to the else addr */</span>
+          <span class="hljs-keyword">else</span> {
+            PUSH_CSP(LABEL_TYPE_IF, cell_num, end_addr);
+            frame_ip = else_addr + <span class="hljs-number">1</span>;
+          }
+        }
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_ELSE):
+        <span class="hljs-comment">/* comes from the if branch in WASM_OP_IF */</span>
+        frame_ip = (frame_csp - <span class="hljs-number">1</span>)-&gt;target_addr;
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_END):
+        <span class="hljs-keyword">if</span> (frame_csp &gt; frame-&gt;csp_bottom + <span class="hljs-number">1</span>) {
+          POP_CSP();
+        }
+        <span class="hljs-keyword">else</span> { <span class="hljs-comment">/* end of function, treat as WASM_OP_RETURN */</span>
+          frame_sp -= cur_func-&gt;ret_cell_num;
+          <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; cur_func-&gt;ret_cell_num; i++) {
+            *prev_frame-&gt;sp++ = frame_sp[i];
+          }
+          <span class="hljs-keyword">goto</span> return_func;
+        }
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_BR):
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_THREAD_MGR != 0</span>
+        CHECK_SUSPEND_FLAGS();
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        read_leb_uint32(frame_ip, frame_ip_end, depth);
+label_pop_csp_n:
+        POP_CSP_N(depth);
+        <span class="hljs-keyword">if</span> (!frame_ip) { <span class="hljs-comment">/* must be label pushed by WASM_OP_BLOCK */</span>
+          <span class="hljs-keyword">if</span> (!wasm_loader_find_block_addr((BlockAddr*)exec_env-&gt;block_addr_cache,
+                                           (frame_csp - <span class="hljs-number">1</span>)-&gt;begin_addr, (uint8*)<span class="hljs-number">-1</span>,
+                                           LABEL_TYPE_BLOCK,
+                                           &amp;else_addr, &amp;end_addr)) {
+            wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"find block address failed"</span>);
+            <span class="hljs-keyword">goto</span> got_exception;
+          }
+          frame_ip = end_addr;
+        }
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_BR_IF):
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_THREAD_MGR != 0</span>
+        CHECK_SUSPEND_FLAGS();
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        read_leb_uint32(frame_ip, frame_ip_end, depth);
+        cond = (uint32)POP_I32();
+        <span class="hljs-keyword">if</span> (cond)
+          <span class="hljs-keyword">goto</span> label_pop_csp_n;
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_BR_TABLE):
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_THREAD_MGR != 0</span>
+        CHECK_SUSPEND_FLAGS();
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        read_leb_uint32(frame_ip, frame_ip_end, count);
+        lidx = POP_I32();
+        <span class="hljs-keyword">if</span> (lidx &gt; count)
+          lidx = count;
+        <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; lidx; i++)
+          skip_leb(frame_ip);
+        read_leb_uint32(frame_ip, frame_ip_end, depth);
+        <span class="hljs-keyword">goto</span> label_pop_csp_n;
+
+      HANDLE_OP (WASM_OP_RETURN):
+        frame_sp -= cur_func-&gt;ret_cell_num;
+        <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; cur_func-&gt;ret_cell_num; i++) {
+          *prev_frame-&gt;sp++ = frame_sp[i];
+        }
+        <span class="hljs-keyword">goto</span> return_func;
+
+      HANDLE_OP (WASM_OP_CALL):
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_THREAD_MGR != 0</span>
+        CHECK_SUSPEND_FLAGS();
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        read_leb_uint32(frame_ip, frame_ip_end, fidx);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE != 0</span>
+        <span class="hljs-keyword">if</span> (fidx &gt;= <span class="hljs-keyword">module</span>-&gt;function_count) {
+          wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"unknown function"</span>);
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+        cur_func = <span class="hljs-keyword">module</span>-&gt;functions + fidx;
+        <span class="hljs-keyword">goto</span> call_func_from_interp;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_TAIL_CALL != 0</span>
+      HANDLE_OP (WASM_OP_RETURN_CALL):
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_THREAD_MGR != 0</span>
+        CHECK_SUSPEND_FLAGS();
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        read_leb_uint32(frame_ip, frame_ip_end, fidx);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE != 0</span>
+        <span class="hljs-keyword">if</span> (fidx &gt;= <span class="hljs-keyword">module</span>-&gt;function_count) {
+          wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"unknown function"</span>);
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        cur_func = <span class="hljs-keyword">module</span>-&gt;functions + fidx;
+
+        <span class="hljs-keyword">goto</span> call_func_from_return_call;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span> <span class="hljs-comment">/* WASM_ENABLE_TAIL_CALL */</span></span>
+
+      HANDLE_OP (WASM_OP_CALL_INDIRECT):
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_TAIL_CALL != 0</span>
+      HANDLE_OP (WASM_OP_RETURN_CALL_INDIRECT):
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        {
+          WASMType *cur_type, *cur_func_type;
+          WASMTableInstance *tbl_inst;
+          uint32 tbl_idx;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_TAIL_CALL != 0</span>
+          opcode = *(frame_ip - <span class="hljs-number">1</span>);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_THREAD_MGR != 0</span>
+          CHECK_SUSPEND_FLAGS();
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+          <span class="hljs-comment">/**
+           * type check. compiler will make sure all like
+           * (call_indirect (type $x) (i32.const 1))
+           * the function type has to be defined in the module also
+           * no matter it is used or not
+           */</span>
+          read_leb_uint32(frame_ip, frame_ip_end, tidx);
+          bh_assert(tidx &lt; <span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;type_count);
+          cur_type = wasm_types[tidx];
+
+          read_leb_uint32(frame_ip, frame_ip_end, tbl_idx);
+          bh_assert(tbl_idx &lt; <span class="hljs-keyword">module</span>-&gt;table_count);
+
+          tbl_inst = wasm_get_table_inst(<span class="hljs-keyword">module</span>, tbl_idx);
+
+          val = POP_I32();
+          <span class="hljs-keyword">if</span> (val &lt; <span class="hljs-number">0</span> || val &gt;= (int32)tbl_inst-&gt;cur_size) {
+            wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"undefined element"</span>);
+            <span class="hljs-keyword">goto</span> got_exception;
+          }
+
+          fidx = ((uint32*)tbl_inst-&gt;base_addr)[val];
+          <span class="hljs-keyword">if</span> (fidx == (uint32)<span class="hljs-number">-1</span>) {
+            wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"uninitialized element"</span>);
+            <span class="hljs-keyword">goto</span> got_exception;
+          }
+
+          <span class="hljs-comment">/*
+           * we might be using a table injected by host or
+           * another module. In that case, we don't validate
+           * the elem value while loading
+           */</span>
+          <span class="hljs-keyword">if</span> (fidx &gt;= <span class="hljs-keyword">module</span>-&gt;function_count) {
+            wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"unknown function"</span>);
+            <span class="hljs-keyword">goto</span> got_exception;
+          }
+
+          <span class="hljs-comment">/* always call module own functions */</span>
+          cur_func = <span class="hljs-keyword">module</span>-&gt;functions + fidx;
+
+          <span class="hljs-keyword">if</span> (cur_func-&gt;is_import_func)
+            cur_func_type = cur_func-&gt;u.func_import-&gt;func_type;
+          <span class="hljs-keyword">else</span>
+            cur_func_type = cur_func-&gt;u.func-&gt;func_type;
+          <span class="hljs-keyword">if</span> (!wasm_type_equal(cur_type, cur_func_type)) {
+            wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"indirect call type mismatch"</span>);
+            <span class="hljs-keyword">goto</span> got_exception;
+          }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_TAIL_CALL != 0</span>
+          <span class="hljs-keyword">if</span> (opcode == WASM_OP_RETURN_CALL_INDIRECT)
+            <span class="hljs-keyword">goto</span> call_func_from_return_call;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+          <span class="hljs-keyword">goto</span> call_func_from_interp;
+        }
+
+      <span class="hljs-comment">/* parametric instructions */</span>
+      HANDLE_OP (WASM_OP_DROP):
+        {
+          frame_sp--;
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_DROP_64):
+        {
+          frame_sp -= <span class="hljs-number">2</span>;
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_SELECT):
+        {
+          cond = (uint32)POP_I32();
+          frame_sp--;
+          <span class="hljs-keyword">if</span> (!cond)
+            *(frame_sp - <span class="hljs-number">1</span>) = *frame_sp;
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_SELECT_64):
+        {
+          cond = (uint32)POP_I32();
+          frame_sp -= <span class="hljs-number">2</span>;
+          <span class="hljs-keyword">if</span> (!cond) {
+            *(frame_sp - <span class="hljs-number">2</span>) = *frame_sp;
+            *(frame_sp - <span class="hljs-number">1</span>) = *(frame_sp + <span class="hljs-number">1</span>);
+          }
+          HANDLE_OP_END ();
+        }
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_REF_TYPES != 0</span>
+      HANDLE_OP (WASM_OP_SELECT_T):
+        {
+          uint32 vec_len;
+          uint8 type;
+
+          read_leb_uint32(frame_ip, frame_ip_end, vec_len);
+          type = *frame_ip++;
+
+          cond = (uint32)POP_I32();
+          <span class="hljs-keyword">if</span> (type == VALUE_TYPE_I64 || type == VALUE_TYPE_F64) {
+            frame_sp -= <span class="hljs-number">2</span>;
+            <span class="hljs-keyword">if</span> (!cond) {
+              *(frame_sp - <span class="hljs-number">2</span>) = *frame_sp;
+              *(frame_sp - <span class="hljs-number">1</span>) = *(frame_sp + <span class="hljs-number">1</span>);
+            }
+          }
+          <span class="hljs-keyword">else</span> {
+            frame_sp--;
+            <span class="hljs-keyword">if</span> (!cond)
+              *(frame_sp - <span class="hljs-number">1</span>) = *frame_sp;
+          }
+
+          (<span class="hljs-keyword">void</span>)vec_len;
+          HANDLE_OP_END ();
+        }
+      HANDLE_OP (WASM_OP_TABLE_GET):
+        {
+          uint32 tbl_idx, elem_idx;
+          WASMTableInstance *tbl_inst;
+
+          read_leb_uint32(frame_ip, frame_ip_end, tbl_idx);
+          bh_assert(tbl_idx &lt; <span class="hljs-keyword">module</span>-&gt;table_count);
+
+          tbl_inst = wasm_get_table_inst(<span class="hljs-keyword">module</span>, tbl_idx);
+
+          elem_idx = POP_I32();
+          <span class="hljs-keyword">if</span> (elem_idx &gt;= tbl_inst-&gt;cur_size) {
+            wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"out of bounds table access"</span>);
+            <span class="hljs-keyword">goto</span> got_exception;
+          }
+
+          PUSH_I32(((uint32 *)tbl_inst-&gt;base_addr)[elem_idx]);
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_TABLE_SET):
+        {
+          uint32 tbl_idx, elem_idx, val;
+          WASMTableInstance *tbl_inst;
+
+          read_leb_uint32(frame_ip, frame_ip_end, tbl_idx);
+          bh_assert(tbl_idx &lt; <span class="hljs-keyword">module</span>-&gt;table_count);
+
+          tbl_inst = wasm_get_table_inst(<span class="hljs-keyword">module</span>, tbl_idx);
+
+          val = POP_I32();
+          elem_idx = POP_I32();
+          <span class="hljs-keyword">if</span> (elem_idx &gt;= tbl_inst-&gt;cur_size) {
+            wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"out of bounds table access"</span>);
+            <span class="hljs-keyword">goto</span> got_exception;
+          }
+
+          ((uint32 *)(tbl_inst-&gt;base_addr))[elem_idx] = val;
+          HANDLE_OP_END();
+        }
+
+      HANDLE_OP (WASM_OP_REF_NULL):
+        {
+          uint32 ref_type;
+          read_leb_uint32(frame_ip, frame_ip_end, ref_type);
+          PUSH_I32(NULL_REF);
+          (<span class="hljs-keyword">void</span>)ref_type;
+          HANDLE_OP_END();
+        }
+
+      HANDLE_OP (WASM_OP_REF_IS_NULL):
+        {
+          uint32 val;
+          val = POP_I32();
+          PUSH_I32(val == NULL_REF ? <span class="hljs-number">1</span> : <span class="hljs-number">0</span>);
+          HANDLE_OP_END();
+        }
+
+      HANDLE_OP (WASM_OP_REF_FUNC):
+        {
+          uint32 func_idx;
+          read_leb_uint32(frame_ip, frame_ip_end, func_idx);
+          PUSH_I32(func_idx);
+          HANDLE_OP_END();
+        }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span> <span class="hljs-comment">/* WASM_ENABLE_REF_TYPES */</span></span>
+
+      <span class="hljs-comment">/* variable instructions */</span>
+      HANDLE_OP (WASM_OP_GET_LOCAL):
+        {
+          GET_LOCAL_INDEX_TYPE_AND_OFFSET();
+
+          <span class="hljs-keyword">switch</span> (local_type) {
+            <span class="hljs-keyword">case</span> VALUE_TYPE_I32:
+            <span class="hljs-keyword">case</span> VALUE_TYPE_F32:
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_REF_TYPES != 0</span>
+            <span class="hljs-keyword">case</span> VALUE_TYPE_FUNCREF:
+            <span class="hljs-keyword">case</span> VALUE_TYPE_EXTERNREF:
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+              PUSH_I32(*(int32*)(frame_lp + local_offset));
+              <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> VALUE_TYPE_I64:
+            <span class="hljs-keyword">case</span> VALUE_TYPE_F64:
+              PUSH_I64(GET_I64_FROM_ADDR(frame_lp + local_offset));
+              <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">default</span>:
+              wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"invalid local type"</span>);
+              <span class="hljs-keyword">goto</span> got_exception;
+          }
+
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (EXT_OP_GET_LOCAL_FAST):
+        {
+          local_offset = *frame_ip++;
+          <span class="hljs-keyword">if</span> (local_offset &amp; <span class="hljs-number">0x80</span>)
+            PUSH_I64(GET_I64_FROM_ADDR(frame_lp + (local_offset &amp; <span class="hljs-number">0x7F</span>)));
+          <span class="hljs-keyword">else</span>
+            PUSH_I32(*(int32*)(frame_lp + local_offset));
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_SET_LOCAL):
+        {
+          GET_LOCAL_INDEX_TYPE_AND_OFFSET();
+
+          <span class="hljs-keyword">switch</span> (local_type) {
+            <span class="hljs-keyword">case</span> VALUE_TYPE_I32:
+            <span class="hljs-keyword">case</span> VALUE_TYPE_F32:
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_REF_TYPES != 0</span>
+            <span class="hljs-keyword">case</span> VALUE_TYPE_FUNCREF:
+            <span class="hljs-keyword">case</span> VALUE_TYPE_EXTERNREF:
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+              *(int32*)(frame_lp + local_offset) = POP_I32();
+              <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> VALUE_TYPE_I64:
+            <span class="hljs-keyword">case</span> VALUE_TYPE_F64:
+              PUT_I64_TO_ADDR((uint32*)(frame_lp + local_offset), POP_I64());
+              <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">default</span>:
+              wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"invalid local type"</span>);
+              <span class="hljs-keyword">goto</span> got_exception;
+          }
+
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (EXT_OP_SET_LOCAL_FAST):
+        {
+          local_offset = *frame_ip++;
+          <span class="hljs-keyword">if</span> (local_offset &amp; <span class="hljs-number">0x80</span>)
+            PUT_I64_TO_ADDR((uint32*)(frame_lp + (local_offset &amp; <span class="hljs-number">0x7F</span>)), POP_I64());
+          <span class="hljs-keyword">else</span>
+            *(int32*)(frame_lp + local_offset) = POP_I32();
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_TEE_LOCAL):
+        {
+          GET_LOCAL_INDEX_TYPE_AND_OFFSET();
+
+          <span class="hljs-keyword">switch</span> (local_type) {
+            <span class="hljs-keyword">case</span> VALUE_TYPE_I32:
+            <span class="hljs-keyword">case</span> VALUE_TYPE_F32:
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_REF_TYPES != 0</span>
+            <span class="hljs-keyword">case</span> VALUE_TYPE_FUNCREF:
+            <span class="hljs-keyword">case</span> VALUE_TYPE_EXTERNREF:
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+              *(int32*)(frame_lp + local_offset) = *(int32*)(frame_sp - <span class="hljs-number">1</span>);
+              <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">case</span> VALUE_TYPE_I64:
+            <span class="hljs-keyword">case</span> VALUE_TYPE_F64:
+              PUT_I64_TO_ADDR((uint32*)(frame_lp + local_offset),
+                              GET_I64_FROM_ADDR(frame_sp - <span class="hljs-number">2</span>));
+              <span class="hljs-keyword">break</span>;
+            <span class="hljs-keyword">default</span>:
+              wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"invalid local type"</span>);
+              <span class="hljs-keyword">goto</span> got_exception;
+          }
+
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (EXT_OP_TEE_LOCAL_FAST):
+        {
+          local_offset = *frame_ip++;
+          <span class="hljs-keyword">if</span> (local_offset &amp; <span class="hljs-number">0x80</span>)
+            PUT_I64_TO_ADDR((uint32*)(frame_lp + (local_offset &amp; <span class="hljs-number">0x7F</span>)),
+                            GET_I64_FROM_ADDR(frame_sp - <span class="hljs-number">2</span>));
+          <span class="hljs-keyword">else</span>
+            *(int32*)(frame_lp + local_offset) = *(int32*)(frame_sp - <span class="hljs-number">1</span>);
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_GET_GLOBAL):
+        {
+          read_leb_uint32(frame_ip, frame_ip_end, global_idx);
+          bh_assert(global_idx &lt; <span class="hljs-keyword">module</span>-&gt;global_count);
+          global = globals + global_idx;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE == 0</span>
+          global_addr = global_data + global-&gt;data_offset;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+          global_addr = global-&gt;import_global_inst
+                        ? global-&gt;import_module_inst-&gt;global_data
+                          + global-&gt;import_global_inst-&gt;data_offset
+                        : global_data + global-&gt;data_offset;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+          PUSH_I32(*(uint32*)global_addr);
+          HANDLE_OP_END ();
+        }
+
+    HANDLE_OP (WASM_OP_GET_GLOBAL_64):
+        {
+          read_leb_uint32(frame_ip, frame_ip_end, global_idx);
+          bh_assert(global_idx &lt; <span class="hljs-keyword">module</span>-&gt;global_count);
+          global = globals + global_idx;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE == 0</span>
+          global_addr = global_data + global-&gt;data_offset;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+          global_addr = global-&gt;import_global_inst
+                        ? global-&gt;import_module_inst-&gt;global_data
+                          + global-&gt;import_global_inst-&gt;data_offset
+                        : global_data + global-&gt;data_offset;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+          PUSH_I64(GET_I64_FROM_ADDR((uint32*)global_addr));
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_SET_GLOBAL):
+        {
+          read_leb_uint32(frame_ip, frame_ip_end, global_idx);
+          bh_assert(global_idx &lt; <span class="hljs-keyword">module</span>-&gt;global_count);
+          global = globals + global_idx;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE == 0</span>
+          global_addr = global_data + global-&gt;data_offset;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+          global_addr = global-&gt;import_global_inst
+                        ? global-&gt;import_module_inst-&gt;global_data
+                          + global-&gt;import_global_inst-&gt;data_offset
+                        : global_data + global-&gt;data_offset;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+          *(int32*)global_addr = POP_I32();
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_SET_GLOBAL_AUX_STACK):
+        {
+          uint32 aux_stack_top;
+
+          read_leb_uint32(frame_ip, frame_ip_end, global_idx);
+          bh_assert(global_idx &lt; <span class="hljs-keyword">module</span>-&gt;global_count);
+          global = globals + global_idx;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE == 0</span>
+          global_addr = global_data + global-&gt;data_offset;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+          global_addr = global-&gt;import_global_inst
+                        ? global-&gt;import_module_inst-&gt;global_data
+                          + global-&gt;import_global_inst-&gt;data_offset
+                        : global_data + global-&gt;data_offset;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+          aux_stack_top = *(uint32*)(frame_sp - <span class="hljs-number">1</span>);
+          <span class="hljs-keyword">if</span> (aux_stack_top &lt;= exec_env-&gt;aux_stack_boundary.boundary) {
+            wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"wasm auxiliary stack overflow"</span>);
+            <span class="hljs-keyword">goto</span> got_exception;
+          }
+          <span class="hljs-keyword">if</span> (aux_stack_top &gt; exec_env-&gt;aux_stack_bottom.bottom) {
+            wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"wasm auxiliary stack underflow"</span>);
+            <span class="hljs-keyword">goto</span> got_exception;
+          }
+          *(int32*)global_addr = aux_stack_top;
+          frame_sp--;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MEMORY_PROFILING != 0</span>
+          <span class="hljs-keyword">if</span> (<span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;aux_stack_top_global_index != (uint32)<span class="hljs-number">-1</span>) {
+              uint32 aux_stack_used =
+                  <span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;aux_stack_bottom - *(uint32*)global_addr;
+              <span class="hljs-keyword">if</span> (aux_stack_used &gt; <span class="hljs-keyword">module</span>-&gt;max_aux_stack_used)
+                  <span class="hljs-keyword">module</span>-&gt;max_aux_stack_used = aux_stack_used;
+          }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_SET_GLOBAL_64):
+        {
+          read_leb_uint32(frame_ip, frame_ip_end, global_idx);
+          bh_assert(global_idx &lt; <span class="hljs-keyword">module</span>-&gt;global_count);
+          global = globals + global_idx;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE == 0</span>
+          global_addr = global_data + global-&gt;data_offset;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+          global_addr = global-&gt;import_global_inst
+                        ? global-&gt;import_module_inst-&gt;global_data
+                          + global-&gt;import_global_inst-&gt;data_offset
+                        : global_data + global-&gt;data_offset;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+          PUT_I64_TO_ADDR((uint32*)global_addr, POP_I64());
+          HANDLE_OP_END ();
+        }
+
+      <span class="hljs-comment">/* memory load instructions */</span>
+      HANDLE_OP (WASM_OP_I32_LOAD):
+      HANDLE_OP (WASM_OP_F32_LOAD):
+        {
+          uint32 offset, flags, addr;
+
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          addr = POP_I32();
+          CHECK_MEMORY_OVERFLOW(<span class="hljs-number">4</span>);
+          PUSH_I32(LOAD_I32(maddr));
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END();
+        }
+
+      HANDLE_OP (WASM_OP_I64_LOAD):
+      HANDLE_OP (WASM_OP_F64_LOAD):
+        {
+          uint32 offset, flags, addr;
+
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          addr = POP_I32();
+          CHECK_MEMORY_OVERFLOW(<span class="hljs-number">8</span>);
+          PUSH_I64(LOAD_I64(maddr));
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END();
+        }
+
+      HANDLE_OP (WASM_OP_I32_LOAD8_S):
+        {
+          uint32 offset, flags, addr;
+
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          addr = POP_I32();
+          CHECK_MEMORY_OVERFLOW(<span class="hljs-number">1</span>);
+          PUSH_I32(sign_ext_8_32(*(int8*)maddr));
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END();
+        }
+
+      HANDLE_OP (WASM_OP_I32_LOAD8_U):
+        {
+          uint32 offset, flags, addr;
+
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          addr = POP_I32();
+          CHECK_MEMORY_OVERFLOW(<span class="hljs-number">1</span>);
+          PUSH_I32((uint32)(*(uint8*)maddr));
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END();
+        }
+
+      HANDLE_OP (WASM_OP_I32_LOAD16_S):
+        {
+          uint32 offset, flags, addr;
+
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          addr = POP_I32();
+          CHECK_MEMORY_OVERFLOW(<span class="hljs-number">2</span>);
+          PUSH_I32(sign_ext_16_32(LOAD_I16(maddr)));
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END();
+        }
+
+      HANDLE_OP (WASM_OP_I32_LOAD16_U):
+        {
+          uint32 offset, flags, addr;
+
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          addr = POP_I32();
+          CHECK_MEMORY_OVERFLOW(<span class="hljs-number">2</span>);
+          PUSH_I32((uint32)(LOAD_U16(maddr)));
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END();
+        }
+
+      HANDLE_OP (WASM_OP_I64_LOAD8_S):
+        {
+          uint32 offset, flags, addr;
+
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          addr = POP_I32();
+          CHECK_MEMORY_OVERFLOW(<span class="hljs-number">1</span>);
+          PUSH_I64(sign_ext_8_64(*(int8*)maddr));
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END();
+        }
+
+      HANDLE_OP (WASM_OP_I64_LOAD8_U):
+        {
+          uint32 offset, flags, addr;
+
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          addr = POP_I32();
+          CHECK_MEMORY_OVERFLOW(<span class="hljs-number">1</span>);
+          PUSH_I64((uint64)(*(uint8*)maddr));
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END();
+        }
+
+      HANDLE_OP (WASM_OP_I64_LOAD16_S):
+        {
+          uint32 offset, flags, addr;
+
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          addr = POP_I32();
+          CHECK_MEMORY_OVERFLOW(<span class="hljs-number">2</span>);
+          PUSH_I64(sign_ext_16_64(LOAD_I16(maddr)));
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END();
+        }
+
+      HANDLE_OP (WASM_OP_I64_LOAD16_U):
+          {
+          uint32 offset, flags, addr;
+
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          addr = POP_I32();
+          CHECK_MEMORY_OVERFLOW(<span class="hljs-number">2</span>);
+          PUSH_I64((uint64)(LOAD_U16(maddr)));
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END();
+        }
+
+      HANDLE_OP (WASM_OP_I64_LOAD32_S):
+        {
+          uint32 offset, flags, addr;
+
+          opcode = *(frame_ip - <span class="hljs-number">1</span>);
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          addr = POP_I32();
+          CHECK_MEMORY_OVERFLOW(<span class="hljs-number">4</span>);
+          PUSH_I64(sign_ext_32_64(LOAD_I32(maddr)));
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END();
+        }
+
+      HANDLE_OP (WASM_OP_I64_LOAD32_U):
+        {
+          uint32 offset, flags, addr;
+
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          addr = POP_I32();
+          CHECK_MEMORY_OVERFLOW(<span class="hljs-number">4</span>);
+          PUSH_I64((uint64)(LOAD_U32(maddr)));
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END();
+        }
+
+      <span class="hljs-comment">/* memory store instructions */</span>
+      HANDLE_OP (WASM_OP_I32_STORE):
+      HANDLE_OP (WASM_OP_F32_STORE):
+        {
+          uint32 offset, flags, addr;
+
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          frame_sp--;
+          addr = POP_I32();
+          CHECK_MEMORY_OVERFLOW(<span class="hljs-number">4</span>);
+          STORE_U32(maddr, frame_sp[<span class="hljs-number">1</span>]);
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_I64_STORE):
+      HANDLE_OP (WASM_OP_F64_STORE):
+        {
+          uint32 offset, flags, addr;
+
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          frame_sp -= <span class="hljs-number">2</span>;
+          addr = POP_I32();
+          CHECK_MEMORY_OVERFLOW(<span class="hljs-number">8</span>);
+          STORE_U32(maddr, frame_sp[<span class="hljs-number">1</span>]);
+          STORE_U32(maddr + <span class="hljs-number">4</span>, frame_sp[<span class="hljs-number">2</span>]);
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_I32_STORE8):
+      HANDLE_OP (WASM_OP_I32_STORE16):
+        {
+          uint32 offset, flags, addr;
+          uint32 sval;
+
+          opcode = *(frame_ip - <span class="hljs-number">1</span>);
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          sval = (uint32)POP_I32();
+          addr = POP_I32();
+
+          <span class="hljs-keyword">if</span> (opcode == WASM_OP_I32_STORE8) {
+              CHECK_MEMORY_OVERFLOW(<span class="hljs-number">1</span>);
+              *(uint8*)maddr = (uint8)sval;
+          }
+          <span class="hljs-keyword">else</span> {
+              CHECK_MEMORY_OVERFLOW(<span class="hljs-number">2</span>);
+              STORE_U16(maddr, (uint16)sval);
+          }
+
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_I64_STORE8):
+      HANDLE_OP (WASM_OP_I64_STORE16):
+      HANDLE_OP (WASM_OP_I64_STORE32):
+        {
+          uint32 offset, flags, addr;
+          uint64 sval;
+
+          opcode = *(frame_ip - <span class="hljs-number">1</span>);
+          read_leb_uint32(frame_ip, frame_ip_end, flags);
+          read_leb_uint32(frame_ip, frame_ip_end, offset);
+          sval = (uint64)POP_I64();
+          addr = POP_I32();
+
+          <span class="hljs-keyword">if</span> (opcode == WASM_OP_I64_STORE8) {
+              CHECK_MEMORY_OVERFLOW(<span class="hljs-number">1</span>);
+              *(uint8*)maddr = (uint8)sval;
+          }
+          <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(opcode == WASM_OP_I64_STORE16) {
+              CHECK_MEMORY_OVERFLOW(<span class="hljs-number">2</span>);
+              STORE_U16(maddr, (uint16)sval);
+          }
+          <span class="hljs-keyword">else</span> {
+              CHECK_MEMORY_OVERFLOW(<span class="hljs-number">4</span>);
+              STORE_U32(maddr, (uint32)sval);
+          }
+          (<span class="hljs-keyword">void</span>)flags;
+          HANDLE_OP_END ();
+        }
+
+      <span class="hljs-comment">/* memory size and memory grow instructions */</span>
+      HANDLE_OP (WASM_OP_MEMORY_SIZE):
+      {
+        uint32 reserved;
+        read_leb_uint32(frame_ip, frame_ip_end, reserved);
+        PUSH_I32(memory-&gt;cur_page_count);
+        (<span class="hljs-keyword">void</span>)reserved;
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_MEMORY_GROW):
+      {
+        uint32 reserved, delta, prev_page_count = memory-&gt;cur_page_count;
+
+        read_leb_uint32(frame_ip, frame_ip_end, reserved);
+        delta = (uint32)POP_I32();
+
+        <span class="hljs-keyword">if</span> (!wasm_enlarge_memory(<span class="hljs-keyword">module</span>, delta)) {
+          <span class="hljs-comment">/* failed to memory.grow, return -1 */</span>
+          PUSH_I32(<span class="hljs-number">-1</span>);
+        }
+        <span class="hljs-keyword">else</span> {
+          <span class="hljs-comment">/* success, return previous page count */</span>
+          PUSH_I32(prev_page_count);
+          <span class="hljs-comment">/* update memory instance ptr and memory size */</span>
+          memory = <span class="hljs-keyword">module</span>-&gt;default_memory;
+          linear_mem_size = num_bytes_per_page * memory-&gt;cur_page_count;
+        }
+
+        (<span class="hljs-keyword">void</span>)reserved;
+        HANDLE_OP_END ();
+      }
+
+      <span class="hljs-comment">/* constant instructions */</span>
+      HANDLE_OP (WASM_OP_I32_CONST):
+        DEF_OP_I_CONST(int32, I32);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_CONST):
+        DEF_OP_I_CONST(int64, I64);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_CONST):
+        {
+          uint8 *p_float = (uint8*)frame_sp++;
+          <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">sizeof</span>(float32); i++)
+            *p_float++ = *frame_ip++;
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_F64_CONST):
+        {
+          uint8 *p_float = (uint8*)frame_sp++;
+          frame_sp++;
+          <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">sizeof</span>(float64); i++)
+            *p_float++ = *frame_ip++;
+          HANDLE_OP_END ();
+        }
+
+      <span class="hljs-comment">/* comparison instructions of i32 */</span>
+      HANDLE_OP (WASM_OP_I32_EQZ):
+        DEF_OP_EQZ(I32);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_EQ):
+        DEF_OP_CMP(uint32, I32, ==);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_NE):
+        DEF_OP_CMP(uint32, I32, !=);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_LT_S):
+        DEF_OP_CMP(int32, I32, &lt;);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_LT_U):
+        DEF_OP_CMP(uint32, I32, &lt;);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_GT_S):
+        DEF_OP_CMP(int32, I32, &gt;);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_GT_U):
+        DEF_OP_CMP(uint32, I32, &gt;);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_LE_S):
+        DEF_OP_CMP(int32, I32, &lt;=);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_LE_U):
+        DEF_OP_CMP(uint32, I32, &lt;=);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_GE_S):
+        DEF_OP_CMP(int32, I32, &gt;=);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_GE_U):
+        DEF_OP_CMP(uint32, I32, &gt;=);
+        HANDLE_OP_END ();
+
+      <span class="hljs-comment">/* comparison instructions of i64 */</span>
+      HANDLE_OP (WASM_OP_I64_EQZ):
+        DEF_OP_EQZ(I64);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_EQ):
+        DEF_OP_CMP(uint64, I64, ==);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_NE):
+        DEF_OP_CMP(uint64, I64, !=);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_LT_S):
+        DEF_OP_CMP(int64, I64, &lt;);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_LT_U):
+        DEF_OP_CMP(uint64, I64, &lt;);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_GT_S):
+        DEF_OP_CMP(int64, I64, &gt;);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_GT_U):
+        DEF_OP_CMP(uint64, I64, &gt;);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_LE_S):
+        DEF_OP_CMP(int64, I64, &lt;=);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_LE_U):
+        DEF_OP_CMP(uint64, I64, &lt;=);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_GE_S):
+        DEF_OP_CMP(int64, I64, &gt;=);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_GE_U):
+        DEF_OP_CMP(uint64, I64, &gt;=);
+        HANDLE_OP_END ();
+
+      <span class="hljs-comment">/* comparison instructions of f32 */</span>
+      HANDLE_OP (WASM_OP_F32_EQ):
+        DEF_OP_CMP(float32, F32, ==);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_NE):
+        DEF_OP_CMP(float32, F32, !=);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_LT):
+        DEF_OP_CMP(float32, F32, &lt;);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_GT):
+        DEF_OP_CMP(float32, F32, &gt;);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_LE):
+        DEF_OP_CMP(float32, F32, &lt;=);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_GE):
+        DEF_OP_CMP(float32, F32, &gt;=);
+        HANDLE_OP_END ();
+
+      <span class="hljs-comment">/* comparison instructions of f64 */</span>
+      HANDLE_OP (WASM_OP_F64_EQ):
+        DEF_OP_CMP(float64, F64, ==);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_NE):
+        DEF_OP_CMP(float64, F64, !=);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_LT):
+        DEF_OP_CMP(float64, F64, &lt;);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_GT):
+        DEF_OP_CMP(float64, F64, &gt;);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_LE):
+        DEF_OP_CMP(float64, F64, &lt;=);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_GE):
+        DEF_OP_CMP(float64, F64, &gt;=);
+        HANDLE_OP_END ();
+
+      <span class="hljs-comment">/* numberic instructions of i32 */</span>
+      HANDLE_OP (WASM_OP_I32_CLZ):
+        DEF_OP_BIT_COUNT(uint32, I32, clz32);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_CTZ):
+        DEF_OP_BIT_COUNT(uint32, I32, ctz32);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_POPCNT):
+        DEF_OP_BIT_COUNT(uint32, I32, popcount32);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_ADD):
+        DEF_OP_NUMERIC(uint32, uint32, I32, +);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_SUB):
+        DEF_OP_NUMERIC(uint32, uint32, I32, -);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_MUL):
+        DEF_OP_NUMERIC(uint32, uint32, I32, *);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_DIV_S):
+      {
+        int32 a, b;
+
+        b = POP_I32();
+        a = POP_I32();
+        <span class="hljs-keyword">if</span> (a == (int32)<span class="hljs-number">0x80000000</span> &amp;&amp; b == <span class="hljs-number">-1</span>) {
+          wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"integer overflow"</span>);
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+        <span class="hljs-keyword">if</span> (b == <span class="hljs-number">0</span>) {
+          wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"integer divide by zero"</span>);
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+        PUSH_I32(a / b);
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I32_DIV_U):
+      {
+        uint32 a, b;
+
+        b = (uint32)POP_I32();
+        a = (uint32)POP_I32();
+        <span class="hljs-keyword">if</span> (b == <span class="hljs-number">0</span>) {
+          wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"integer divide by zero"</span>);
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+        PUSH_I32(a / b);
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I32_REM_S):
+      {
+        int32 a, b;
+
+        b = POP_I32();
+        a = POP_I32();
+        <span class="hljs-keyword">if</span> (a == (int32)<span class="hljs-number">0x80000000</span> &amp;&amp; b == <span class="hljs-number">-1</span>) {
+          PUSH_I32(<span class="hljs-number">0</span>);
+          HANDLE_OP_END ();
+        }
+        <span class="hljs-keyword">if</span> (b == <span class="hljs-number">0</span>) {
+          wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"integer divide by zero"</span>);
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+        PUSH_I32(a % b);
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I32_REM_U):
+      {
+        uint32 a, b;
+
+        b = (uint32)POP_I32();
+        a = (uint32)POP_I32();
+        <span class="hljs-keyword">if</span> (b == <span class="hljs-number">0</span>) {
+          wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"integer divide by zero"</span>);
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+        PUSH_I32(a % b);
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I32_AND):
+        DEF_OP_NUMERIC(uint32, uint32, I32, &amp;);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_OR):
+        DEF_OP_NUMERIC(uint32, uint32, I32, |);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_XOR):
+        DEF_OP_NUMERIC(uint32, uint32, I32, ^);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_SHL):
+      {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> defined(BUILD_TARGET_X86_64) || defined(BUILD_TARGET_X86_32)</span>
+        DEF_OP_NUMERIC(uint32, uint32, I32, &lt;&lt;);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+        DEF_OP_NUMERIC2(uint32, uint32, I32, &lt;&lt;);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I32_SHR_S):
+      {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> defined(BUILD_TARGET_X86_64) || defined(BUILD_TARGET_X86_32)</span>
+        DEF_OP_NUMERIC(int32, uint32, I32, &gt;&gt;);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+        DEF_OP_NUMERIC2(int32, uint32, I32, &gt;&gt;);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I32_SHR_U):
+      {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> defined(BUILD_TARGET_X86_64) || defined(BUILD_TARGET_X86_32)</span>
+        DEF_OP_NUMERIC(uint32, uint32, I32, &gt;&gt;);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+        DEF_OP_NUMERIC2(uint32, uint32, I32, &gt;&gt;);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I32_ROTL):
+      {
+        uint32 a, b;
+
+        b = (uint32)POP_I32();
+        a = (uint32)POP_I32();
+        PUSH_I32(rotl32(a, b));
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I32_ROTR):
+      {
+        uint32 a, b;
+
+        b = (uint32)POP_I32();
+        a = (uint32)POP_I32();
+        PUSH_I32(rotr32(a, b));
+        HANDLE_OP_END ();
+      }
+
+      <span class="hljs-comment">/* numberic instructions of i64 */</span>
+      HANDLE_OP (WASM_OP_I64_CLZ):
+        DEF_OP_BIT_COUNT(uint64, I64, clz64);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_CTZ):
+        DEF_OP_BIT_COUNT(uint64, I64, ctz64);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_POPCNT):
+        DEF_OP_BIT_COUNT(uint64, I64, popcount64);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_ADD):
+        DEF_OP_NUMERIC_64(uint64, uint64, I64, +);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_SUB):
+        DEF_OP_NUMERIC_64(uint64, uint64, I64, -);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_MUL):
+        DEF_OP_NUMERIC_64(uint64, uint64, I64, *);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_DIV_S):
+      {
+        int64 a, b;
+
+        b = POP_I64();
+        a = POP_I64();
+        <span class="hljs-keyword">if</span> (a == (int64)<span class="hljs-number">0x8000000000000000</span>LL &amp;&amp; b == <span class="hljs-number">-1</span>) {
+          wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"integer overflow"</span>);
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+        <span class="hljs-keyword">if</span> (b == <span class="hljs-number">0</span>) {
+          wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"integer divide by zero"</span>);
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+        PUSH_I64(a / b);
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I64_DIV_U):
+      {
+        uint64 a, b;
+
+        b = (uint64)POP_I64();
+        a = (uint64)POP_I64();
+        <span class="hljs-keyword">if</span> (b == <span class="hljs-number">0</span>) {
+          wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"integer divide by zero"</span>);
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+        PUSH_I64(a / b);
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I64_REM_S):
+      {
+        int64 a, b;
+
+        b = POP_I64();
+        a = POP_I64();
+        <span class="hljs-keyword">if</span> (a == (int64)<span class="hljs-number">0x8000000000000000</span>LL &amp;&amp; b == <span class="hljs-number">-1</span>) {
+          PUSH_I64(<span class="hljs-number">0</span>);
+          HANDLE_OP_END ();
+        }
+        <span class="hljs-keyword">if</span> (b == <span class="hljs-number">0</span>) {
+          wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"integer divide by zero"</span>);
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+        PUSH_I64(a % b);
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I64_REM_U):
+      {
+        uint64 a, b;
+
+        b = (uint64)POP_I64();
+        a = (uint64)POP_I64();
+        <span class="hljs-keyword">if</span> (b == <span class="hljs-number">0</span>) {
+          wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"integer divide by zero"</span>);
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+        PUSH_I64(a % b);
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I64_AND):
+        DEF_OP_NUMERIC_64(uint64, uint64, I64, &amp;);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_OR):
+        DEF_OP_NUMERIC_64(uint64, uint64, I64, |);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_XOR):
+        DEF_OP_NUMERIC_64(uint64, uint64, I64, ^);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_SHL):
+      {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> defined(BUILD_TARGET_X86_64) || defined(BUILD_TARGET_X86_32)</span>
+        DEF_OP_NUMERIC_64(uint64, uint64, I64, &lt;&lt;);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+        DEF_OP_NUMERIC2_64(uint64, uint64, I64, &lt;&lt;);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I64_SHR_S):
+      {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> defined(BUILD_TARGET_X86_64) || defined(BUILD_TARGET_X86_32)</span>
+        DEF_OP_NUMERIC_64(int64, uint64, I64, &gt;&gt;);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+        DEF_OP_NUMERIC2_64(int64, uint64, I64, &gt;&gt;);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I64_SHR_U):
+      {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> defined(BUILD_TARGET_X86_64) || defined(BUILD_TARGET_X86_32)</span>
+        DEF_OP_NUMERIC_64(uint64, uint64, I64, &gt;&gt;);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+        DEF_OP_NUMERIC2_64(uint64, uint64, I64, &gt;&gt;);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I64_ROTL):
+      {
+        uint64 a, b;
+
+        b = (uint64)POP_I64();
+        a = (uint64)POP_I64();
+        PUSH_I64(rotl64(a, b));
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_I64_ROTR):
+      {
+        uint64 a, b;
+
+        b = (uint64)POP_I64();
+        a = (uint64)POP_I64();
+        PUSH_I64(rotr64(a, b));
+        HANDLE_OP_END ();
+      }
+
+      <span class="hljs-comment">/* numberic instructions of f32 */</span>
+      HANDLE_OP (WASM_OP_F32_ABS):
+        DEF_OP_MATH(float32, F32, <span class="hljs-built_in">fabs</span>);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_NEG):
+      {
+          int32 i32 = (int32)frame_sp[<span class="hljs-number">-1</span>];
+          int32 sign_bit = i32 &amp; (<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">31</span>);
+          <span class="hljs-keyword">if</span> (sign_bit)
+              frame_sp[<span class="hljs-number">-1</span>] = i32 &amp; ~(<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">31</span>);
+          <span class="hljs-keyword">else</span>
+              frame_sp[<span class="hljs-number">-1</span>] = (uint32)(i32 | (<span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">31</span>));
+          HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_F32_CEIL):
+        DEF_OP_MATH(float32, F32, <span class="hljs-built_in">ceil</span>);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_FLOOR):
+        DEF_OP_MATH(float32, F32, <span class="hljs-built_in">floor</span>);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_TRUNC):
+        DEF_OP_MATH(float32, F32, trunc);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_NEAREST):
+        DEF_OP_MATH(float32, F32, rint);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_SQRT):
+        DEF_OP_MATH(float32, F32, <span class="hljs-built_in">sqrt</span>);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_ADD):
+        DEF_OP_NUMERIC(float32, float32, F32, +);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_SUB):
+        DEF_OP_NUMERIC(float32, float32, F32, -);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_MUL):
+        DEF_OP_NUMERIC(float32, float32, F32, *);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_DIV):
+        DEF_OP_NUMERIC(float32, float32, F32, /);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_MIN):
+      {
+        float32 a, b;
+
+        b = POP_F32();
+        a = POP_F32();
+
+        <span class="hljs-keyword">if</span> (isnan(a))
+            PUSH_F32(a);
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (isnan(b))
+            PUSH_F32(b);
+        <span class="hljs-keyword">else</span>
+            PUSH_F32(wa_fmin(a, b));
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_F32_MAX):
+      {
+        float32 a, b;
+
+        b = POP_F32();
+        a = POP_F32();
+
+        <span class="hljs-keyword">if</span> (isnan(a))
+            PUSH_F32(a);
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (isnan(b))
+            PUSH_F32(b);
+        <span class="hljs-keyword">else</span>
+            PUSH_F32(wa_fmax(a, b));
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_F32_COPYSIGN):
+      {
+        float32 a, b;
+
+        b = POP_F32();
+        a = POP_F32();
+        PUSH_F32(signbit(b) ? -<span class="hljs-built_in">fabs</span>(a) : <span class="hljs-built_in">fabs</span>(a));
+        HANDLE_OP_END ();
+      }
+
+      <span class="hljs-comment">/* numberic instructions of f64 */</span>
+      HANDLE_OP (WASM_OP_F64_ABS):
+        DEF_OP_MATH(float64, F64, <span class="hljs-built_in">fabs</span>);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_NEG):
+      {
+          int64 i64 = GET_I64_FROM_ADDR(frame_sp - <span class="hljs-number">2</span>);
+          int64 sign_bit = i64 &amp; (((int64)<span class="hljs-number">1</span>) &lt;&lt; <span class="hljs-number">63</span>);
+          <span class="hljs-keyword">if</span> (sign_bit)
+              PUT_I64_TO_ADDR(frame_sp - <span class="hljs-number">2</span>, ((uint64)i64 &amp; ~(((uint64)<span class="hljs-number">1</span>) &lt;&lt; <span class="hljs-number">63</span>)));
+          <span class="hljs-keyword">else</span>
+              PUT_I64_TO_ADDR(frame_sp - <span class="hljs-number">2</span>, ((uint64)i64 | (((uint64)<span class="hljs-number">1</span>) &lt;&lt; <span class="hljs-number">63</span>)));
+          HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_F64_CEIL):
+        DEF_OP_MATH(float64, F64, <span class="hljs-built_in">ceil</span>);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_FLOOR):
+        DEF_OP_MATH(float64, F64, <span class="hljs-built_in">floor</span>);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_TRUNC):
+        DEF_OP_MATH(float64, F64, trunc);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_NEAREST):
+        DEF_OP_MATH(float64, F64, rint);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_SQRT):
+        DEF_OP_MATH(float64, F64, <span class="hljs-built_in">sqrt</span>);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_ADD):
+        DEF_OP_NUMERIC_64(float64, float64, F64, +);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_SUB):
+        DEF_OP_NUMERIC_64(float64, float64, F64, -);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_MUL):
+        DEF_OP_NUMERIC_64(float64, float64, F64, *);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_DIV):
+        DEF_OP_NUMERIC_64(float64, float64, F64, /);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_MIN):
+      {
+        float64 a, b;
+
+        b = POP_F64();
+        a = POP_F64();
+
+        <span class="hljs-keyword">if</span> (isnan(a))
+            PUSH_F64(a);
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (isnan(b))
+            PUSH_F64(b);
+        <span class="hljs-keyword">else</span>
+            PUSH_F64(wa_fmin(a, b));
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_F64_MAX):
+      {
+        float64 a, b;
+
+        b = POP_F64();
+        a = POP_F64();
+
+        <span class="hljs-keyword">if</span> (isnan(a))
+            PUSH_F64(a);
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (isnan(b))
+            PUSH_F64(b);
+        <span class="hljs-keyword">else</span>
+            PUSH_F64(wa_fmax(a, b));
+        HANDLE_OP_END ();
+      }
+
+      HANDLE_OP (WASM_OP_F64_COPYSIGN):
+      {
+        float64 a, b;
+
+        b = POP_F64();
+        a = POP_F64();
+        PUSH_F64(signbit(b) ? -<span class="hljs-built_in">fabs</span>(a) : <span class="hljs-built_in">fabs</span>(a));
+        HANDLE_OP_END ();
+      }
+
+      <span class="hljs-comment">/* conversions of i32 */</span>
+      HANDLE_OP (WASM_OP_I32_WRAP_I64):
+        {
+          int32 value = (int32)(POP_I64() &amp; <span class="hljs-number">0xFFFFFFFF</span>LL);
+          PUSH_I32(value);
+          HANDLE_OP_END ();
+        }
+
+      HANDLE_OP (WASM_OP_I32_TRUNC_S_F32):
+        <span class="hljs-comment">/* We don't use INT32_MIN/INT32_MAX/UINT32_MIN/UINT32_MAX,
+           since float/double values of ieee754 cannot precisely represent
+           all int32/uint32/int64/uint64 values, e.g.:
+           UINT32_MAX is 4294967295, but (float32)4294967295 is 4294967296.0f,
+           but not 4294967295.0f. */</span>
+        DEF_OP_TRUNC_F32(<span class="hljs-number">-2147483904.0f</span>, <span class="hljs-number">2147483648.0f</span>, <span class="hljs-literal">true</span>, <span class="hljs-literal">true</span>);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_TRUNC_U_F32):
+        DEF_OP_TRUNC_F32(<span class="hljs-number">-1.0f</span>, <span class="hljs-number">4294967296.0f</span>, <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_TRUNC_S_F64):
+        DEF_OP_TRUNC_F64(<span class="hljs-number">-2147483649.0</span>, <span class="hljs-number">2147483648.0</span>, <span class="hljs-literal">true</span>, <span class="hljs-literal">true</span>);
+        <span class="hljs-comment">/* frame_sp can't be moved in trunc function, we need to manually adjust
+          it if src and dst op's cell num is different */</span>
+        frame_sp--;
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_TRUNC_U_F64):
+        DEF_OP_TRUNC_F64(<span class="hljs-number">-1.0</span>, <span class="hljs-number">4294967296.0</span>, <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>);
+        frame_sp--;
+        HANDLE_OP_END ();
+
+      <span class="hljs-comment">/* conversions of i64 */</span>
+      HANDLE_OP (WASM_OP_I64_EXTEND_S_I32):
+        DEF_OP_CONVERT(int64, I64, int32, I32);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_EXTEND_U_I32):
+        DEF_OP_CONVERT(int64, I64, uint32, I32);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_TRUNC_S_F32):
+        DEF_OP_TRUNC_F32(<span class="hljs-number">-9223373136366403584.0f</span>, <span class="hljs-number">9223372036854775808.0f</span>,
+                         <span class="hljs-literal">false</span>, <span class="hljs-literal">true</span>);
+        frame_sp++;
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_TRUNC_U_F32):
+        DEF_OP_TRUNC_F32(<span class="hljs-number">-1.0f</span>, <span class="hljs-number">18446744073709551616.0f</span>,
+                         <span class="hljs-literal">false</span>, <span class="hljs-literal">false</span>);
+        frame_sp++;
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_TRUNC_S_F64):
+        DEF_OP_TRUNC_F64(<span class="hljs-number">-9223372036854777856.0</span>, <span class="hljs-number">9223372036854775808.0</span>,
+                         <span class="hljs-literal">false</span>, <span class="hljs-literal">true</span>);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_TRUNC_U_F64):
+        DEF_OP_TRUNC_F64(<span class="hljs-number">-1.0</span>, <span class="hljs-number">18446744073709551616.0</span>,
+                         <span class="hljs-literal">false</span>, <span class="hljs-literal">false</span>);
+        HANDLE_OP_END ();
+
+      <span class="hljs-comment">/* conversions of f32 */</span>
+      HANDLE_OP (WASM_OP_F32_CONVERT_S_I32):
+        DEF_OP_CONVERT(float32, F32, int32, I32);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_CONVERT_U_I32):
+        DEF_OP_CONVERT(float32, F32, uint32, I32);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_CONVERT_S_I64):
+        DEF_OP_CONVERT(float32, F32, int64, I64);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_CONVERT_U_I64):
+        DEF_OP_CONVERT(float32, F32, uint64, I64);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F32_DEMOTE_F64):
+        DEF_OP_CONVERT(float32, F32, float64, F64);
+        HANDLE_OP_END ();
+
+      <span class="hljs-comment">/* conversions of f64 */</span>
+      HANDLE_OP (WASM_OP_F64_CONVERT_S_I32):
+        DEF_OP_CONVERT(float64, F64, int32, I32);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_CONVERT_U_I32):
+        DEF_OP_CONVERT(float64, F64, uint32, I32);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_CONVERT_S_I64):
+        DEF_OP_CONVERT(float64, F64, int64, I64);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_CONVERT_U_I64):
+        DEF_OP_CONVERT(float64, F64, uint64, I64);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_F64_PROMOTE_F32):
+        DEF_OP_CONVERT(float64, F64, float32, F32);
+        HANDLE_OP_END ();
+
+      <span class="hljs-comment">/* reinterpretations */</span>
+      HANDLE_OP (WASM_OP_I32_REINTERPRET_F32):
+      HANDLE_OP (WASM_OP_I64_REINTERPRET_F64):
+      HANDLE_OP (WASM_OP_F32_REINTERPRET_I32):
+      HANDLE_OP (WASM_OP_F64_REINTERPRET_I64):
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_EXTEND8_S):
+        DEF_OP_CONVERT(int32, I32, int8, I32);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I32_EXTEND16_S):
+        DEF_OP_CONVERT(int32, I32, int16, I32);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_EXTEND8_S):
+        DEF_OP_CONVERT(int64, I64, int8, I64);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_EXTEND16_S):
+        DEF_OP_CONVERT(int64, I64, int16, I64);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_I64_EXTEND32_S):
+        DEF_OP_CONVERT(int64, I64, int32, I64);
+        HANDLE_OP_END ();
+
+      HANDLE_OP (WASM_OP_MISC_PREFIX):
+      {
+        uint32 opcode1;
+
+        read_leb_uint32(frame_ip, frame_ip_end, opcode1);
+        opcode = (uint8)opcode1;
+
+        <span class="hljs-keyword">switch</span> (opcode) {
+        <span class="hljs-keyword">case</span> WASM_OP_I32_TRUNC_SAT_S_F32:
+          DEF_OP_TRUNC_SAT_F32(<span class="hljs-number">-2147483904.0f</span>, <span class="hljs-number">2147483648.0f</span>,
+                               <span class="hljs-literal">true</span>, <span class="hljs-literal">true</span>);
+          <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> WASM_OP_I32_TRUNC_SAT_U_F32:
+          DEF_OP_TRUNC_SAT_F32(<span class="hljs-number">-1.0f</span>, <span class="hljs-number">4294967296.0f</span>,
+                               <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>);
+          <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> WASM_OP_I32_TRUNC_SAT_S_F64:
+          DEF_OP_TRUNC_SAT_F64(<span class="hljs-number">-2147483649.0</span>, <span class="hljs-number">2147483648.0</span>,
+                               <span class="hljs-literal">true</span>, <span class="hljs-literal">true</span>);
+          frame_sp--;
+          <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> WASM_OP_I32_TRUNC_SAT_U_F64:
+          DEF_OP_TRUNC_SAT_F64(<span class="hljs-number">-1.0</span>, <span class="hljs-number">4294967296.0</span>,
+                               <span class="hljs-literal">true</span>, <span class="hljs-literal">false</span>);
+          frame_sp--;
+          <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> WASM_OP_I64_TRUNC_SAT_S_F32:
+          DEF_OP_TRUNC_SAT_F32(<span class="hljs-number">-9223373136366403584.0f</span>, <span class="hljs-number">9223372036854775808.0f</span>,
+                               <span class="hljs-literal">false</span>, <span class="hljs-literal">true</span>);
+          frame_sp++;
+          <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> WASM_OP_I64_TRUNC_SAT_U_F32:
+          DEF_OP_TRUNC_SAT_F32(<span class="hljs-number">-1.0f</span>, <span class="hljs-number">18446744073709551616.0f</span>,
+                               <span class="hljs-literal">false</span>, <span class="hljs-literal">false</span>);
+          frame_sp++;
+          <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> WASM_OP_I64_TRUNC_SAT_S_F64:
+          DEF_OP_TRUNC_SAT_F64(<span class="hljs-number">-9223372036854777856.0</span>, <span class="hljs-number">9223372036854775808.0</span>,
+                               <span class="hljs-literal">false</span>, <span class="hljs-literal">true</span>);
+          <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> WASM_OP_I64_TRUNC_SAT_U_F64:
+          DEF_OP_TRUNC_SAT_F64(<span class="hljs-number">-1.0f</span>, <span class="hljs-number">18446744073709551616.0</span>,
+                               <span class="hljs-literal">false</span>, <span class="hljs-literal">false</span>);
+          <span class="hljs-keyword">break</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_BULK_MEMORY != 0</span>
+        <span class="hljs-keyword">case</span> WASM_OP_MEMORY_INIT:
+        {
+          uint32 addr, segment;
+          uint64 bytes, offset, seg_len;
+          uint8* data;
+
+          read_leb_uint32(frame_ip, frame_ip_end, segment);
+          <span class="hljs-comment">/* skip memory index */</span>
+          frame_ip++;
+
+          bytes = (uint64)(uint32)POP_I32();
+          offset = (uint64)(uint32)POP_I32();
+          addr = (uint32)POP_I32();
+
+          CHECK_BULK_MEMORY_OVERFLOW(addr, bytes, maddr);
+
+          seg_len = (uint64)<span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;data_segments[segment]-&gt;data_length;
+          data = <span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;data_segments[segment]-&gt;data;
+          <span class="hljs-keyword">if</span> (offset + bytes &gt; seg_len)
+            <span class="hljs-keyword">goto</span> out_of_bounds;
+
+          bh_memcpy_s(maddr, linear_mem_size - addr,
+                      data + offset, bytes);
+          <span class="hljs-keyword">break</span>;
+        }
+        <span class="hljs-keyword">case</span> WASM_OP_DATA_DROP:
+        {
+          uint32 segment;
+
+          read_leb_uint32(frame_ip, frame_ip_end, segment);
+          <span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;data_segments[segment]-&gt;data_length = <span class="hljs-number">0</span>;
+
+          <span class="hljs-keyword">break</span>;
+        }
+        <span class="hljs-keyword">case</span> WASM_OP_MEMORY_COPY:
+        {
+          uint32 dst, src, len;
+          uint8 *mdst, *msrc;
+
+          frame_ip += <span class="hljs-number">2</span>;
+
+          len = POP_I32();
+          src = POP_I32();
+          dst = POP_I32();
+
+          CHECK_BULK_MEMORY_OVERFLOW(src, len, msrc);
+          CHECK_BULK_MEMORY_OVERFLOW(dst, len, mdst);
+
+          <span class="hljs-comment">/* allowing the destination and source to overlap */</span>
+          bh_memmove_s(mdst, linear_mem_size - dst,
+                       msrc, len);
+
+          <span class="hljs-keyword">break</span>;
+        }
+        <span class="hljs-keyword">case</span> WASM_OP_MEMORY_FILL:
+        {
+          uint32 dst, len;
+          uint8 val, *mdst;
+          frame_ip++;
+
+          len = POP_I32();
+          val = POP_I32();
+          dst = POP_I32();
+
+          CHECK_BULK_MEMORY_OVERFLOW(dst, len, mdst);
+
+          <span class="hljs-built_in">memset</span>(mdst, val, len);
+
+          <span class="hljs-keyword">break</span>;
+        }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span> <span class="hljs-comment">/* WASM_ENABLE_BULK_MEMORY */</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_REF_TYPES != 0</span>
+        <span class="hljs-keyword">case</span> WASM_OP_TABLE_INIT:
+        {
+          uint32 tbl_idx, elem_idx;
+          uint64 n, s, d;
+          WASMTableInstance *tbl_inst;
+
+          read_leb_uint32(frame_ip, frame_ip_end, elem_idx);
+          bh_assert(elem_idx &lt; <span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;table_seg_count);
+
+          read_leb_uint32(frame_ip, frame_ip_end, tbl_idx);
+          bh_assert(tbl_idx &lt; <span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;table_count);
+
+          tbl_inst = wasm_get_table_inst(<span class="hljs-keyword">module</span>, tbl_idx);
+
+          n = (uint32)POP_I32();
+          s = (uint32)POP_I32();
+          d = (uint32)POP_I32();
+
+          <span class="hljs-comment">/* <span class="hljs-doctag">TODO:</span> what if the element is not passive? */</span>
+
+          <span class="hljs-keyword">if</span> (!n) {
+            <span class="hljs-keyword">break</span>;
+          }
+
+          <span class="hljs-keyword">if</span> (n + s &gt; <span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;table_segments[elem_idx].function_count
+              || d + n &gt; tbl_inst-&gt;cur_size) {
+            wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"out of bounds table access"</span>);
+            <span class="hljs-keyword">goto</span> got_exception;
+          }
+
+          <span class="hljs-keyword">if</span> (<span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;table_segments[elem_idx].is_dropped) {
+            wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"out of bounds table access"</span>);
+            <span class="hljs-keyword">goto</span> got_exception;
+          }
+
+          <span class="hljs-keyword">if</span> (!wasm_elem_is_passive(
+                <span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;table_segments[elem_idx].mode)) {
+              wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"out of bounds table access"</span>);
+              <span class="hljs-keyword">goto</span> got_exception;
+          }
+
+          bh_memcpy_s(
+            (uint8 *)(tbl_inst)
+              + offsetof(WASMTableInstance, base_addr) + d * <span class="hljs-keyword">sizeof</span>(uint32),
+            (tbl_inst-&gt;cur_size - d) * <span class="hljs-keyword">sizeof</span>(uint32),
+            <span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;table_segments[elem_idx].func_indexes + s,
+            n * <span class="hljs-keyword">sizeof</span>(uint32));
+
+          <span class="hljs-keyword">break</span>;
+        }
+        <span class="hljs-keyword">case</span> WASM_OP_ELEM_DROP:
+        {
+          uint32 elem_idx;
+          read_leb_uint32(frame_ip, frame_ip_end, elem_idx);
+          bh_assert(elem_idx &lt; <span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;table_seg_count);
+
+          <span class="hljs-keyword">module</span>-&gt;<span class="hljs-keyword">module</span>-&gt;table_segments[elem_idx].is_dropped = <span class="hljs-literal">true</span>;
+          <span class="hljs-keyword">break</span>;
+        }
+        <span class="hljs-keyword">case</span> WASM_OP_TABLE_COPY:
+        {
+          uint32 src_tbl_idx, dst_tbl_idx;
+          uint64 n, s, d;
+          WASMTableInstance *src_tbl_inst, *dst_tbl_inst;
+
+          read_leb_uint32(frame_ip, frame_ip_end, dst_tbl_idx);
+          bh_assert(dst_tbl_idx &lt; <span class="hljs-keyword">module</span>-&gt;table_count);
+
+          dst_tbl_inst = wasm_get_table_inst(<span class="hljs-keyword">module</span>, dst_tbl_idx);
+
+          read_leb_uint32(frame_ip, frame_ip_end, src_tbl_idx);
+          bh_assert(src_tbl_idx &lt; <span class="hljs-keyword">module</span>-&gt;table_count);
+
+          src_tbl_inst = wasm_get_table_inst(<span class="hljs-keyword">module</span>, src_tbl_idx);
+
+          n = (uint32)POP_I32();
+          s = (uint32)POP_I32();
+          d = (uint32)POP_I32();
+
+          <span class="hljs-keyword">if</span> (s + n &gt; dst_tbl_inst-&gt;cur_size
+              || d + n &gt; src_tbl_inst-&gt;cur_size) {
+              wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"out of bounds table access"</span>);
+              <span class="hljs-keyword">goto</span> got_exception;
+          }
+
+          <span class="hljs-comment">/* if s &gt;= d, copy from front to back */</span>
+          <span class="hljs-comment">/* if s &lt; d, copy from back to front */</span>
+          <span class="hljs-comment">/* merge all together */</span>
+          bh_memcpy_s(
+            (uint8 *)(dst_tbl_inst) + offsetof(WASMTableInstance, base_addr)
+              + d * <span class="hljs-keyword">sizeof</span>(uint32),
+            (dst_tbl_inst-&gt;cur_size - d) * <span class="hljs-keyword">sizeof</span>(uint32),
+            (uint8 *)(src_tbl_inst) + offsetof(WASMTableInstance, base_addr)
+              + s * <span class="hljs-keyword">sizeof</span>(uint32),
+            n * <span class="hljs-keyword">sizeof</span>(uint32));
+          <span class="hljs-keyword">break</span>;
+        }
+        <span class="hljs-keyword">case</span> WASM_OP_TABLE_GROW:
+        {
+          uint32 tbl_idx, n, init_val, orig_tbl_sz;
+          WASMTableInstance *tbl_inst;
+
+          read_leb_uint32(frame_ip, frame_ip_end, tbl_idx);
+          bh_assert(tbl_idx &lt; <span class="hljs-keyword">module</span>-&gt;table_count);
+
+          tbl_inst = wasm_get_table_inst(<span class="hljs-keyword">module</span>, tbl_idx);
+
+          orig_tbl_sz = tbl_inst-&gt;cur_size;
+
+          n = POP_I32();
+          init_val = POP_I32();
+
+          <span class="hljs-keyword">if</span> (!wasm_enlarge_table(<span class="hljs-keyword">module</span>, tbl_idx, n, init_val)) {
+            PUSH_I32(<span class="hljs-number">-1</span>);
+          }
+          <span class="hljs-keyword">else</span> {
+            PUSH_I32(orig_tbl_sz);
+          }
+          <span class="hljs-keyword">break</span>;
+        }
+        <span class="hljs-keyword">case</span> WASM_OP_TABLE_SIZE:
+        {
+          uint32 tbl_idx;
+          WASMTableInstance *tbl_inst;
+
+          read_leb_uint32(frame_ip, frame_ip_end, tbl_idx);
+          bh_assert(tbl_idx &lt; <span class="hljs-keyword">module</span>-&gt;table_count);
+
+          tbl_inst = wasm_get_table_inst(<span class="hljs-keyword">module</span>, tbl_idx);
+
+          PUSH_I32(tbl_inst-&gt;cur_size);
+          <span class="hljs-keyword">break</span>;
+        }
+        <span class="hljs-keyword">case</span> WASM_OP_TABLE_FILL:
+        {
+          uint32 tbl_idx, n, val, i;
+          WASMTableInstance *tbl_inst;
+
+          read_leb_uint32(frame_ip, frame_ip_end, tbl_idx);
+          bh_assert(tbl_idx &lt; <span class="hljs-keyword">module</span>-&gt;table_count);
+
+          tbl_inst = wasm_get_table_inst(<span class="hljs-keyword">module</span>, tbl_idx);
+
+          n = POP_I32();
+          val = POP_I32();
+          i = POP_I32();
+
+          <span class="hljs-comment">/* <span class="hljs-doctag">TODO:</span> what if the element is not passive? */</span>
+          <span class="hljs-comment">/* <span class="hljs-doctag">TODO:</span> what if the element is dropped? */</span>
+
+          <span class="hljs-keyword">if</span> (i + n &gt; tbl_inst-&gt;cur_size) {
+            <span class="hljs-comment">/* <span class="hljs-doctag">TODO:</span> verify warning content */</span>
+            wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"out of bounds table access"</span>);
+            <span class="hljs-keyword">goto</span> got_exception;
+          }
+
+          <span class="hljs-keyword">for</span> (; n != <span class="hljs-number">0</span>; i++, n--) {
+            ((uint32 *)(tbl_inst-&gt;base_addr))[i] = val;
+          }
+
+          <span class="hljs-keyword">break</span>;
+        }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span> <span class="hljs-comment">/* WASM_ENABLE_REF_TYPES */</span></span>
+        <span class="hljs-keyword">default</span>:
+          wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"unsupported opcode"</span>);
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+        HANDLE_OP_END ();
+      }
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_SHARED_MEMORY != 0</span>
+      HANDLE_OP (WASM_OP_ATOMIC_PREFIX):
+      {
+        uint32 offset, align, addr;
+
+        opcode = *frame_ip++;
+
+        read_leb_uint32(frame_ip, frame_ip_end, align);
+        read_leb_uint32(frame_ip, frame_ip_end, offset);
+        <span class="hljs-keyword">switch</span> (opcode) {
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_NOTIFY:
+          {
+            uint32 count, ret;
+
+            count = POP_I32();
+            addr = POP_I32();
+            CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">4</span>, maddr);
+            CHECK_ATOMIC_MEMORY_ACCESS();
+
+            ret = wasm_runtime_atomic_notify((WASMModuleInstanceCommon*)<span class="hljs-keyword">module</span>,
+                                             maddr, count);
+            bh_assert((int32)ret &gt;= <span class="hljs-number">0</span>);
+
+            PUSH_I32(ret);
+            <span class="hljs-keyword">break</span>;
+          }
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_WAIT32:
+          {
+            uint64 timeout;
+            uint32 expect, addr, ret;
+
+            timeout = POP_I64();
+            expect = POP_I32();
+            addr = POP_I32();
+            CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">4</span>, maddr);
+            CHECK_ATOMIC_MEMORY_ACCESS();
+
+            ret = wasm_runtime_atomic_wait((WASMModuleInstanceCommon*)<span class="hljs-keyword">module</span>, maddr,
+                                           (uint64)expect, timeout, <span class="hljs-literal">false</span>);
+            <span class="hljs-keyword">if</span> (ret == (uint32)<span class="hljs-number">-1</span>)
+              <span class="hljs-keyword">goto</span> got_exception;
+
+            PUSH_I32(ret);
+            <span class="hljs-keyword">break</span>;
+          }
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_WAIT64:
+          {
+            uint64 timeout, expect;
+            uint32 ret;
+
+            timeout = POP_I64();
+            expect = POP_I64();
+            addr = POP_I32();
+            CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">8</span>, maddr);
+            CHECK_ATOMIC_MEMORY_ACCESS();
+
+            ret = wasm_runtime_atomic_wait((WASMModuleInstanceCommon*)<span class="hljs-keyword">module</span>,
+                                           maddr, expect, timeout, <span class="hljs-literal">true</span>);
+            <span class="hljs-keyword">if</span> (ret == (uint32)<span class="hljs-number">-1</span>)
+              <span class="hljs-keyword">goto</span> got_exception;
+
+            PUSH_I32(ret);
+            <span class="hljs-keyword">break</span>;
+          }
+
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_I32_LOAD:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_I32_LOAD8_U:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_I32_LOAD16_U:
+          {
+            uint32 readv;
+
+            addr = POP_I32();
+
+            <span class="hljs-keyword">if</span> (opcode == WASM_OP_ATOMIC_I32_LOAD8_U) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">1</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              readv = (uint32)(*(uint8*)maddr);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (opcode == WASM_OP_ATOMIC_I32_LOAD16_U) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">2</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              readv = (uint32)LOAD_U16(maddr);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">4</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              readv = LOAD_I32(maddr);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+
+            PUSH_I32(readv);
+            <span class="hljs-keyword">break</span>;
+          }
+
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_I64_LOAD:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_I64_LOAD8_U:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_I64_LOAD16_U:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_I64_LOAD32_U:
+          {
+            uint64 readv;
+
+            addr = POP_I32();
+
+            <span class="hljs-keyword">if</span> (opcode == WASM_OP_ATOMIC_I64_LOAD8_U) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">1</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              readv = (uint64)(*(uint8*)maddr);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (opcode == WASM_OP_ATOMIC_I64_LOAD16_U) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">2</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              readv = (uint64)LOAD_U16(maddr);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (opcode == WASM_OP_ATOMIC_I64_LOAD32_U) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">4</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              readv = (uint64)LOAD_U32(maddr);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">8</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              readv = LOAD_I64(maddr);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+
+            PUSH_I64(readv);
+            <span class="hljs-keyword">break</span>;
+          }
+
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_I32_STORE:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_I32_STORE8:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_I32_STORE16:
+          {
+            uint32 sval;
+
+            sval = (uint32)POP_I32();
+            addr = POP_I32();
+
+            <span class="hljs-keyword">if</span> (opcode == WASM_OP_ATOMIC_I32_STORE8) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">1</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              *(uint8*)maddr = (uint8)sval;
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (opcode == WASM_OP_ATOMIC_I32_STORE16) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">2</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              STORE_U16(maddr, (uint16)sval);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">4</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              STORE_U32(maddr, frame_sp[<span class="hljs-number">1</span>]);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">break</span>;
+          }
+
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_I64_STORE:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_I64_STORE8:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_I64_STORE16:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_I64_STORE32:
+          {
+            uint64 sval;
+
+            sval = (uint64)POP_I64();
+            addr = POP_I32();
+
+            <span class="hljs-keyword">if</span> (opcode == WASM_OP_ATOMIC_I64_STORE8) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">1</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              *(uint8*)maddr = (uint8)sval;
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(opcode == WASM_OP_ATOMIC_I64_STORE16) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">2</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              STORE_U16(maddr, (uint16)sval);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (opcode == WASM_OP_ATOMIC_I64_STORE32) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">4</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              STORE_U32(maddr, (uint32)sval);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">8</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              STORE_U32(maddr, frame_sp[<span class="hljs-number">1</span>]);
+              STORE_U32(maddr + <span class="hljs-number">4</span>, frame_sp[<span class="hljs-number">2</span>]);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">break</span>;
+          }
+
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_RMW_I32_CMPXCHG:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_RMW_I32_CMPXCHG8_U:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_RMW_I32_CMPXCHG16_U:
+          {
+            uint32 readv, sval, expect;
+
+            sval = POP_I32();
+            expect = POP_I32();
+            addr = POP_I32();
+
+            <span class="hljs-keyword">if</span> (opcode == WASM_OP_ATOMIC_RMW_I32_CMPXCHG8_U) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">1</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              readv = (uint32)(*(uint8*)maddr);
+              <span class="hljs-keyword">if</span> (readv == expect)
+                *(uint8*)maddr = (uint8)(sval);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (opcode == WASM_OP_ATOMIC_RMW_I32_CMPXCHG16_U) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">2</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              readv = (uint32)LOAD_U16(maddr);
+              <span class="hljs-keyword">if</span> (readv == expect)
+                STORE_U16(maddr, (uint16)(sval));
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">4</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              readv = LOAD_I32(maddr);
+              <span class="hljs-keyword">if</span> (readv == expect)
+                STORE_U32(maddr, sval);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            PUSH_I32(readv);
+            <span class="hljs-keyword">break</span>;
+          }
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_RMW_I64_CMPXCHG:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_RMW_I64_CMPXCHG8_U:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_RMW_I64_CMPXCHG16_U:
+          <span class="hljs-keyword">case</span> WASM_OP_ATOMIC_RMW_I64_CMPXCHG32_U:
+          {
+            uint64 readv, sval, expect;
+
+            sval = (uint64)POP_I64();
+            expect = (uint64)POP_I64();
+            addr = POP_I32();
+
+            <span class="hljs-keyword">if</span> (opcode == WASM_OP_ATOMIC_RMW_I64_CMPXCHG8_U) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">1</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              readv = (uint64)(*(uint8*)maddr);
+              <span class="hljs-keyword">if</span> (readv == expect)
+                *(uint8*)maddr = (uint8)(sval);
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (opcode == WASM_OP_ATOMIC_RMW_I64_CMPXCHG16_U) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">2</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              readv = (uint64)LOAD_U16(maddr);
+              <span class="hljs-keyword">if</span> (readv == expect)
+                STORE_U16(maddr, (uint16)(sval));
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (opcode == WASM_OP_ATOMIC_RMW_I64_CMPXCHG32_U) {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">4</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              readv = (uint64)LOAD_U32(maddr);
+              <span class="hljs-keyword">if</span> (readv == expect)
+                STORE_U32(maddr, (uint32)(sval));
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            <span class="hljs-keyword">else</span> {
+              CHECK_BULK_MEMORY_OVERFLOW(addr + offset, <span class="hljs-number">8</span>, maddr);
+              CHECK_ATOMIC_MEMORY_ACCESS();
+
+              os_mutex_lock(&amp;memory-&gt;mem_lock);
+              readv = (uint64)LOAD_I64(maddr);
+              <span class="hljs-keyword">if</span> (readv == expect) {
+                STORE_I64(maddr, sval);
+              }
+              os_mutex_unlock(&amp;memory-&gt;mem_lock);
+            }
+            PUSH_I64(readv);
+            <span class="hljs-keyword">break</span>;
+          }
+
+          DEF_ATOMIC_RMW_OPCODE(ADD, +);
+          DEF_ATOMIC_RMW_OPCODE(SUB, -);
+          DEF_ATOMIC_RMW_OPCODE(AND, &amp;);
+          DEF_ATOMIC_RMW_OPCODE(OR,  |);
+          DEF_ATOMIC_RMW_OPCODE(XOR, ^);
+          <span class="hljs-comment">/* xchg, ignore the read value, and store the given value:
+            readv * 0 + sval */</span>
+          DEF_ATOMIC_RMW_OPCODE(XCHG, *<span class="hljs-number">0</span> +);
+        }
+
+        HANDLE_OP_END ();
+      }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+      HANDLE_OP (WASM_OP_IMPDEP):
+        frame = prev_frame;
+        frame_ip = frame-&gt;ip;
+        frame_sp = frame-&gt;sp;
+        frame_csp = frame-&gt;csp;
+        <span class="hljs-keyword">goto</span> call_func_from_entry;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LABELS_AS_VALUES == 0</span>
+      <span class="hljs-keyword">default</span>:
+        wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"unsupported opcode"</span>);
+        <span class="hljs-keyword">goto</span> got_exception;
+    }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LABELS_AS_VALUES != 0</span>
+    HANDLE_OP (WASM_OP_UNUSED_0x06):
+    HANDLE_OP (WASM_OP_UNUSED_0x07):
+    HANDLE_OP (WASM_OP_UNUSED_0x08):
+    HANDLE_OP (WASM_OP_UNUSED_0x09):
+    HANDLE_OP (WASM_OP_UNUSED_0x0a):
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_TAIL_CALL == 0</span>
+    HANDLE_OP (WASM_OP_RETURN_CALL):
+    HANDLE_OP (WASM_OP_RETURN_CALL_INDIRECT):
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_SHARED_MEMORY == 0</span>
+    HANDLE_OP (WASM_OP_ATOMIC_PREFIX):
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_REF_TYPES == 0</span>
+    HANDLE_OP (WASM_OP_SELECT_T):
+    HANDLE_OP (WASM_OP_TABLE_GET):
+    HANDLE_OP (WASM_OP_TABLE_SET):
+    HANDLE_OP (WASM_OP_REF_NULL):
+    HANDLE_OP (WASM_OP_REF_IS_NULL):
+    HANDLE_OP (WASM_OP_REF_FUNC):
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+    HANDLE_OP (WASM_OP_UNUSED_0x14):
+    HANDLE_OP (WASM_OP_UNUSED_0x15):
+    HANDLE_OP (WASM_OP_UNUSED_0x16):
+    HANDLE_OP (WASM_OP_UNUSED_0x17):
+    HANDLE_OP (WASM_OP_UNUSED_0x18):
+    HANDLE_OP (WASM_OP_UNUSED_0x19):
+    HANDLE_OP (WASM_OP_UNUSED_0x27):
+    <span class="hljs-comment">/* Used by fast interpreter */</span>
+    HANDLE_OP (EXT_OP_SET_LOCAL_FAST_I64):
+    HANDLE_OP (EXT_OP_TEE_LOCAL_FAST_I64):
+    HANDLE_OP (EXT_OP_COPY_STACK_TOP):
+    HANDLE_OP (EXT_OP_COPY_STACK_TOP_I64):
+    HANDLE_OP (EXT_OP_COPY_STACK_VALUES):
+    {
+      wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"unsupported opcode"</span>);
+      <span class="hljs-keyword">goto</span> got_exception;
+    }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LABELS_AS_VALUES == 0</span>
+    <span class="hljs-keyword">continue</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+    FETCH_OPCODE_AND_DISPATCH ();
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_TAIL_CALL != 0</span>
+  call_func_from_return_call:
+    POP(cur_func-&gt;param_cell_num);
+    word_copy(frame-&gt;lp, frame_sp, cur_func-&gt;param_cell_num);
+    FREE_FRAME(exec_env, frame);
+    wasm_exec_env_set_cur_frame(exec_env,
+                                (WASMRuntimeFrame *)prev_frame);
+    <span class="hljs-keyword">goto</span> call_func_from_entry;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+  call_func_from_interp:
+    <span class="hljs-comment">/* Only do the copy when it's called from interpreter.  */</span>
+    {
+      WASMInterpFrame *outs_area = wasm_exec_env_wasm_stack_top(exec_env);
+      POP(cur_func-&gt;param_cell_num);
+      SYNC_ALL_TO_FRAME();
+      word_copy(outs_area-&gt;lp, frame_sp, cur_func-&gt;param_cell_num);
+      prev_frame = frame;
+    }
+
+  call_func_from_entry:
+    {
+      <span class="hljs-keyword">if</span> (cur_func-&gt;is_import_func) {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE != 0</span>
+          <span class="hljs-keyword">if</span> (cur_func-&gt;import_func_inst) {
+              wasm_interp_call_func_import(<span class="hljs-keyword">module</span>, exec_env, cur_func,
+                                           prev_frame);
+          }
+          <span class="hljs-keyword">else</span>
+#endif
+          {
+              wasm_interp_call_func_native(<span class="hljs-keyword">module</span>, exec_env, cur_func,
+                                           prev_frame);
+          }
+
+          prev_frame = frame-&gt;prev_frame;
+          cur_func = frame-&gt;function;
+          UPDATE_ALL_FROM_FRAME();
+
+          <span class="hljs-comment">/* update memory instance ptr and memory size */</span>
+          memory = <span class="hljs-keyword">module</span>-&gt;default_memory;
+          <span class="hljs-keyword">if</span> (memory)
+             linear_mem_size = num_bytes_per_page * memory-&gt;cur_page_count;
+          <span class="hljs-keyword">if</span> (wasm_get_exception(<span class="hljs-keyword">module</span>))
+              <span class="hljs-keyword">goto</span> got_exception;
+      }
+      <span class="hljs-keyword">else</span> {
+        WASMFunction *cur_wasm_func = cur_func-&gt;u.func;
+        WASMType *func_type;
+
+        func_type = cur_wasm_func-&gt;func_type;
+
+        all_cell_num = (uint64)cur_func-&gt;param_cell_num
+                       + (uint64)cur_func-&gt;local_cell_num
+                       + (uint64)cur_wasm_func-&gt;max_stack_cell_num
+                       + ((uint64)cur_wasm_func-&gt;max_block_num) * <span class="hljs-keyword">sizeof</span>(WASMBranchBlock) / <span class="hljs-number">4</span>;
+        <span class="hljs-keyword">if</span> (all_cell_num &gt;= UINT32_MAX) {
+            wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"wasm operand stack overflow"</span>);
+            <span class="hljs-keyword">goto</span> got_exception;
+        }
+
+        frame_size = wasm_interp_interp_frame_size((uint32)all_cell_num);
+        <span class="hljs-keyword">if</span> (!(frame = ALLOC_FRAME(exec_env, frame_size, prev_frame))) {
+          frame = prev_frame;
+          <span class="hljs-keyword">goto</span> got_exception;
+        }
+
+        <span class="hljs-comment">/* Initialize the interpreter context. */</span>
+        frame-&gt;function = cur_func;
+        frame_ip = wasm_get_func_code(cur_func);
+        frame_ip_end = wasm_get_func_code_end(cur_func);
+        frame_lp = frame-&gt;lp;
+
+        frame_sp = frame-&gt;sp_bottom = frame_lp + cur_func-&gt;param_cell_num
+                                               + cur_func-&gt;local_cell_num;
+        frame-&gt;sp_boundary = frame-&gt;sp_bottom + cur_wasm_func-&gt;max_stack_cell_num;
+
+        frame_csp = frame-&gt;csp_bottom = (WASMBranchBlock*)frame-&gt;sp_boundary;
+        frame-&gt;csp_boundary = frame-&gt;csp_bottom + cur_wasm_func-&gt;max_block_num;
+
+        <span class="hljs-comment">/* Initialize the local varialbes */</span>
+        <span class="hljs-built_in">memset</span>(frame_lp + cur_func-&gt;param_cell_num, <span class="hljs-number">0</span>,
+               (uint32)(cur_func-&gt;local_cell_num * <span class="hljs-number">4</span>));
+
+        <span class="hljs-comment">/* Push function block as first block */</span>
+        cell_num = func_type-&gt;ret_cell_num;
+        PUSH_CSP(LABEL_TYPE_FUNCTION, cell_num, frame_ip_end - <span class="hljs-number">1</span>);
+
+        wasm_exec_env_set_cur_frame(exec_env, (WASMRuntimeFrame*)frame);
+      }
+      HANDLE_OP_END ();
+    }
+
+  return_func:
+    {
+      FREE_FRAME(exec_env, frame);
+      wasm_exec_env_set_cur_frame(exec_env, (WASMRuntimeFrame*)prev_frame);
+
+      <span class="hljs-keyword">if</span> (!prev_frame-&gt;ip)
+        <span class="hljs-comment">/* Called from native. */</span>
+        <span class="hljs-keyword">return</span>;
+
+      RECOVER_CONTEXT(prev_frame);
+      HANDLE_OP_END ();
+    }
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_SHARED_MEMORY != 0</span>
+  unaligned_atomic:
+    wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"unaligned atomic"</span>);
+    <span class="hljs-keyword">goto</span> got_exception;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+  out_of_bounds:
+    wasm_set_exception(<span class="hljs-keyword">module</span>, <span class="hljs-string">"out of bounds memory access"</span>);
+
+  got_exception:
+    <span class="hljs-keyword">return</span>;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LABELS_AS_VALUES == 0</span>
+  }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+  FETCH_OPCODE_AND_DISPATCH ();
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+}</code></pre></div>
+
+<div class="tc-tiddler-plugin-info tc-reveal"><p>
+</p></div>
+</div>
+
+</p>
+</section>
+</body>
+</html>
+

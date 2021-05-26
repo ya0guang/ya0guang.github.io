@@ -1,6 +1,6 @@
 created: 20210523151917582
-modified: 20210524032709171
-tags: Analysis Artifact Security SGX NotFinish
+modified: 20210526150749768
+tags: Analysis Artifact Security SGX System
 title: WAMR Analysis
 type: text/vnd.tiddlywiki
 
@@ -9,6 +9,7 @@ type: text/vnd.tiddlywiki
 ! Big Picture
 
 * An ecall `ecall_handle_command` to serve incoming commands from the app part
+* ''Memory management?'' `runtime_malloc`
 
 ```c
 void
@@ -70,11 +71,12 @@ ecall_handle_command(unsigned cmd,
 
 # `enclave_init`
 # Argument parsing
-# [[WASM `init_runtime`]] (in enclave)
-# set log level
-# ''read in WASM file to a buffer and load it as a module into the enclave''
-# ''Set wasi arguments''
-# ''Instantiate module''
+# [[WAMR `init_runtime`]] (in enclave)
+# Set log level
+# Read in WASM file to a buffer and [[load it as a module|WAMR `wasm_runtime_load`]] into the enclave
+# [[Instantiate the module|WAMR `wasm_runtime_instantiate_internal`]]
+# [[Execute the main function|WAMR `wasm_application_execute_main`]]
+# Do cleaning jobs: `wasm_runtime_deinstantiate`, `wasm_runtime_unload` and `wasm_runtime_destroy`
 
 ```c
 int

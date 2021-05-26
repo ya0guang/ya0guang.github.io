@@ -1,0 +1,793 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>WAMR `wasm_runtime_instantiate_internal`: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Analysis tc-tagged-Artifact tc-tagged-System tc-tagged-NotFinish" data-tags="Analysis Artifact System NotFinish" data-tiddler-title="WAMR `wasm_runtime_instantiate_internal`"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">WAMR `wasm_runtime_instantiate_internal`</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>May 25, 2021 at 10:54 am</div></div><div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Analysis
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Artifact
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+NotFinish
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+System
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><p>The instantiation can be divided to two types: Interpreter and AOT. They are instantiated by different functions:</p><pre class="c hljs"><code><span class="hljs-function">WASMModuleInstanceCommon *
+<span class="hljs-title">wasm_runtime_instantiate_internal</span><span class="hljs-params">(WASMModuleCommon *<span class="hljs-keyword">module</span>, <span class="hljs-keyword">bool</span> is_sub_inst,
+                                  uint32 stack_size, uint32 heap_size,
+                                  <span class="hljs-keyword">char</span> *error_buf, uint32 error_buf_size)</span>
+</span>{
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_INTERP != 0</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">module</span>-&gt;module_type == Wasm_Module_Bytecode)
+        <span class="hljs-keyword">return</span> (WASMModuleInstanceCommon*)
+               wasm_instantiate((WASMModule*)<span class="hljs-keyword">module</span>, is_sub_inst,
+                                stack_size, heap_size,
+                                error_buf, error_buf_size);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_AOT != 0</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">module</span>-&gt;module_type == Wasm_Module_AoT)
+        <span class="hljs-keyword">return</span> (WASMModuleInstanceCommon*)
+               aot_instantiate((AOTModule*)<span class="hljs-keyword">module</span>, is_sub_inst,
+                               stack_size, heap_size,
+                               error_buf, error_buf_size);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+    set_error_buf(error_buf, error_buf_size,
+                  <span class="hljs-string">"Instantiate module failed, invalid module type"</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+}</code></pre><h1 class=""><code>wasm_instantiate</code></h1><p>The instantiation includes a lot of memory checks. E.g. the segments is in the loader and there offset/offset+length are within the region (not exceeds its predetermined sizes)</p><ol><li>Instantiate the globals</li><li>Instantiate memory/table/function count (import + module)</li><li><strong>Instantiate memory/table/function</strong></li><li>Initialize the global data</li><li>Check if the functions/globals are linked correctly <code>check_linked_symbol</code></li><li>Initialize the memory data with data segment section</li><li>Initialize the table data with table segment section, may also lookup globles to find related type info</li><li>Initialize the thread related data: stack size, MM fnctions, WASI, etc.</li></ol><pre class="c hljs"><code><span class="hljs-function">WASMModuleInstance*
+<span class="hljs-title">wasm_instantiate</span><span class="hljs-params">(WASMModule *<span class="hljs-keyword">module</span>, <span class="hljs-keyword">bool</span> is_sub_inst,
+                 uint32 stack_size, uint32 heap_size,
+                 <span class="hljs-keyword">char</span> *error_buf, uint32 error_buf_size)</span>
+</span>{
+    WASMModuleInstance *module_inst;
+    WASMGlobalInstance *globals = <span class="hljs-literal">NULL</span>, *global;
+    uint32 global_count, global_data_size = <span class="hljs-number">0</span>, i;
+    uint32 base_offset, length;
+    uint8 *global_data, *global_data_end;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE != 0</span>
+    <span class="hljs-keyword">bool</span> ret = <span class="hljs-literal">false</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">module</span>)
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+
+    <span class="hljs-comment">/* Check heap size */</span>
+    heap_size = align_uint(heap_size, <span class="hljs-number">8</span>);
+    <span class="hljs-keyword">if</span> (heap_size &gt; APP_HEAP_SIZE_MAX)
+        heap_size = APP_HEAP_SIZE_MAX;
+
+    <span class="hljs-comment">/* Allocate the memory */</span>
+    <span class="hljs-keyword">if</span> (!(module_inst = runtime_malloc(<span class="hljs-keyword">sizeof</span>(WASMModuleInstance),
+                                       error_buf, error_buf_size))) {
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+    }
+
+    module_inst-&gt;<span class="hljs-keyword">module</span> = <span class="hljs-keyword">module</span>;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE != 0</span>
+    module_inst-&gt;sub_module_inst_list =
+      &amp;module_inst-&gt;sub_module_inst_list_head;
+    ret = sub_module_instantiate(<span class="hljs-keyword">module</span>, module_inst, stack_size, heap_size,
+                                 error_buf, error_buf_size);
+    <span class="hljs-keyword">if</span> (!ret) {
+        LOG_DEBUG(<span class="hljs-string">"build a sub module list failed"</span>);
+        <span class="hljs-keyword">goto</span> fail;
+    }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+    <span class="hljs-comment">/* Instantiate global firstly to get the mutable data size */</span>
+    global_count = <span class="hljs-keyword">module</span>-&gt;import_global_count + <span class="hljs-keyword">module</span>-&gt;global_count;
+    <span class="hljs-keyword">if</span> (global_count
+        &amp;&amp; !(globals = globals_instantiate(<span class="hljs-keyword">module</span>, module_inst,
+                                           &amp;global_data_size,
+                                           error_buf, error_buf_size))) {
+        <span class="hljs-keyword">goto</span> fail;
+    }
+    module_inst-&gt;global_count = global_count;
+    module_inst-&gt;globals = globals;
+
+    module_inst-&gt;memory_count =
+        <span class="hljs-keyword">module</span>-&gt;import_memory_count + <span class="hljs-keyword">module</span>-&gt;memory_count;
+    module_inst-&gt;table_count =
+        <span class="hljs-keyword">module</span>-&gt;import_table_count + <span class="hljs-keyword">module</span>-&gt;table_count;
+    module_inst-&gt;function_count =
+        <span class="hljs-keyword">module</span>-&gt;import_function_count + <span class="hljs-keyword">module</span>-&gt;function_count;
+
+    <span class="hljs-comment">/* export */</span>
+    module_inst-&gt;export_func_count = get_export_count(<span class="hljs-keyword">module</span>, EXPORT_KIND_FUNC);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE != 0</span>
+    module_inst-&gt;export_tab_count = get_export_count(<span class="hljs-keyword">module</span>, EXPORT_KIND_TABLE);
+    module_inst-&gt;export_mem_count = get_export_count(<span class="hljs-keyword">module</span>, EXPORT_KIND_MEMORY);
+    module_inst-&gt;export_glob_count = get_export_count(<span class="hljs-keyword">module</span>, EXPORT_KIND_GLOBAL);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+    <span class="hljs-keyword">if</span> (global_count &gt; <span class="hljs-number">0</span>) {
+        <span class="hljs-keyword">if</span> (!(module_inst-&gt;global_data = runtime_malloc
+                    (global_data_size, error_buf, error_buf_size))) {
+            <span class="hljs-keyword">goto</span> fail;
+        }
+    }
+
+    <span class="hljs-comment">/* Instantiate memories/tables/functions */</span>
+    <span class="hljs-keyword">if</span> ((module_inst-&gt;memory_count &gt; <span class="hljs-number">0</span>
+         &amp;&amp; !(module_inst-&gt;memories =
+                memories_instantiate(<span class="hljs-keyword">module</span>,
+                                     module_inst,
+                                     heap_size, error_buf, error_buf_size)))
+        || (module_inst-&gt;table_count &gt; <span class="hljs-number">0</span>
+            &amp;&amp; !(module_inst-&gt;tables =
+                   tables_instantiate(<span class="hljs-keyword">module</span>,
+                                      module_inst,
+                                      error_buf, error_buf_size)))
+        || (module_inst-&gt;function_count &gt; <span class="hljs-number">0</span>
+            &amp;&amp; !(module_inst-&gt;functions =
+                   functions_instantiate(<span class="hljs-keyword">module</span>,
+                                         module_inst,
+                                         error_buf, error_buf_size)))
+        || (module_inst-&gt;export_func_count &gt; <span class="hljs-number">0</span>
+            &amp;&amp; !(module_inst-&gt;export_functions = export_functions_instantiate(
+                   <span class="hljs-keyword">module</span>, module_inst, module_inst-&gt;export_func_count,
+                   error_buf, error_buf_size)))
+#<span class="hljs-keyword">if</span> WASM_ENABLE_MULTI_MODULE != <span class="hljs-number">0</span>
+        || (module_inst-&gt;export_glob_count &gt; <span class="hljs-number">0</span>
+            &amp;&amp; !(module_inst-&gt;export_globals = export_globals_instantiate(
+                   <span class="hljs-keyword">module</span>, module_inst, module_inst-&gt;export_glob_count,
+                   error_buf, error_buf_size)))
+#endif
+    ) {
+        <span class="hljs-keyword">goto</span> fail;
+    }
+
+    <span class="hljs-keyword">if</span> (global_count &gt; <span class="hljs-number">0</span>) {
+        <span class="hljs-comment">/* Initialize the global data */</span>
+        global_data = module_inst-&gt;global_data;
+        global_data_end = global_data + global_data_size;
+        global = globals;
+        <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; global_count; i++, global++) {
+            <span class="hljs-keyword">switch</span> (global-&gt;type) {
+                <span class="hljs-keyword">case</span> VALUE_TYPE_I32:
+                <span class="hljs-keyword">case</span> VALUE_TYPE_F32:
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_REF_TYPES != 0</span>
+                <span class="hljs-keyword">case</span> VALUE_TYPE_FUNCREF:
+                <span class="hljs-keyword">case</span> VALUE_TYPE_EXTERNREF:
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+                    *(int32*)global_data = global-&gt;initial_value.i32;
+                    global_data += <span class="hljs-keyword">sizeof</span>(int32);
+                    <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">case</span> VALUE_TYPE_I64:
+                <span class="hljs-keyword">case</span> VALUE_TYPE_F64:
+                    bh_memcpy_s(global_data, (uint32)(global_data_end - global_data),
+                                &amp;global-&gt;initial_value.i64, <span class="hljs-keyword">sizeof</span>(int64));
+                    global_data += <span class="hljs-keyword">sizeof</span>(int64);
+                    <span class="hljs-keyword">break</span>;
+                <span class="hljs-keyword">default</span>:
+                    bh_assert(<span class="hljs-number">0</span>);
+            }
+        }
+        bh_assert(global_data == global_data_end);
+    }
+
+    <span class="hljs-keyword">if</span> (!check_linked_symbol(module_inst, error_buf, error_buf_size)) {
+        <span class="hljs-keyword">goto</span> fail;
+    }
+
+    <span class="hljs-comment">/* Initialize the memory data with data segment section */</span>
+    module_inst-&gt;default_memory =
+      module_inst-&gt;memory_count ? module_inst-&gt;memories[<span class="hljs-number">0</span>] : <span class="hljs-literal">NULL</span>;
+
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">module</span>-&gt;data_seg_count; i++) {
+        WASMMemoryInstance *memory = <span class="hljs-literal">NULL</span>;
+        uint8 *memory_data = <span class="hljs-literal">NULL</span>;
+        uint32 memory_size = <span class="hljs-number">0</span>;
+        WASMDataSeg *data_seg = <span class="hljs-keyword">module</span>-&gt;data_segments[i];
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_BULK_MEMORY != 0</span>
+        <span class="hljs-keyword">if</span> (data_seg-&gt;is_passive)
+            <span class="hljs-keyword">continue</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+        <span class="hljs-comment">/* has check it in loader */</span>
+        memory = module_inst-&gt;memories[data_seg-&gt;memory_index];
+        bh_assert(memory);
+
+        memory_data = memory-&gt;memory_data;
+        memory_size = memory-&gt;num_bytes_per_page * memory-&gt;cur_page_count;
+        bh_assert(memory_data || memory_size == <span class="hljs-number">0</span>);
+
+        bh_assert(data_seg-&gt;base_offset.init_expr_type
+                    == INIT_EXPR_TYPE_I32_CONST
+                  || data_seg-&gt;base_offset.init_expr_type
+                       == INIT_EXPR_TYPE_GET_GLOBAL);
+
+        <span class="hljs-keyword">if</span> (data_seg-&gt;base_offset.init_expr_type
+            == INIT_EXPR_TYPE_GET_GLOBAL) {
+            <span class="hljs-keyword">if</span> (!check_global_init_expr(<span class="hljs-keyword">module</span>,
+                                        data_seg-&gt;base_offset.u.global_index,
+                                        error_buf, error_buf_size)) {
+                <span class="hljs-keyword">goto</span> fail;
+            }
+
+            <span class="hljs-keyword">if</span> (!globals
+                || globals[data_seg-&gt;base_offset.u.global_index].type
+                     != VALUE_TYPE_I32) {
+                set_error_buf(error_buf, error_buf_size,
+                              <span class="hljs-string">"data segment does not fit"</span>);
+                <span class="hljs-keyword">goto</span> fail;
+            }
+
+            data_seg-&gt;base_offset.u.i32 =
+                globals[data_seg-&gt;base_offset.u.global_index]
+                .initial_value.i32;
+        }
+
+        <span class="hljs-comment">/* check offset */</span>
+        base_offset = (uint32)data_seg-&gt;base_offset.u.i32;
+        <span class="hljs-keyword">if</span> (base_offset &gt; memory_size) {
+            LOG_DEBUG(<span class="hljs-string">"base_offset(%d) &gt; memory_size(%d)"</span>, base_offset,
+                      memory_size);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_REF_TYPES != 0</span>
+            set_error_buf(error_buf, error_buf_size,
+                          <span class="hljs-string">"out of bounds memory access"</span>);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+            set_error_buf(error_buf, error_buf_size,
+                          <span class="hljs-string">"data segment does not fit"</span>);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+            <span class="hljs-keyword">goto</span> fail;
+        }
+
+        <span class="hljs-comment">/* check offset + length(could be zero) */</span>
+        length = data_seg-&gt;data_length;
+        <span class="hljs-keyword">if</span> (base_offset + length &gt; memory_size) {
+            LOG_DEBUG(<span class="hljs-string">"base_offset(%d) + length(%d) &gt; memory_size(%d)"</span>,
+                      base_offset, length, memory_size);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_REF_TYPES != 0</span>
+            set_error_buf(error_buf, error_buf_size,
+                          <span class="hljs-string">"out of bounds memory access"</span>);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+            set_error_buf(error_buf, error_buf_size,
+                          <span class="hljs-string">"data segment does not fit"</span>);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+            <span class="hljs-keyword">goto</span> fail;
+        }
+
+        <span class="hljs-keyword">if</span> (memory_data) {
+            bh_memcpy_s(memory_data + base_offset, memory_size - base_offset,
+                        data_seg-&gt;data, length);
+        }
+    }
+
+    <span class="hljs-comment">/* Initialize the table data with table segment section */</span>
+    module_inst-&gt;default_table =
+      module_inst-&gt;table_count ? module_inst-&gt;tables[<span class="hljs-number">0</span>] : <span class="hljs-literal">NULL</span>;
+    <span class="hljs-comment">/* in case there is no table */</span>
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; module_inst-&gt;table_count &gt; <span class="hljs-number">0</span> &amp;&amp; i &lt; <span class="hljs-keyword">module</span>-&gt;table_seg_count;
+         i++) {
+        WASMTableSeg *table_seg = <span class="hljs-keyword">module</span>-&gt;table_segments + i;
+        <span class="hljs-comment">/* has check it in loader */</span>
+        WASMTableInstance *table = module_inst-&gt;tables[table_seg-&gt;table_index];
+        bh_assert(table);
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_REF_TYPES != 0</span>
+        <span class="hljs-keyword">if</span> (table-&gt;elem_type != VALUE_TYPE_FUNCREF
+            &amp;&amp; table-&gt;elem_type != VALUE_TYPE_EXTERNREF) {
+            set_error_buf(error_buf, error_buf_size,
+                          <span class="hljs-string">"elements segment does not fit"</span>);
+            <span class="hljs-keyword">goto</span> fail;
+        }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+        uint32 *table_data = (uint32 *)table-&gt;base_addr;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE != 0</span>
+        table_data = table-&gt;table_inst_linked
+                        ? (uint32 *)table-&gt;table_inst_linked-&gt;base_addr
+                        : table_data;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        bh_assert(table_data);
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_REF_TYPES != 0</span>
+        <span class="hljs-keyword">if</span> (!wasm_elem_is_active(table_seg-&gt;mode))
+            <span class="hljs-keyword">continue</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+        <span class="hljs-comment">/* init vec(funcidx) or vec(expr) */</span>
+        bh_assert(
+          table_seg-&gt;base_offset.init_expr_type == INIT_EXPR_TYPE_I32_CONST
+          || table_seg-&gt;base_offset.init_expr_type == INIT_EXPR_TYPE_GET_GLOBAL
+#<span class="hljs-keyword">if</span> WASM_ENABLE_REF_TYPES != <span class="hljs-number">0</span>
+          || table_seg-&gt;base_offset.init_expr_type == INIT_EXPR_TYPE_FUNCREF_CONST
+          || table_seg-&gt;base_offset.init_expr_type == INIT_EXPR_TYPE_REFNULL_CONST
+#endif
+        );
+
+        <span class="hljs-keyword">if</span> (table_seg-&gt;base_offset.init_expr_type
+            == INIT_EXPR_TYPE_GET_GLOBAL) {
+            <span class="hljs-keyword">if</span> (!check_global_init_expr(<span class="hljs-keyword">module</span>,
+                                        table_seg-&gt;base_offset.u.global_index,
+                                        error_buf, error_buf_size)) {
+                <span class="hljs-keyword">goto</span> fail;
+            }
+
+            <span class="hljs-keyword">if</span> (!globals
+                || globals[table_seg-&gt;base_offset.u.global_index].type
+                   != VALUE_TYPE_I32) {
+                set_error_buf(error_buf, error_buf_size,
+                              <span class="hljs-string">"elements segment does not fit"</span>);
+                <span class="hljs-keyword">goto</span> fail;
+            }
+
+            table_seg-&gt;base_offset.u.i32 =
+              globals[table_seg-&gt;base_offset.u.global_index].initial_value.i32;
+        }
+
+        <span class="hljs-comment">/* check offset since length might negative */</span>
+        <span class="hljs-keyword">if</span> ((uint32)table_seg-&gt;base_offset.u.i32 &gt; table-&gt;cur_size) {
+            LOG_DEBUG(<span class="hljs-string">"base_offset(%d) &gt; table-&gt;cur_size(%d)"</span>,
+                      table_seg-&gt;base_offset.u.i32, table-&gt;cur_size);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_REF_TYPES != 0</span>
+            set_error_buf(error_buf, error_buf_size,
+                          <span class="hljs-string">"out of bounds table access"</span>);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+            set_error_buf(error_buf, error_buf_size,
+                          <span class="hljs-string">"elements segment does not fit"</span>);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+            <span class="hljs-keyword">goto</span> fail;
+        }
+
+        <span class="hljs-comment">/* check offset + length(could be zero) */</span>
+        length = table_seg-&gt;function_count;
+        <span class="hljs-keyword">if</span> ((uint32)table_seg-&gt;base_offset.u.i32 + length &gt; table-&gt;cur_size) {
+            LOG_DEBUG(<span class="hljs-string">"base_offset(%d) + length(%d)&gt; table-&gt;cur_size(%d)"</span>,
+                      table_seg-&gt;base_offset.u.i32, length, table-&gt;cur_size);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_REF_TYPES != 0</span>
+            set_error_buf(error_buf, error_buf_size,
+                          <span class="hljs-string">"out of bounds table access"</span>);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
+            set_error_buf(error_buf, error_buf_size,
+                          <span class="hljs-string">"elements segment does not fit"</span>);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+            <span class="hljs-keyword">goto</span> fail;
+        }
+
+        <span class="hljs-comment">/**
+         * Check function index in the current module inst for now.
+         * will check the linked table inst owner in future.
+         * so loader check is enough
+         */</span>
+        bh_memcpy_s(
+          table_data + table_seg-&gt;base_offset.u.i32,
+          (uint32)((table-&gt;cur_size - (uint32)table_seg-&gt;base_offset.u.i32)
+                   * <span class="hljs-keyword">sizeof</span>(uint32)),
+          table_seg-&gt;func_indexes, (uint32)(length * <span class="hljs-keyword">sizeof</span>(uint32)));
+    }
+
+    <span class="hljs-comment">/* module instance type */</span>
+    module_inst-&gt;module_type = Wasm_Module_Bytecode;
+
+    <span class="hljs-comment">/* Initialize the thread related data */</span>
+    <span class="hljs-keyword">if</span> (stack_size == <span class="hljs-number">0</span>)
+        stack_size = DEFAULT_WASM_STACK_SIZE;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_SPEC_TEST != 0</span>
+    <span class="hljs-keyword">if</span> (stack_size &lt; <span class="hljs-number">48</span> *<span class="hljs-number">1024</span>)
+        stack_size = <span class="hljs-number">48</span> * <span class="hljs-number">1024</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+    module_inst-&gt;default_wasm_stack_size = stack_size;
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">module</span>-&gt;malloc_function != (uint32)<span class="hljs-number">-1</span>) {
+        module_inst-&gt;malloc_function =
+            &amp;module_inst-&gt;functions[<span class="hljs-keyword">module</span>-&gt;malloc_function];
+    }
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">module</span>-&gt;free_function != (uint32)<span class="hljs-number">-1</span>) {
+        module_inst-&gt;free_function =
+            &amp;module_inst-&gt;functions[<span class="hljs-keyword">module</span>-&gt;free_function];
+    }
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">module</span>-&gt;retain_function != (uint32)<span class="hljs-number">-1</span>) {
+        module_inst-&gt;retain_function =
+            &amp;module_inst-&gt;functions[<span class="hljs-keyword">module</span>-&gt;retain_function];
+    }
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LIBC_WASI != 0</span>
+    <span class="hljs-comment">/* The sub-instance will get the wasi_ctx from main-instance */</span>
+    <span class="hljs-keyword">if</span> (!is_sub_inst) {
+        <span class="hljs-keyword">if</span> (!wasm_runtime_init_wasi((WASMModuleInstanceCommon*)module_inst,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.dir_list,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.dir_count,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.map_dir_list,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.map_dir_count,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.env,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.env_count,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.argv,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.argc,
+                                    error_buf, error_buf_size)) {
+            <span class="hljs-keyword">goto</span> fail;
+        }
+    }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">module</span>-&gt;start_function != (uint32)<span class="hljs-number">-1</span>) {
+        <span class="hljs-comment">/* <span class="hljs-doctag">TODO:</span> fix start function can be import function issue */</span>
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">module</span>-&gt;start_function &gt;= <span class="hljs-keyword">module</span>-&gt;import_function_count)
+            module_inst-&gt;start_function =
+                &amp;module_inst-&gt;functions[<span class="hljs-keyword">module</span>-&gt;start_function];
+    }
+
+    <span class="hljs-comment">/* Execute __post_instantiate function */</span>
+    <span class="hljs-keyword">if</span> (!execute_post_inst_function(module_inst)
+        || !execute_start_function(module_inst)) {
+        set_error_buf(error_buf, error_buf_size,
+                      module_inst-&gt;cur_exception);
+        <span class="hljs-keyword">goto</span> fail;
+    }
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_BULK_MEMORY != 0</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LIBC_WASI != 0</span>
+    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">module</span>-&gt;is_wasi_module) {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        <span class="hljs-comment">/* Only execute the memory init function for main instance because
+            the data segments will be dropped once initialized.
+        */</span>
+        <span class="hljs-keyword">if</span> (!is_sub_inst) {
+            <span class="hljs-keyword">if</span> (!execute_memory_init_function(module_inst)) {
+                set_error_buf(error_buf, error_buf_size,
+                              module_inst-&gt;cur_exception);
+                <span class="hljs-keyword">goto</span> fail;
+            }
+        }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LIBC_WASI != 0</span>
+    }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MEMORY_TRACING != 0</span>
+    wasm_runtime_dump_module_inst_mem_consumption
+                    ((WASMModuleInstanceCommon *)module_inst);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+    (<span class="hljs-keyword">void</span>)global_data_end;
+    <span class="hljs-keyword">return</span> module_inst;
+fail:
+    wasm_deinstantiate(module_inst, <span class="hljs-literal">false</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+}</code></pre><h2 class="">Instantiate the globals</h2><pre class="c hljs"><code><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">WASMGlobalInstance</span> {</span>
+    <span class="hljs-comment">/* value type, VALUE_TYPE_I32/I64/F32/F64 */</span>
+    uint8 type;
+    <span class="hljs-comment">/* mutable or constant */</span>
+    <span class="hljs-keyword">bool</span> is_mutable;
+    <span class="hljs-comment">/* data offset to base_addr of WASMMemoryInstance */</span>
+    uint32 data_offset;
+    <span class="hljs-comment">/* initial value */</span>
+    WASMValue initial_value;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE != 0</span>
+    <span class="hljs-comment">/* just for import, keep the reference here */</span>
+    WASMModuleInstance *import_module_inst;
+    WASMGlobalInstance *import_global_inst;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+};</code></pre><p>Here the imported globals and the globals form the global section will be instantiated differently.</p><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> WASMGlobalInstance *
+<span class="hljs-title">globals_instantiate</span><span class="hljs-params">(<span class="hljs-keyword">const</span> WASMModule *<span class="hljs-keyword">module</span>,
+                    WASMModuleInstance *module_inst,
+                    uint32 *p_global_data_size, <span class="hljs-keyword">char</span> *error_buf,
+                    uint32 error_buf_size)</span>
+</span>{
+    WASMImport *<span class="hljs-keyword">import</span>;
+    uint32 global_data_offset = <span class="hljs-number">0</span>;
+    uint32 i, global_count =
+        <span class="hljs-keyword">module</span>-&gt;import_global_count + <span class="hljs-keyword">module</span>-&gt;global_count;
+    uint64 total_size = <span class="hljs-keyword">sizeof</span>(WASMGlobalInstance) * (uint64)global_count;
+    WASMGlobalInstance *globals, *global;
+
+    <span class="hljs-keyword">if</span> (!(globals = runtime_malloc(total_size,
+                                   error_buf, error_buf_size))) {
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+    }
+
+    <span class="hljs-comment">/* instantiate globals from import section */</span>
+    global = globals;
+    <span class="hljs-keyword">import</span> = <span class="hljs-keyword">module</span>-&gt;import_globals;
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">module</span>-&gt;import_global_count; i++, <span class="hljs-keyword">import</span>++) {
+        WASMGlobalImport *global_import = &amp;<span class="hljs-keyword">import</span>-&gt;u.global;
+        global-&gt;type = global_import-&gt;type;
+        global-&gt;is_mutable = global_import-&gt;is_mutable;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE != 0</span>
+        <span class="hljs-keyword">if</span> (global_import-&gt;import_module) {
+            <span class="hljs-keyword">if</span> (!(global-&gt;import_module_inst = get_sub_module_inst(
+                    module_inst, global_import-&gt;import_module))) {
+                set_error_buf(error_buf, error_buf_size, <span class="hljs-string">"unknown global"</span>);
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+            }
+
+            <span class="hljs-keyword">if</span> (!(global-&gt;import_global_inst = wasm_lookup_global(
+                    global-&gt;import_module_inst, global_import-&gt;field_name))) {
+                set_error_buf(error_buf, error_buf_size, <span class="hljs-string">"unknown global"</span>);
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+            }
+
+            <span class="hljs-comment">/* The linked global instance has been initialized, we
+               just need to copy the value. */</span>
+            bh_memcpy_s(&amp;(global-&gt;initial_value), <span class="hljs-keyword">sizeof</span>(WASMValue),
+                        &amp;(global_import-&gt;import_global_linked-&gt;init_expr),
+                        <span class="hljs-keyword">sizeof</span>(WASMValue));
+        }
+        <span class="hljs-keyword">else</span>
+#endif
+        {
+            <span class="hljs-comment">/* native globals share their initial_values in one module */</span>
+            bh_memcpy_s(&amp;(global-&gt;initial_value), <span class="hljs-keyword">sizeof</span>(WASMValue),
+                        &amp;(global_import-&gt;global_data_linked),
+                        <span class="hljs-keyword">sizeof</span>(WASMValue));
+        }
+        global-&gt;data_offset = global_data_offset;
+        global_data_offset += wasm_value_type_size(global-&gt;type);
+
+        global++;
+    }
+
+    <span class="hljs-comment">/* instantiate globals from global section */</span>
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">module</span>-&gt;global_count; i++) {
+        InitializerExpression *init_expr = &amp;(<span class="hljs-keyword">module</span>-&gt;globals[i].init_expr);
+
+        global-&gt;type = <span class="hljs-keyword">module</span>-&gt;globals[i].type;
+        global-&gt;is_mutable = <span class="hljs-keyword">module</span>-&gt;globals[i].is_mutable;
+        global-&gt;data_offset = global_data_offset;
+
+        global_data_offset += wasm_value_type_size(global-&gt;type);
+
+        <span class="hljs-keyword">if</span> (init_expr-&gt;init_expr_type == INIT_EXPR_TYPE_GET_GLOBAL) {
+            <span class="hljs-keyword">if</span> (!check_global_init_expr(<span class="hljs-keyword">module</span>, init_expr-&gt;u.global_index,
+                                        error_buf, error_buf_size)) {
+                <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+            }
+
+            bh_memcpy_s(
+              &amp;(global-&gt;initial_value), <span class="hljs-keyword">sizeof</span>(WASMValue),
+              &amp;(globals[init_expr-&gt;u.global_index].initial_value),
+              <span class="hljs-keyword">sizeof</span>(globals[init_expr-&gt;u.global_index].initial_value));
+        }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_REF_TYPES != 0</span>
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (init_expr-&gt;init_expr_type == INIT_EXPR_TYPE_REFNULL_CONST) {
+            global-&gt;initial_value.u32 = (uint32)NULL_REF;
+        }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        <span class="hljs-keyword">else</span> {
+            bh_memcpy_s(&amp;(global-&gt;initial_value), <span class="hljs-keyword">sizeof</span>(WASMValue),
+                        &amp;(init_expr-&gt;u), <span class="hljs-keyword">sizeof</span>(init_expr-&gt;u));
+        }
+        global++;
+    }
+
+    bh_assert((uint32)(global - globals) == global_count);
+    *p_global_data_size = global_data_offset;
+    (<span class="hljs-keyword">void</span>)module_inst;
+    <span class="hljs-keyword">return</span> globals;
+}</code></pre><h2 class="">Memroy </h2><h3 class="">Memory instance struct</h3><p>What's the memory layout? What's the different between memory and heap?</p><pre class="c hljs"><code><span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">WASMMemoryInstance</span> {</span>
+    <span class="hljs-comment">/* Module type */</span>
+    uint32 module_type;
+    <span class="hljs-comment">/* Shared memory flag */</span>
+    <span class="hljs-keyword">bool</span> is_shared;
+    <span class="hljs-comment">/* Number bytes per page */</span>
+    uint32 num_bytes_per_page;
+    <span class="hljs-comment">/* Current page count */</span>
+    uint32 cur_page_count;
+    <span class="hljs-comment">/* Maximum page count */</span>
+    uint32 max_page_count;
+
+    <span class="hljs-comment">/* Heap data base address */</span>
+    uint8 *heap_data;
+    <span class="hljs-comment">/* Heap data end address */</span>
+    uint8 *heap_data_end;
+    <span class="hljs-comment">/* The heap created */</span>
+    <span class="hljs-keyword">void</span> *heap_handle;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MULTI_MODULE != 0</span>
+    <span class="hljs-comment">/* to indicate which module instance create it */</span>
+    WASMModuleInstance *owner;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_SHARED_MEMORY != 0</span>
+    <span class="hljs-comment">/* mutex lock for the memory, used in atomic operation */</span>
+    korp_mutex mem_lock;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+    <span class="hljs-comment">/* Memory data end address */</span>
+    uint8 *memory_data_end;
+
+    <span class="hljs-comment">/* Memory data begin address, the layout is: memory data + heap data
+       Note: when memory is re-allocated, the heap data and memory data
+             must be copied to new memory also. */</span>
+    uint8 *memory_data;
+};</code></pre><h1 class=""><code>aot_instantiate</code></h1><p>Seems like it's much simpler than the previous instantiation function. </p><pre class="c hljs"><code><span class="hljs-function">AOTModuleInstance*
+<span class="hljs-title">aot_instantiate</span><span class="hljs-params">(AOTModule *<span class="hljs-keyword">module</span>, <span class="hljs-keyword">bool</span> is_sub_inst,
+                uint32 stack_size, uint32 heap_size,
+                <span class="hljs-keyword">char</span> *error_buf, uint32 error_buf_size)</span>
+</span>{
+    AOTModuleInstance *module_inst;
+    <span class="hljs-keyword">const</span> uint32 module_inst_struct_size =
+        offsetof(AOTModuleInstance, global_table_data.bytes);
+    <span class="hljs-keyword">const</span> uint64 module_inst_mem_inst_size =
+        (uint64)<span class="hljs-keyword">module</span>-&gt;memory_count * <span class="hljs-keyword">sizeof</span>(AOTMemoryInstance);
+    uint64 total_size, table_size = <span class="hljs-number">0</span>;
+    uint8 *p;
+    uint32 i;
+
+    <span class="hljs-comment">/* Check heap size */</span>
+    heap_size = align_uint(heap_size, <span class="hljs-number">8</span>);
+    <span class="hljs-keyword">if</span> (heap_size &gt; APP_HEAP_SIZE_MAX)
+        heap_size = APP_HEAP_SIZE_MAX;
+
+    total_size = (uint64)module_inst_struct_size + module_inst_mem_inst_size
+                 + <span class="hljs-keyword">module</span>-&gt;global_data_size;
+
+    <span class="hljs-comment">/*
+     * calculate size of table data
+     */</span>
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i != <span class="hljs-keyword">module</span>-&gt;import_table_count; ++i) {
+        table_size += offsetof(AOTTableInstance, data);
+        table_size +=
+          (uint64)<span class="hljs-keyword">sizeof</span>(uint32)
+          * (uint64)aot_get_imp_tbl_data_slots(<span class="hljs-keyword">module</span>-&gt;import_tables + i);
+    }
+
+    <span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i != <span class="hljs-keyword">module</span>-&gt;table_count; ++i) {
+        table_size += offsetof(AOTTableInstance, data);
+        table_size += (uint64)<span class="hljs-keyword">sizeof</span>(uint32)
+                      * (uint64)aot_get_tbl_data_slots(<span class="hljs-keyword">module</span>-&gt;tables + i);
+    }
+    total_size += table_size;
+
+    <span class="hljs-comment">/* Allocate module instance, global data, table data and heap data */</span>
+    <span class="hljs-keyword">if</span> (!(module_inst = runtime_malloc(total_size,
+                                       error_buf, error_buf_size))) {
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+    }
+
+    module_inst-&gt;module_type = Wasm_Module_AoT;
+    module_inst-&gt;aot_module.ptr = <span class="hljs-keyword">module</span>;
+
+    <span class="hljs-comment">/* Initialize global info */</span>
+    p = (uint8*)module_inst + module_inst_struct_size +
+                              module_inst_mem_inst_size;
+    module_inst-&gt;global_data.ptr = p;
+    module_inst-&gt;global_data_size = <span class="hljs-keyword">module</span>-&gt;global_data_size;
+    <span class="hljs-keyword">if</span> (!global_instantiate(module_inst, <span class="hljs-keyword">module</span>, error_buf, error_buf_size))
+        <span class="hljs-keyword">goto</span> fail;
+
+    <span class="hljs-comment">/* Initialize table info */</span>
+    p += <span class="hljs-keyword">module</span>-&gt;global_data_size;
+    module_inst-&gt;tables.ptr = p;
+    module_inst-&gt;table_count =
+      <span class="hljs-keyword">module</span>-&gt;table_count + <span class="hljs-keyword">module</span>-&gt;import_table_count;
+    <span class="hljs-comment">/* Set all elements to -1 to mark them as uninitialized elements */</span>
+    <span class="hljs-built_in">memset</span>(module_inst-&gt;tables.ptr, <span class="hljs-number">0xff</span>, (uint32)table_size);
+    <span class="hljs-keyword">if</span> (!table_instantiate(module_inst, <span class="hljs-keyword">module</span>, error_buf, error_buf_size))
+        <span class="hljs-keyword">goto</span> fail;
+
+    <span class="hljs-comment">/* Initialize memory space */</span>
+    <span class="hljs-keyword">if</span> (!memories_instantiate(module_inst, <span class="hljs-keyword">module</span>, heap_size,
+                              error_buf, error_buf_size))
+        <span class="hljs-keyword">goto</span> fail;
+
+    <span class="hljs-comment">/* Initialize function pointers */</span>
+    <span class="hljs-keyword">if</span> (!init_func_ptrs(module_inst, <span class="hljs-keyword">module</span>, error_buf, error_buf_size))
+        <span class="hljs-keyword">goto</span> fail;
+
+    <span class="hljs-comment">/* Initialize function type indexes */</span>
+    <span class="hljs-keyword">if</span> (!init_func_type_indexes(module_inst, <span class="hljs-keyword">module</span>, error_buf, error_buf_size))
+        <span class="hljs-keyword">goto</span> fail;
+
+    <span class="hljs-keyword">if</span> (!create_exports(module_inst, <span class="hljs-keyword">module</span>, error_buf, error_buf_size))
+        <span class="hljs-keyword">goto</span> fail;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LIBC_WASI != 0</span>
+    <span class="hljs-keyword">if</span> (!is_sub_inst) {
+        <span class="hljs-keyword">if</span> (!wasm_runtime_init_wasi((WASMModuleInstanceCommon*)module_inst,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.dir_list,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.dir_count,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.map_dir_list,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.map_dir_count,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.env,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.env_count,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.argv,
+                                    <span class="hljs-keyword">module</span>-&gt;wasi_args.argc,
+                                    error_buf, error_buf_size))
+            <span class="hljs-keyword">goto</span> fail;
+    }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+    <span class="hljs-comment">/* Initialize the thread related data */</span>
+    <span class="hljs-keyword">if</span> (stack_size == <span class="hljs-number">0</span>)
+        stack_size = DEFAULT_WASM_STACK_SIZE;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_SPEC_TEST != 0</span>
+    <span class="hljs-keyword">if</span> (stack_size &lt; <span class="hljs-number">48</span> *<span class="hljs-number">1024</span>)
+        stack_size = <span class="hljs-number">48</span> * <span class="hljs-number">1024</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+    module_inst-&gt;default_wasm_stack_size = stack_size;
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_PERF_PROFILING != 0</span>
+    total_size = (uint64)<span class="hljs-keyword">sizeof</span>(AOTFuncPerfProfInfo) *
+                 (<span class="hljs-keyword">module</span>-&gt;import_func_count + <span class="hljs-keyword">module</span>-&gt;func_count);
+    <span class="hljs-keyword">if</span> (!(module_inst-&gt;func_perf_profilings.ptr =
+                runtime_malloc(total_size, error_buf, error_buf_size))) {
+        <span class="hljs-keyword">goto</span> fail;
+    }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+    <span class="hljs-comment">/* Execute __post_instantiate function and start function*/</span>
+    <span class="hljs-keyword">if</span> (!execute_post_inst_function(module_inst)
+        || !execute_start_function(module_inst)) {
+        set_error_buf(error_buf, error_buf_size,
+                      module_inst-&gt;cur_exception);
+        <span class="hljs-keyword">goto</span> fail;
+    }
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_BULK_MEMORY != 0</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LIBC_WASI != 0</span>
+    <span class="hljs-keyword">if</span> (!<span class="hljs-keyword">module</span>-&gt;is_wasi_module) {
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+        <span class="hljs-comment">/* Only execute the memory init function for main instance because
+            the data segments will be dropped once initialized.
+        */</span>
+        <span class="hljs-keyword">if</span> (!is_sub_inst) {
+            <span class="hljs-keyword">if</span> (!execute_memory_init_function(module_inst)) {
+                set_error_buf(error_buf, error_buf_size,
+                              module_inst-&gt;cur_exception);
+                <span class="hljs-keyword">goto</span> fail;
+            }
+        }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LIBC_WASI != 0</span>
+    }
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MEMORY_TRACING != 0</span>
+    wasm_runtime_dump_module_inst_mem_consumption
+                    ((WASMModuleInstanceCommon *)module_inst);
+<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+
+    <span class="hljs-keyword">return</span> module_inst;
+
+fail:
+    aot_deinstantiate(module_inst, is_sub_inst);
+    <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+}</code></pre></div>
+
+<div class="tc-tiddler-plugin-info tc-reveal"><p>
+</p></div>
+</div>
+
+</p>
+</section>
+</body>
+</html>
+
