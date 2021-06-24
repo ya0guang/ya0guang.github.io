@@ -7,12 +7,13 @@ tags:
 - 二进制
 - CS
 - 逆向工程
+- C
 header:
   teaser: https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/64_qu%E1%BA%BB.png/330px-64_qu%E1%BA%BB.png
 ---
 
-> 计算机没有玄学，因为它没有血肉。
-> 但凡认为计算机玄学存在者皆是麻瓜。
+> 计算机没有玄学，因为它没有血肉。  
+> 但凡认为计算机玄学存在者皆是麻瓜。  
 >                           ——我
 
 # `cdqe`
