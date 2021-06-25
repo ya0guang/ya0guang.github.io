@@ -21,7 +21,7 @@ header:
 > 当你觉得Rust出现问题，  
 > 不是因为Rust有问题，  
 > 而是，你有问题。  
->                           ——我
+>                           ——还是我
 
 # CString Ownership
 
@@ -30,12 +30,12 @@ header:
 ## Problem
 
 ```rs
-            NativeSymbol {
-                symbol: CString::new("teaclave_open_input").as_ptr() as _,
-                func_ptr: wasm_open_input as *const c_void,
-                signature: CString::new("($)i").as_ptr() as _,
-                attachment: std::ptr::null(),
-            },
+NativeSymbol {
+    symbol: CString::new("teaclave_open_input").as_ptr() as _,
+    func_ptr: wasm_open_input as *const c_void,
+    signature: CString::new("($)i").as_ptr() as _,
+    attachment: std::ptr::null(),
+},
 ```
 
 上面这段代码创建一个`NativeSymbol` struct，其中`symbol`和`signature`两个C的字符串都在创建结构体的过程中被生成，并得到其指针。  
@@ -46,12 +46,12 @@ header:
 
 这个问题的解决办法是什么呢？首先是使用String literals：
 ```rs
-            NativeSymbol {
-                symbol: b"teaclave_open_input\0".as_ptr() as _,
-                func_ptr: wasm_open_input as *const c_void,
-                signature: b"($)i\0".as_ptr() as _,
-                attachment: std::ptr::null(),
-            },
+NativeSymbol {
+    symbol: b"teaclave_open_input\0".as_ptr() as _,
+    func_ptr: wasm_open_input as *const c_void,
+    signature: b"($)i\0".as_ptr() as _,
+    attachment: std::ptr::null(),
+},
 ```
 String literals在Rust里的lifetime是static的，因此指向其的指针不会被简单地invalidate。
 
