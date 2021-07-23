@@ -1,9 +1,8 @@
 created: 20210524014542494
-modified: 20210524032350720
-tags: Analysis Artifact System
+modified: 20210715140500714
+tags: Analysis Artifact WASM
 title: `wasm_runtime_memory_init`
 type: text/vnd.tiddlywiki
-
 
 ```c
 wasm_memory_init_with_pool(void *mem, unsigned int bytes)

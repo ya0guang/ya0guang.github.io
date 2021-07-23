@@ -1,0 +1,35 @@
+artifact: Teaclave
+created: 20210531015848015
+modified: 20210715140311176
+tags: Artifact Analysis System WASM SGX
+title: WAMR+Teaclave
+type: text/vnd.tiddlywiki
+
+! Questions
+
+!! Mesapy Executor
+
+The executor is compiled into a library and will later be linked with ffi functions from other executor (`mesapy`).
+
+!!! How does T know where to link `extern` functions in Rust?
+
+!!! ~~How is the linked mesapy library generated?~~
+
+Check the [[makefile|https://github.com/mesalock-linux/mesapy/blob/sgx/Makefile#L47]] of mesapy
+
+! Notes
+
+!! How to compile the WebAssembly
+
+`/opt/wasi-sdk/bin/clang -o simple_add.wasm simple_add.c -Wl,--export-all -Wl,--no-entry -nostdlib -Wl,--allow-undefined`
+
+The compiled wasm should not linked to `stdlib` currently, and adding `--export-all` can help it export functions. Otherwise the function would never be exported.
+
+!! Modification on source code
+
+Please refer the the [[Developer Guide|https://teaclave.apache.org/docs/development-tips/]] and related documents.
+
+! WASM Executor
+
+* [[Doc: Executing WASM in Teaclave|https://teaclave.apache.org/docs/executing-wasm/]]
+* [[Doc: Adding Executors|https://teaclave.apache.org/docs/adding-executors/]]

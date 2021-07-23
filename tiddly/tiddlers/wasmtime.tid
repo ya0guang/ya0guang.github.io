@@ -1,0 +1,15 @@
+artifact: WebAssembly
+created: 20210715135824870
+modified: 20210722161947219
+tags: Artifact Analysis System WASM
+title: wasmtime
+type: text/vnd.tiddlywiki
+
+! Officials
+
+* [[Official|https://wasmtime.dev/]]
+* [[Document|https://docs.wasmtime.dev/introduction.html]]
+
+!! Blog Posts
+
+* [[A practical guide to WebAssembly memory|https://radu-matei.com/blog/practical-guide-to-wasm-memory/]]

@@ -1,0 +1,171 @@
+created: 20210722192420614
+modified: 20210722192509718
+tags: SourceCode
+title: `tvm.build`
+type: text/vnd.tiddlywiki
+
+```py
+def build(
+    inputs: Union[schedule.Schedule, PrimFunc, IRModule, Mapping[str, IRModule]],
+    args: Optional[List[Union[Buffer, tensor.Tensor, Var]]] = None,
+    target: Optional[Union[str, Target]] = None,
+    target_host: Optional[Union[str, Target]] = None,
+    name: Optional[str] = "default_function",
+    binds: Optional[Mapping[tensor.Tensor, Buffer]] = None,
+):
+    """Build a function with arguments as signature. Code will be generated
+    for devices coupled with target information.
+
+    Parameters
+    ----------
+    inputs : Union[tvm.te.schedule.Schedule, tvm.tir.PrimFunc, IRModule, Mapping[str, IRModule]]
+        The input to be built
+
+    args : Optional[List[Union[tvm.tir.Buffer, tensor.Tensor, Var]]]
+        The argument lists to the function.
+
+    target : Optional[Union[str, Target]]
+        The target and option of the compilation.
+
+    target_host : Optional[Union[str, Target]]
+        Host compilation target, if target is device.
+        When TVM compiles device specific program such as CUDA,
+        we also need host(CPU) side code to interact with the driver
+        setup the dimensions and parameters correctly.
+        target_host is used to specify the host side codegen target.
+        By default, llvm is used if it is enabled,
+        otherwise a stackvm intepreter is used.
+
+    name : Optional[str]
+        The name of result function.
+
+    binds : Optional[Mapping[tensor.Tensor, tvm.tir.Buffer]]
+        Dictionary that maps the binding of symbolic buffer to Tensor.
+        By default, a new buffer is created for each tensor in the argument.
+
+    Returns
+    -------
+    ret : tvm.module
+        A module that combines both host and device code.
+
+    Examples
+    ________
+    There are two typical example uses of this function depending on the type
+    of the argument `inputs`:
+    1. it is an IRModule.
+
+    .. code-block:: python
+
+        n = 2
+        A = te.placeholder((n,), name='A')
+        B = te.placeholder((n,), name='B')
+        C = te.compute(A.shape, lambda *i: A(*i) + B(*i), name='C')
+        s = tvm.te.create_schedule(C.op)
+        m = tvm.lower(s, [A, B, C], name="test_add")
+        rt_mod = tvm.build(m, target="llvm")
+
+    2. it is a dict of compilation target to IRModule.
+
+    .. code-block:: python
+
+        n = 2
+        A = te.placeholder((n,), name='A')
+        B = te.placeholder((n,), name='B')
+        C = te.compute(A.shape, lambda *i: A(*i) + B(*i), name='C')
+        s1 = tvm.te.create_schedule(C.op)
+        with tvm.target.cuda() as cuda_tgt:
+          s2 = topi.cuda.schedule_injective(cuda_tgt, [C])
+          m1 = tvm.lower(s1, [A, B, C], name="test_add1")
+          m2 = tvm.lower(s2, [A, B, C], name="test_add2")
+          rt_mod = tvm.build({"llvm": m1, "cuda": m2}, target_host="llvm")
+
+    Note
+    ----
+    See the note on :any:`tvm.target` on target string format.
+    """
+    if isinstance(inputs, schedule.Schedule):
+        if args is None:
+            raise ValueError("args must be given for build from schedule")
+        input_mod = lower(inputs, args, name=name, binds=binds)
+    elif isinstance(inputs, (list, tuple, container.Array)):
+        merged_mod = tvm.IRModule({})
+        for x in inputs:
+            merged_mod.update(lower(x))
+        input_mod = merged_mod
+    elif isinstance(inputs, (tvm.IRModule, PrimFunc)):
+        input_mod = lower(inputs)
+    elif not isinstance(inputs, (dict, container.Map)):
+        raise ValueError(
+            f"Inputs must be Schedule, IRModule or dict of target to IRModule, "
+            f"but got {type(inputs)}."
+        )
+
+    if not isinstance(inputs, (dict, container.Map)):
+        target = Target.current() if target is None else target
+        target = target if target else "llvm"
+        target_input_mod = {target: input_mod}
+    else:
+        target_input_mod = inputs
+
+    for tar, mod in target_input_mod.items():
+        if not isinstance(tar, (str, Target)):
+            raise ValueError("The key of inputs must be str or " "Target when inputs is dict.")
+        if not isinstance(mod, tvm.IRModule):
+            raise ValueError("inputs must be Schedule, IRModule," "or dict of str to IRModule.")
+
+    target_input_mod, target_host = Target.check_and_update_host_consist(
+        target_input_mod, target_host
+    )
+
+    if not target_host:
+        for tar, mod in target_input_mod.items():
+            tar = Target(tar)
+            device_type = ndarray.device(tar.kind.name, 0).device_type
+            if device_type == ndarray.cpu(0).device_type:
+                target_host = tar
+                break
+    if not target_host:
+        target_host = "llvm" if tvm.runtime.enabled("llvm") else "stackvm"
+
+    target_input_mod, target_host = Target.check_and_update_host_consist(
+        target_input_mod, target_host
+    )
+
+    mod_host_all = tvm.IRModule({})
+
+    device_modules = []
+    for tar, input_mod in target_input_mod.items():
+        mod_host, mdev = _build_for_device(input_mod, tar, target_host)
+        mod_host_all.update(mod_host)
+        device_modules.append(mdev)
+
+    # Generate a unified host module.
+    rt_mod_host = codegen.build_module(mod_host_all, target_host)
+
+    # Import all modules.
+    for mdev in device_modules:
+        if mdev:
+            rt_mod_host.import_module(mdev)
+
+    if not isinstance(target_host, Target):
+        target_host = Target(target_host)
+    if (
+        target_host.attrs.get("runtime", tvm.runtime.String("c++")) == "c"
+        and target_host.attrs.get("system-lib", 0) == 1
+    ):
+        if target_host.kind.name == "c":
+            create_csource_crt_metadata_module = tvm._ffi.get_global_func(
+                "runtime.CreateCSourceCrtMetadataModule"
+            )
+            to_return = create_csource_crt_metadata_module([rt_mod_host], target_host)
+
+        elif target_host.kind.name == "llvm":
+            create_llvm_crt_metadata_module = tvm._ffi.get_global_func(
+                "runtime.CreateLLVMCrtMetadataModule"
+            )
+            to_return = create_llvm_crt_metadata_module([rt_mod_host], target_host)
+    else:
+        to_return = rt_mod_host
+
+    return OperatorModule.from_module(to_return, ir_module_by_target=target_input_mod, name=name)
+```

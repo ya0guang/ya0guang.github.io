@@ -1,0 +1,15 @@
+created: 20210715151932344
+modified: 20210715152203787
+tags: Security System Formal Linux TODO
+title: Interface Security
+type: text/vnd.tiddlywiki
+
+! Industry
+
+* [[WASI|https://github.com/bytecodealliance/wasmtime/blob/main/docs/WASI-capabilities.md]]
+* [[CloudABI|https://github.com/NuxiNL/cloudabi#capability-based-security]]
+* [[Fuchsia|https://fuchsia.dev/]]
+
+! Academy
+
+* [[BesFS: A POSIX Filesystem for Enclaves with a Mechanized Safety Proof]]

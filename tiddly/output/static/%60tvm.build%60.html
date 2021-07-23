@@ -1,0 +1,202 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>`tvm.build`: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-SourceCode" data-tags="SourceCode" data-tiddler-title="`tvm.build`"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">`tvm.build`</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>July 22, 2021 at 3:25 pm</div></div><div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+SourceCode
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><pre class="py hljs"><code><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">build</span><span class="hljs-params">(
+    inputs: Union[schedule.Schedule, PrimFunc, IRModule, Mapping[str, IRModule]],
+    args: Optional[List[Union[Buffer, tensor.Tensor, Var]]] = None,
+    target: Optional[Union[str, Target]] = None,
+    target_host: Optional[Union[str, Target]] = None,
+    name: Optional[str] = <span class="hljs-string">"default_function"</span>,
+    binds: Optional[Mapping[tensor.Tensor, Buffer]] = None,
+)</span>:</span>
+    <span class="hljs-string">"""Build a function with arguments as signature. Code will be generated
+    for devices coupled with target information.
+
+    Parameters
+    ----------
+    inputs : Union[tvm.te.schedule.Schedule, tvm.tir.PrimFunc, IRModule, Mapping[str, IRModule]]
+        The input to be built
+
+    args : Optional[List[Union[tvm.tir.Buffer, tensor.Tensor, Var]]]
+        The argument lists to the function.
+
+    target : Optional[Union[str, Target]]
+        The target and option of the compilation.
+
+    target_host : Optional[Union[str, Target]]
+        Host compilation target, if target is device.
+        When TVM compiles device specific program such as CUDA,
+        we also need host(CPU) side code to interact with the driver
+        setup the dimensions and parameters correctly.
+        target_host is used to specify the host side codegen target.
+        By default, llvm is used if it is enabled,
+        otherwise a stackvm intepreter is used.
+
+    name : Optional[str]
+        The name of result function.
+
+    binds : Optional[Mapping[tensor.Tensor, tvm.tir.Buffer]]
+        Dictionary that maps the binding of symbolic buffer to Tensor.
+        By default, a new buffer is created for each tensor in the argument.
+
+    Returns
+    -------
+    ret : tvm.module
+        A module that combines both host and device code.
+
+    Examples
+    ________
+    There are two typical example uses of this function depending on the type
+    of the argument `inputs`:
+    1. it is an IRModule.
+
+    .. code-block:: python
+
+        n = 2
+        A = te.placeholder((n,), name='A')
+        B = te.placeholder((n,), name='B')
+        C = te.compute(A.shape, lambda *i: A(*i) + B(*i), name='C')
+        s = tvm.te.create_schedule(C.op)
+        m = tvm.lower(s, [A, B, C], name="test_add")
+        rt_mod = tvm.build(m, target="llvm")
+
+    2. it is a dict of compilation target to IRModule.
+
+    .. code-block:: python
+
+        n = 2
+        A = te.placeholder((n,), name='A')
+        B = te.placeholder((n,), name='B')
+        C = te.compute(A.shape, lambda *i: A(*i) + B(*i), name='C')
+        s1 = tvm.te.create_schedule(C.op)
+        with tvm.target.cuda() as cuda_tgt:
+          s2 = topi.cuda.schedule_injective(cuda_tgt, [C])
+          m1 = tvm.lower(s1, [A, B, C], name="test_add1")
+          m2 = tvm.lower(s2, [A, B, C], name="test_add2")
+          rt_mod = tvm.build({"llvm": m1, "cuda": m2}, target_host="llvm")
+
+    Note
+    ----
+    See the note on :any:`tvm.target` on target string format.
+    """</span>
+    <span class="hljs-keyword">if</span> isinstance(inputs, schedule.Schedule):
+        <span class="hljs-keyword">if</span> args <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
+            <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">"args must be given for build from schedule"</span>)
+        input_mod = lower(inputs, args, name=name, binds=binds)
+    <span class="hljs-keyword">elif</span> isinstance(inputs, (list, tuple, container.Array)):
+        merged_mod = tvm.IRModule({})
+        <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> inputs:
+            merged_mod.update(lower(x))
+        input_mod = merged_mod
+    <span class="hljs-keyword">elif</span> isinstance(inputs, (tvm.IRModule, PrimFunc)):
+        input_mod = lower(inputs)
+    <span class="hljs-keyword">elif</span> <span class="hljs-keyword">not</span> isinstance(inputs, (dict, container.Map)):
+        <span class="hljs-keyword">raise</span> ValueError(
+            <span class="hljs-string">f"Inputs must be Schedule, IRModule or dict of target to IRModule, "</span>
+            <span class="hljs-string">f"but got <span class="hljs-subst">{type(inputs)}</span>."</span>
+        )
+
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> isinstance(inputs, (dict, container.Map)):
+        target = Target.current() <span class="hljs-keyword">if</span> target <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">else</span> target
+        target = target <span class="hljs-keyword">if</span> target <span class="hljs-keyword">else</span> <span class="hljs-string">"llvm"</span>
+        target_input_mod = {target: input_mod}
+    <span class="hljs-keyword">else</span>:
+        target_input_mod = inputs
+
+    <span class="hljs-keyword">for</span> tar, mod <span class="hljs-keyword">in</span> target_input_mod.items():
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> isinstance(tar, (str, Target)):
+            <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">"The key of inputs must be str or "</span> <span class="hljs-string">"Target when inputs is dict."</span>)
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> isinstance(mod, tvm.IRModule):
+            <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">"inputs must be Schedule, IRModule,"</span> <span class="hljs-string">"or dict of str to IRModule."</span>)
+
+    target_input_mod, target_host = Target.check_and_update_host_consist(
+        target_input_mod, target_host
+    )
+
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> target_host:
+        <span class="hljs-keyword">for</span> tar, mod <span class="hljs-keyword">in</span> target_input_mod.items():
+            tar = Target(tar)
+            device_type = ndarray.device(tar.kind.name, <span class="hljs-number">0</span>).device_type
+            <span class="hljs-keyword">if</span> device_type == ndarray.cpu(<span class="hljs-number">0</span>).device_type:
+                target_host = tar
+                <span class="hljs-keyword">break</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> target_host:
+        target_host = <span class="hljs-string">"llvm"</span> <span class="hljs-keyword">if</span> tvm.runtime.enabled(<span class="hljs-string">"llvm"</span>) <span class="hljs-keyword">else</span> <span class="hljs-string">"stackvm"</span>
+
+    target_input_mod, target_host = Target.check_and_update_host_consist(
+        target_input_mod, target_host
+    )
+
+    mod_host_all = tvm.IRModule({})
+
+    device_modules = []
+    <span class="hljs-keyword">for</span> tar, input_mod <span class="hljs-keyword">in</span> target_input_mod.items():
+        mod_host, mdev = _build_for_device(input_mod, tar, target_host)
+        mod_host_all.update(mod_host)
+        device_modules.append(mdev)
+
+    <span class="hljs-comment"># Generate a unified host module.</span>
+    rt_mod_host = codegen.build_module(mod_host_all, target_host)
+
+    <span class="hljs-comment"># Import all modules.</span>
+    <span class="hljs-keyword">for</span> mdev <span class="hljs-keyword">in</span> device_modules:
+        <span class="hljs-keyword">if</span> mdev:
+            rt_mod_host.import_module(mdev)
+
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> isinstance(target_host, Target):
+        target_host = Target(target_host)
+    <span class="hljs-keyword">if</span> (
+        target_host.attrs.get(<span class="hljs-string">"runtime"</span>, tvm.runtime.String(<span class="hljs-string">"c++"</span>)) == <span class="hljs-string">"c"</span>
+        <span class="hljs-keyword">and</span> target_host.attrs.get(<span class="hljs-string">"system-lib"</span>, <span class="hljs-number">0</span>) == <span class="hljs-number">1</span>
+    ):
+        <span class="hljs-keyword">if</span> target_host.kind.name == <span class="hljs-string">"c"</span>:
+            create_csource_crt_metadata_module = tvm._ffi.get_global_func(
+                <span class="hljs-string">"runtime.CreateCSourceCrtMetadataModule"</span>
+            )
+            to_return = create_csource_crt_metadata_module([rt_mod_host], target_host)
+
+        <span class="hljs-keyword">elif</span> target_host.kind.name == <span class="hljs-string">"llvm"</span>:
+            create_llvm_crt_metadata_module = tvm._ffi.get_global_func(
+                <span class="hljs-string">"runtime.CreateLLVMCrtMetadataModule"</span>
+            )
+            to_return = create_llvm_crt_metadata_module([rt_mod_host], target_host)
+    <span class="hljs-keyword">else</span>:
+        to_return = rt_mod_host
+
+    <span class="hljs-keyword">return</span> OperatorModule.from_module(to_return, ir_module_by_target=target_input_mod, name=name)</code></pre></div>
+
+<div class="tc-tiddler-plugin-info tc-reveal"><p>
+</p></div>
+</div>
+
+</p>
+</section>
+</body>
+</html>
+

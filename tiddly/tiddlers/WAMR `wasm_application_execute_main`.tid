@@ -1,6 +1,7 @@
+artifact: WebAssembly
 created: 20210525145802039
-modified: 20210526150640560
-tags: Analysis Artifact System
+modified: 20210715140319120
+tags: Analysis Artifact System WASM
 title: WAMR `wasm_application_execute_main`
 type: text/vnd.tiddlywiki
 
