@@ -1,0 +1,12 @@
+created: 20210820214508459
+modified: 20210820214656266
+tags: SGX Artifact System
+title: Teaclave Commands
+type: text/vnd.tiddlywiki
+
+! Run
+`(cd docker && docker-compose -f docker-compose-ubuntu-1804-sgx-sim-mode.yml up --build)`
+
+`SGX_MODE=SW PYTHONPATH=../../sdk/python python3 wasm_tvm_mnist.py`
+
+`docker run  --rm -it -v $(pwd):/teaclave -w /teaclave teaclave/teaclave-build-ubuntu-1804-sgx-2.14:latest`

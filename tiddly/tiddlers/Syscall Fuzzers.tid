@@ -1,0 +1,15 @@
+created: 20210814185236868
+modified: 20210814191020588
+tags: Fuzz System Security
+title: Syscall Fuzzers
+type: text/vnd.tiddlywiki
+
+! Papers
+
+* [[SemFuzz|https://homes.luddy.indiana.edu/xw7/papers/you2017semfuzz.pdf]]
+* [[Finding Semantic Bugs in File Systems with an Extensible Fuzzing Framework|https://taesoo.kim/pubs/2019/kim:hydra.pdf]]
+
+! Tools
+
+* [[Syzkaller|https://github.com/google/syzkaller]]
+* [[trinity|https://github.com/kernelslacker/trinity]]

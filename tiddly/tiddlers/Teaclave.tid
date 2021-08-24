@@ -1,8 +1,11 @@
 created: 20210503152204519
-modified: 20210503152415053
+modified: 20210820214555312
 tags: Artifact Analysis SGX System
 title: Teaclave
 type: text/vnd.tiddlywiki
+
+! Notes
+* [[Teaclave Commands]]
 
 ! Websites
 
@@ -10,6 +13,6 @@ type: text/vnd.tiddlywiki
 * [[Teaclave Github|https://github.com/apache/incubator-teaclave]]
 * [[Teaclave SDK|https://github.com/apache/incubator-teaclave-sgx-sdk]]
 
-! Programming Model (Python)
+
 
 

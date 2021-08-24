@@ -1,0 +1,10 @@
+created: 20210813235244205
+modified: 20210813235449234
+tags: SGX System Research Security
+title: SGX Documents
+type: text/vnd.tiddlywiki
+
+Also check [[SGX Papers]]
+
+! IETF
+* [[Remote ATtestation ProcedureS (rats)|https://datatracker.ietf.org/wg/rats/documents/]]
