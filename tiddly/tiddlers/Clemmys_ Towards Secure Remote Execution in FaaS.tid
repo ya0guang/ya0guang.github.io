@@ -1,0 +1,13 @@
+created: 20210913154249833
+modified: 20210913195153483
+tags: Paper SGX System
+title: Clemmys: Towards Secure Remote Execution in FaaS
+type: text/vnd.tiddlywiki
+
+[[PDF|https://homepages.inf.ed.ac.uk/pbhatoti/papers/Clemmys-SYSTOR-2019.pdf]]
+
+* SGX2: DMM to speedup enclave init
+* OpenWhisk + Scone + [[Palaemon|https://arxiv.org/pdf/2003.14099.pdf]](KMS)
+* Gateway(T) + Controller(U) + Worker(T): not all in the enclave
+* Features: function chaining & verification
+* Functions should be manually inspected

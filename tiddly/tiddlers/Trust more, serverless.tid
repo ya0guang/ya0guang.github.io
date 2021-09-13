@@ -1,0 +1,12 @@
+created: 20210913154140549
+modified: 20210913154243198
+tags: Paper System SGX
+title: Trust more, serverless
+type: text/vnd.tiddlywiki
+
+[[Link|https://dl.acm.org/doi/10.1145/3319647.3325825]]
+
+* JS FaaS in SGX enclaves
+* Google V8 engine/Duntape + SGX LKL + Apache OpenWhisk
+* Key management
+* Parallel, warm start, adjust to load
