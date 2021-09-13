@@ -1,0 +1,29 @@
+created: 20210909145227345
+modified: 20210909150825633
+tags: Paper Security Research Attack Defense SGX SideChannel
+title: Privado: Practical and Secure DNN Inference with Enclaves
+type: text/vnd.tiddlywiki
+
+* [[Paper|https://arxiv.org/abs/1810.00602]]
+
+! Abstract
+     Cloud providers are extending support for trusted hardware primitives such as Intel SGX. Simultaneously, the field of deep learning is seeing enormous innovation as well as an increase in adoption. In this paper, we ask a timely question: "Can third-party cloud services use Intel SGX enclaves to provide practical, yet secure DNN Inference-as-a-service?" We first demonstrate that DNN models executing inside enclaves are vulnerable to access pattern based attacks. We show that by simply observing access patterns, an attacker can classify encrypted inputs with 97% and 71% attack accuracy for MNIST and CIFAR10 datasets on models trained to achieve 99% and 79% original accuracy respectively. This motivates the need for PRIVADO, a system we have designed for secure, easy-to-use, and performance efficient inference-as-a-service. PRIVADO is input-oblivious: it transforms any deep learning framework that is written in C/C++ to be free of input-dependent access patterns thus eliminating the leakage. PRIVADO is fully-automated and has a low TCB: with zero developer effort, given an ONNX description of a model, it generates compact and enclave-compatible code which can be deployed on an SGX cloud platform. PRIVADO incurs low performance overhead: we use PRIVADO with Torch framework and show its overhead to be 17.18% on average on 11 different contemporary neural networks. 
+
+! Model
+
+* Service: In-enclave ML model. model is unpublic
+* Users: data providers, input & output are secret
+
+! Attack
+
+Infer the output label from memory access trace collected when the user's input is processing.
+
+* DNN contains data-dependent branches 
+* A ML model (linear reg) is built up from memory access traces and the output label
+* Can achieve high accuracy on inferring output tag from memory trace
+
+! Defense
+
+* Data-dependency usually occurs at activation functions (e.g. ReLU) and max pooling, etc. Other layers merely contains data-dependent memory access.
+* Eliminate the input/secret-dependency in the Torch library
+* End-to-end model compilation
