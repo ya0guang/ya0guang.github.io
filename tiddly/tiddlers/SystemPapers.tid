@@ -1,9 +1,12 @@
 created: 20210404003403892
-modified: 20210404024039199
+modified: 20210913005458633
 tags: CS Research System
 title: SystemPapers
 type: text/vnd.tiddlywiki
 
+! By topic
 
-Generated List:
+!! [[FaaS Papers, mainly in TEE]]
+
+Generated List of Papers:
 <<list-links "[tag[System]tag[Paper]]">>

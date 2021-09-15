@@ -1,0 +1,12 @@
+created: 20210913005541041
+modified: 20210913005701188
+tags: SGX Security Paper System Defense
+title: Opaque: An Oblivious and Encrypted Distributed Analytics Platform
+type: text/vnd.tiddlywiki
+
+! Opaque: An Oblivious and Encrypted Distributed Analytics Platform
+
+[[PDF|https://www.google.com/url?q=https://people.eecs.berkeley.edu/~raluca/opaque.pdf&sa=D&source=editors&ust=1631498145935000&usg=AOvVaw1wUA0xSwuaIKxNS9aG66Uu]]
+
+* Oblivious operation on distributed platform, e.g. Spark SQL
+

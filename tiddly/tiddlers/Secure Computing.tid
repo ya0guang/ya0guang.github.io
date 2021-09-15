@@ -1,0 +1,20 @@
+created: 20210827205313054
+modified: 20210827210648556
+tags: Security Research
+title: Secure Computing
+type: text/vnd.tiddlywiki
+
+!!! ''Secure Computation is not what I think.''
+
+Generally speaking, secure computation is to let 2(or more) mutually distrusted parties compute on both parties' data without exposing the plaintext of the data. 
+
+This problem originates in this paper: ''Protocols for Secure Computations'' ([[PDF|https://research.cs.wisc.edu/areas/sec/yao1982-ocr.pdf]]). The famous millionaires' problem came from this paper and then ''Garbled Circuit''([[Wiki|https://en.wikipedia.org/wiki/Garbled_circuit]]) became popular in this field. Dr. Qizhi Yao is the initiator of field and he is also the founder of several other fields in crypto and computer theory.
+
+! Related Projects
+
+* [[https://github.com/emp-toolkit/emp-ag2pc]]
+
+! Related Papers
+
+* ObliVM: A Programming Framework for Secure Computation ([[PDF|https://www.cs.umd.edu/~elaine/docs/oblivm.pdf]])
+* MAGE: Nearly Zero-Cost Virtual Memory for Secure Computation ([[PDF|https://people.eecs.berkeley.edu/~samkumar/papers/mage_osdi2021.pdf]])

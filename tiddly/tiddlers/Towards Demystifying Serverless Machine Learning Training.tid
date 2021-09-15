@@ -1,0 +1,10 @@
+created: 20210913010126952
+modified: 20210913010145149
+tags: Paper System Application
+title: Towards Demystifying Serverless Machine Learning Training
+type: text/vnd.tiddlywiki
+
+[[PDF|https://anakli.inf.ethz.ch/papers/serverless-sigmod2021.pdf]]
+
+* Implement a serverless distributed ML framework, LambdaML, including distributed optimization, communication (with a storage server) and synchronization
+* Compare the FaaS and IaaS solution for distributed ML. 

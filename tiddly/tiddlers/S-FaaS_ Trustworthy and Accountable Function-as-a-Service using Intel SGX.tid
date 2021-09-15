@@ -1,0 +1,14 @@
+created: 20210913010033016
+modified: 20210913021357664
+tags: Paper Security SGX System Application
+title: S-FaaS: Trustworthy and Accountable Function-as-a-Service using Intel SGX
+type: text/vnd.tiddlywiki
+
+
+[[PDF|https://arxiv.org/pdf/1810.06080.pdf]]
+
+* Resource accounting on SGX “enclaved” FaaS.
+* Trusted timer: built using TSX + additional timer thread 
+* Model: function trusted by user, but not service provider(platform) => sandbox
+* KMS, transitive attestation, encryption
+* Implementation on Apache OpenWhisk
