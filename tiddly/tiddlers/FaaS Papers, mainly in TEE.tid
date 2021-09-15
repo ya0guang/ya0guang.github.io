@@ -1,5 +1,27 @@
 created: 20210913005335401
-modified: 20210913005442903
+modified: 20210915025421374
 tags: Application Research Security SGX System
 title: FaaS Papers, mainly in TEE
 type: text/vnd.tiddlywiki
+
+! S-FaaS: Trustworthy and Accountable Function-as-a-Service using Intel SGX
+
+{{S-FaaS: Trustworthy and Accountable Function-as-a-Service using Intel SGX}}
+
+! Towards Demystifying Serverless Machine Learning Training
+
+{{Towards Demystifying Serverless Machine Learning Training}}
+
+! Trust more, serverless
+
+{{Trust more, serverless}}
+
+
+! Clemmys: Towards Secure Remote Execution in FaaS
+
+{{Clemmys: Towards Secure Remote Execution in FaaS}}
+
+
+! Other related papers
+
+!! Confidential Serverless Made Efficient with Plug-In Enclaves

@@ -1,5 +1,2 @@
-created: 20210913005415818
-list: SystemPapers [[S-FaaS: Trustworthy and Accountable Function-as-a-Service using Intel SGX]] [[Draft of 'FaaS Papers, mainly in TEE']] [[Secure Computing]] Teaclave [[Syscall Fuzzers]] [[SGX Middleware (Papers)]] SecurityPapersByTopic [[SGX Papers]] [[WAMR Analysis]] wasmtime [[TVM Code Generation]]
-modified: 20210913021357619
+list: SystemPapers [[S-FaaS: Trustworthy and Accountable Function-as-a-Service using Intel SGX]] [[FaaS Papers, mainly in TEE]] [[Secure Computing]] Teaclave [[Syscall Fuzzers]] [[SGX Middleware (Papers)]] SecurityPapersByTopic [[SGX Papers]] [[WAMR Analysis]] wasmtime [[TVM Code Generation]]
 title: $:/StoryList
-type: text/vnd.tiddlywiki

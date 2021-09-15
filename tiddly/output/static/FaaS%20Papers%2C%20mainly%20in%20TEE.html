@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>FaaS Papers, mainly in TEE: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Application tc-tagged-Research tc-tagged-Security tc-tagged-SGX tc-tagged-System" data-tags="Application Research Security SGX System" data-tiddler-title="FaaS Papers, mainly in TEE"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">FaaS Papers, mainly in TEE</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>September 14, 2021 at 10:54 pm</div></div><div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Application
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Research
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Security
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+SGX
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+System
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><h1 class="">S-FaaS: Trustworthy and Accountable Function-as-a-Service using Intel SGX</h1><p><a class="tc-tiddlylink-external" href="https://arxiv.org/pdf/1810.06080.pdf" rel="noopener noreferrer" target="_blank">PDF</a></p><ul><li>Resource accounting on SGX “enclaved” FaaS.</li><li>Trusted timer: built using TSX + additional timer thread </li><li>Model: function trusted by user, but not service provider(platform) =&gt; sandbox</li><li>KMS, transitive attestation, encryption</li><li>Implementation on Apache OpenWhisk</li></ul><h1 class="">Towards Demystifying Serverless Machine Learning Training</h1><p><a class="tc-tiddlylink-external" href="https://anakli.inf.ethz.ch/papers/serverless-sigmod2021.pdf" rel="noopener noreferrer" target="_blank">PDF</a></p><ul><li>Implement a serverless distributed ML framework, LambdaML, including distributed optimization, communication (with a storage server) and synchronization</li><li>Compare the FaaS and IaaS solution for distributed ML. </li></ul><h1 class="">Trust more, serverless</h1><p><a class="tc-tiddlylink-external" href="https://dl.acm.org/doi/10.1145/3319647.3325825" rel="noopener noreferrer" target="_blank">Link</a></p><ul><li>JS FaaS in SGX enclaves</li><li>Google V8 engine/Duntape + SGX LKL + Apache OpenWhisk</li><li>Key management</li><li>Parallel, warm start, adjust to load</li></ul><h1 class="">Clemmys: Towards Secure Remote Execution in FaaS</h1><p><a class="tc-tiddlylink-external" href="https://homepages.inf.ed.ac.uk/pbhatoti/papers/Clemmys-SYSTOR-2019.pdf" rel="noopener noreferrer" target="_blank">PDF</a></p><ul><li>SGX2: DMM to speedup enclave init</li><li>OpenWhisk + Scone + <a class="tc-tiddlylink-external" href="https://arxiv.org/pdf/2003.14099.pdf" rel="noopener noreferrer" target="_blank">Palaemon</a>(KMS)</li><li>Gateway(T) + Controller(U) + Worker(T): not all in the enclave</li><li>Features: function chaining &amp; verification</li><li>Functions should be manually inspected</li></ul><h1 class="">Other related papers</h1><h2 class="">Confidential Serverless Made Efficient with Plug-In Enclaves</h2></div>
+
+<div class="tc-tiddler-plugin-info tc-reveal"><p>
+</p></div>
+</div>
+
+</p>
+</section>
+</body>
+</html>
+
