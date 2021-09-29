@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>WAMR Installation & run in SGX enclave: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-art tc-tagged-sgx tc-tagged-wasm" data-tags="art sgx wasm" data-tiddler-title="WAMR Installation &amp; run in SGX enclave"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">WAMR Installation &amp; run in SGX enclave</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>September 28, 2021 at 9:23 pm</div></div><div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+art
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+sgx
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+wasm
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><ul><li><a class="tc-tiddlylink-external" href="https://github.com/bytecodealliance/wasm-micro-runtime" rel="noopener noreferrer" target="_blank">Github Repo</a></li><li><a class="tc-tiddlylink-external" href="https://github.com/bytecodealliance/wasm-micro-runtime/blob/main/doc/linux_sgx.md" rel="noopener noreferrer" target="_blank">WAMR + SGX Doc</a></li><li><a class="tc-tiddlylink-external" href="https://github.com/WebAssembly/wasi-sdk" rel="noopener noreferrer" target="_blank">WASI-SDK</a></li></ul><h1 class="">Installation</h1><pre class="sh hljs"><code>git <span class="hljs-built_in">clone</span> https://github.com/bytecodealliance/wasm-micro-runtime
+<span class="hljs-comment"># use a release version</span>
+git checkout WAMR-08-10-2021
+<span class="hljs-comment"># build the WAMR library</span>
+<span class="hljs-comment"># source &lt;SGX_SDK dir&gt;/environment</span>
+<span class="hljs-built_in">cd</span> product-mini/platforms/linux-sgx/
+mkdir build
+<span class="hljs-built_in">cd</span> build
+cmake ..
+make
+
+<span class="hljs-comment"># build the executable wamr</span>
+<span class="hljs-built_in">cd</span> ../enclave-sample
+<span class="hljs-comment"># please change `SGX_MODE` to `HW` and `SGX_DEBUG=1</span>
+make
+<span class="hljs-comment"># here an `iwasm` executable should be generated successfully</span>
+
+<span class="hljs-comment"># WASI-SDK</span>
+<span class="hljs-built_in">cd</span> &lt;path-to-wasi&gt;
+wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/wasi-sdk-12.0-linux.tar.gz
+tar xvf wasi-sdk-12.0-linux.tar.gz</code></pre><h1 class="">Toy Example </h1><pre class="c hljs"><code><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span>
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span> <span class="hljs-keyword">const</span> *argv[])</span>
+</span>{
+    <span class="hljs-built_in">printf</span>(<span class="hljs-string">"POC"</span>);
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}</code></pre><pre class="sh hljs"><code><span class="hljs-comment"># Compile an example C source code</span>
+<span class="hljs-comment"># remember to use the absolute path in `sysroot`!!!! (otherwise NFS problem may occur)</span>
+~/wasi-sdk-12.0/bin/clang-11 --sysroot=/&lt;user-home&gt;/wasi-sdk-12.0/share/wasi-sysroot main.c -o main
+
+<span class="hljs-comment"># Execute</span>
+<span class="hljs-comment"># remember to enlarge heap/stack size and include necessary dirs if needed</span>
+./iwasm <span class="hljs-built_in">test</span>/main
+···</code></pre></div>
+
+<div class="tc-tiddler-plugin-info tc-reveal"><p>
+</p></div>
+</div>
+
+</p>
+</section>
+</body>
+</html>
+

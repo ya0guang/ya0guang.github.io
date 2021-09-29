@@ -1,0 +1,56 @@
+created: 20210929004213135
+modified: 20210929012353651
+tags: art sgx wasm
+title: WAMR Installation & run in SGX enclave
+type: text/vnd.tiddlywiki
+
+* [[Github Repo|https://github.com/bytecodealliance/wasm-micro-runtime]]
+* [[WAMR + SGX Doc|https://github.com/bytecodealliance/wasm-micro-runtime/blob/main/doc/linux_sgx.md]]
+* [[WASI-SDK|https://github.com/WebAssembly/wasi-sdk]]
+
+! Installation
+```sh
+git clone https://github.com/bytecodealliance/wasm-micro-runtime
+# use a release version
+git checkout WAMR-08-10-2021
+# build the WAMR library
+# source <SGX_SDK dir>/environment
+cd product-mini/platforms/linux-sgx/
+mkdir build
+cd build
+cmake ..
+make
+
+# build the executable wamr
+cd ../enclave-sample
+# please change `SGX_MODE` to `HW` and `SGX_DEBUG=1
+make
+# here an `iwasm` executable should be generated successfully
+
+# WASI-SDK
+cd <path-to-wasi>
+wget https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-12/wasi-sdk-12.0-linux.tar.gz
+tar xvf wasi-sdk-12.0-linux.tar.gz
+```
+
+! Toy Example 
+
+```c
+#include <stdio.h>
+
+int main(int argc, char const *argv[])
+{
+    printf("POC");
+    return 0;
+}
+```
+
+```sh
+# Compile an example C source code
+# remember to use the absolute path in `sysroot`!!!! (otherwise NFS problem may occur)
+~/wasi-sdk-12.0/bin/clang-11 --sysroot=/<user-home>/wasi-sdk-12.0/share/wasi-sysroot main.c -o main
+
+# Execute
+# remember to enlarge heap/stack size and include necessary dirs if needed
+./iwasm test/main
+···

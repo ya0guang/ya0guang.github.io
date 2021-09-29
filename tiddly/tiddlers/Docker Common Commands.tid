@@ -1,5 +1,5 @@
 created: 20210519030849779
-modified: 20210520150048520
+modified: 20210915031717886
 tags: Artifact Linux System
 title: Docker Common Commands
 type: text/vnd.tiddlywiki
@@ -9,3 +9,7 @@ type: text/vnd.tiddlywiki
 # Commit changes `docker commit <container id> [name]`
 # Attach a running container `docker attach <container id>`
 * Run with SGX `docker run -it -v /var/run/aesmd:/var/run/aesmd --device=/dev/isgx [image name]`
+
+! Other Commands
+
+* show network configs of containers `docker network inspect bridge`
