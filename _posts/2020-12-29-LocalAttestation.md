@@ -2,12 +2,13 @@
 layout: single
 title: SGX Local Attestation 源码分析
 date: 2020-12-29 21:10:07
-categories: "Notes"
+categories: "Tech"
 tags:
 - Research
 - SGX
 - Code Analysis
 - Crypto
+- Notes
 header:
   teaser: 
 ---

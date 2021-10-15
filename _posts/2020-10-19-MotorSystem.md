@@ -2,7 +2,7 @@
 layout: single
 title: Neuroscience Notes - Neurobiology of Motor Systems
 date: 2020-10-19 09:10:07
-categories: "Notes"
+categories: "SoK"
 tags:
 - Notes
 - Course

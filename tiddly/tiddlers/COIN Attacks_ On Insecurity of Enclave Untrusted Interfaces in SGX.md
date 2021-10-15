@@ -10,10 +10,10 @@
 # Target
 **To find vulnerabilities of SGX applications in four models:**
 
-- Concurrent calls: multithread, race condition, improper lock…
-- Order: assumes the calling sequence
-- Input manipulation: bad OCALL return val & ECALL arguments
-- Nested calls: calling OCALL that invokes ECALL, not implemented
+- **C**oncurrent calls: multithread, race condition, improper lock...
+- **O**rder: assumes the calling sequence
+- **I**nput manipulation: bad OCALL return val & ECALL arguments
+- **N**ested calls: calling OCALL that invokes ECALL, *not implemented*
 
 ## Design & Method
 
@@ -40,6 +40,32 @@ COIN uses 8 policies to find the potential vulnerabilities:
 - Heap overflow
 - Null pointer dereference
 
+# COIN Attack
+
+- *ASPLOS 2020*
+- [Paper](http://ww2.cs.fsu.edu/~khandake/paper/coin_asplos_2020.pdf)
+- [Soruce Code](https://github.com/mustakimur/COIN-Attacks)
+
+## Target
+
+- Emulate TrustZone OSes(TZOS) and Trusted Applications (TAs) 
+- Abstract and reimplement a subset of hardware/software interfaces
+- Fuzz these components
+- TZOSes: QSEE, Huawei, OPTEE, Kinibi, TEEGRIS(Samsung) & TAs
+
+## Results
+
+COIN uses 8 policies to find the potential vulnerabilities:
+
+- Heap info leak 
+- Stack info leak 
+- Ineffectual condition
+- Use after free
+- Double free
+- Stack overflow
+- Heap overflow
+- Null pointer dereference
+
 ## Review
 
 ### Strength
@@ -47,9 +73,72 @@ COIN uses 8 policies to find the potential vulnerabilities:
 - Symbolic execution + emulation
 - Policies can be configurable
 - Real world problems
+- Solid work
+- Efforts taken to run TZOS and TA in emulation environment
+- Acceptable performance
 
 ### Weakness
 
 - *nested call* left unimplemented
 - May not be powerful enough to deal with complicate situations
-- Policies are mainly at relatively low-level
+  - Policies are mainly at relatively low-level
+- Low coverage
+- Crashes -X-> vulnerabilities
+
+# PartEmu
+
+- *USENIX Security 2020*
+- [Paper](https://www.usenix.org/conference/usenixsecurity20/presentation/harrison)
+- **Source code unavailable**
+
+Traditional TrustZone OSes and Applications is not easy to fuzz because they cannot be instrumented or modified easily in the original hardware environment. So to emulate them for fuzzing purpose.
+
+
+## Design & Method
+
+- Re-host the TZOS frimware
+- Choose the components to reuse/emulate carefully
+  - Bootloader
+  - Secure Monitor
+  - TEE driver and TEE userspace
+  - MMIO registers (easy to emulate)
+
+### Tools
+
+- TriforceAFL + QEMU
+- Manually written Interfaces
+
+## Results
+
+Emulations works well. For upgraded TZOSes, only a few efforts are needed for compatibility.
+
+### TAs
+
+#### Challenges
+
+- Identifying the fuzzed target
+- Result stability (migrate to hardware, reproducibility)
+- Randomness
+
+| Class           | Vulnerability Types                                       | Crashes |
+| --------------- | --------------------------------------------------------- | ------- |
+| Availability    | Null-pointer  dereferences                                | 9       |
+|                 | Insufficient shared memory crashes                        | 10      |
+|                 | Other                                                     | 8       |
+| Confidentiality | Read from attacker-controlled pointer  to shared memory   | 8       |
+|                 | Read from attacker-controlled                             | 0       |
+|                 | OOB buffer length to shared memory                        |
+| Integrity       | Write to secure memory using  attacker-controlled pointer | 11      |
+|                 | Write to secure memory using                              | 2       |
+|                 | attacker-controlled OOB buffer length                     |         |
+
+Just like the previous paper, the main causes of the crashes can be attributed to:
+- Assumptions of Normal-World Call Sequence
+- Unvalidated Pointers from Normal World
+- Unvalidated Types
+
+### TZOSes
+
+- Normal-World Checks
+- Assumptions of Normal-World Call Sequence
+

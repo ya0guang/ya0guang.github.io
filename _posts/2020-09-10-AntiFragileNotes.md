@@ -2,7 +2,7 @@
 layout: single
 title: 《反脆弱》读书随思
 date: 2020-09-07 21:10:07
-categories: "Notes"
+categories: "Caprice"
 tags:
 - Notes
 - Research

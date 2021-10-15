@@ -1,0 +1,28 @@
+created: 20210930015705223
+modified: 20211013004207247
+tags: Artifact
+title: Git Notes
+type: text/vnd.tiddlywiki
+
+
+
+```sh
+# Rebase
+
+## Change last commit
+
+git commit --amend --date "$(date)"
+
+# MISC
+
+## Add tag
+
+git tag -a <tag> <commit>
+git push --tags
+
+## Delete file in commit (but not in FS)
+
+git rm <file_name> --cached
+
+```
+

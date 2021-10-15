@@ -1,10 +1,10 @@
 ---
 layout: single
-title: 从加州回来了
+title: 从零开始搓一个编译器
 date: 2021-07-08 22:00:07
-categories: "Notes"
+categories: "Tech"
 tags:
-- 随笔
+- Life
 - Caprice
 header:
   teaser: /assets/images/California/goldenBridgeShip.jpg

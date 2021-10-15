@@ -2,7 +2,7 @@
 layout: single
 title: Kernel Module 历险记
 date: 2021-01-17 14:10:07
-categories: "Notes"
+categories: "Tech"
 tags:
 - Notes
 - Linux Kernel
@@ -10,9 +10,11 @@ header:
   teaser: /images/Linux/chuckvstux.jpg
 ---
 
-最近在我大哥[@StanPlatinum](https://drstanliu.cn/)的指导下搞了个截获/添加syscall的kernel module，在这里稍微记录一下折腾的过程。
+最近在我~~大哥~~儿子[@StanPlatinum](https://drstanliu.cn/)的指导下搞了个截获/添加syscall的kernel module，在这里稍微记录一下折腾的过程。
 
 前排特别感谢一下**Robotxm**大佬的[这篇博文](https://moefactory.com/3041.moe)里面记录了他详细的折腾过程。大佬本科期间就开始吊着Linux Kernel到处捉迷藏了，我本科的时候还不知道在哪个田野里面玩泥巴呢。
+
+虽然大抵之前就接触过这玩意，但是由于每个版本Kernel Module的食用方法都有那么亿点点不一样，所以似乎每次都要重新学习一下。
 
 # Kernel Module
 

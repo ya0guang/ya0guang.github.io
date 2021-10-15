@@ -2,11 +2,12 @@
 layout: single
 title: 计算机玄学——主要是踩的Rust的坑
 date: 2021-06-24 12:00:07
-categories: "Notes"
+categories: "Tech"
 tags:
-- 二进制
+- Binary
 - CS
-- 逆向工程
+- Reverse Engineering
+- PL
 - Rust
 header:
   teaser: https://hackaday.com/wp-content/uploads/2015/12/rust.jpg?w=640

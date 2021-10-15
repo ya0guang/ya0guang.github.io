@@ -4,11 +4,13 @@ title: About
 permalink: /about/
 ---
 
-I'm a current PhD student focusing on system security. This blog is mainly for taking notes from papers of top conferences and record the experience of exploring virtual/cyber/real *artifacts*.
+I'm a current PhD student focusing on system security. This blog is mainly for sharing my ideas and taking notes from papers of top conferences, as well as record the experience of exploring virtual/cyber/real *life* & *artifacts*.
 
 I also like photography, lockpicking, board game, DOTA and touhou project!
 
-Last Update: Oct. 22, 2020
+Please check my [**Notes**](https://ya0guang.com/tiddly/output/notebook.html) for all the English notes on academic paper, code analysis and other misc stuffs.
+
+Last Update: Oct. 15, 2021
 
 # 关于本站
 
@@ -16,15 +18,24 @@ Last Update: Oct. 22, 2020
 
 用来记录我学到的知识，读到的书，走到的地方，搞过的事情~~，脑外辅助记忆~~。
 
-各种和学术/课业相关的笔记请在右上角的**Notes**里面寻找！
+各种和学术/课业相关的笔记请在右上角的[**Notes**](https://ya0guang.com/tiddly/output/notebook.html)里面寻找！
+
+# Categorization
+
+- Hack: 所有和hacking相关的都归类于此
+- Tech: 和技术/科学相关但无法归类为Hack的内容都在这里。目前特指CS/EE领域
+- Caprice: 一些随想随笔罢了
+- SoK: 在学习某个领域的知识之后的小总结
+- Meta: 和Blog本身相关的一些内容
 
 # 关于我
 
-目前正企图用头发换取一个博士学位。主要的研究方向是安全，对于软硬件结合的部分比较感兴趣。虽然目前还没有发表什么论文，但是已经试了不少防脱洗发水了。
+目前正企图用头发换取一个博士学位。主要的研究方向是系统安全，对于软硬件结合的部分比较感兴趣。虽然目前还没有发表什么*一作*论文，但是已经试了不少防脱洗发水了~~最近发现霸王其实还可以~~。
 
 - 偶尔摄影
 - 穷烧HiFi
 - 菜鸡CTFer
+- 回锅新手牌佬
 
 # To Do List
 
@@ -84,6 +95,8 @@ Last Update: Oct. 22, 2020
 - 达音科 DK3001pro
 - OnePlus 7 pro
 - XPS 13 9380
+- Sony DPT-RP1
+- IPad Pro (笔丢了。。。)
 
 ## HiFi
 

@@ -2,7 +2,7 @@
 layout: single
 title: Neuroscience Notes - Sensory Neurobiology
 date: 2020-11-16 09:10:07
-categories: "Notes"
+categories: "SoK"
 tags:
 - Notes
 - Course

@@ -2,7 +2,7 @@
 layout: single
 title: 各种值得再次看看的网页/网站/Meta
 date: 2021-03-08 10:10:07
-categories: "Notes"
+categories: "Meta"
 tags:
 - Notes
 - Research

@@ -2,7 +2,7 @@
 layout: single
 title: Modern Cryptography Notes (To be continued...)
 date: 2021-01-31 22:10:07
-categories: "Notes"
+categories: "SoK"
 tags:
 - Notes
 - Course
@@ -10,6 +10,8 @@ tags:
 header:
   teaser: https://upload.wikimedia.org/wikipedia/commons/4/4d/Lorenz-SZ42-2.jpg
 ---
+
+虽然课上完了，但是由于本人精力有限，暂且无限期鸽鸽本文。。。
 
 Cryptography course notes taking from [Introduction to Modern Cryptography](http://www.cs.umd.edu/~jkatz/imc.html).
 

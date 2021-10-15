@@ -2,9 +2,10 @@
 layout: single
 title: Rust 学习笔记
 date: 2021-04-17 23:10:07
-categories: "Notes"
+categories: "Tech"
 tags:
 - Rust
+- PL
 - CS
 header:
   teaser: https://rustacean.net/assets/rustacean-flat-gesture.svg

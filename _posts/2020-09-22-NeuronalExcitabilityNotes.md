@@ -2,7 +2,7 @@
 layout: single
 title: Neuroscience Notes - Neuronal excitability
 date: 2020-09-22 09:10:07
-categories: "Notes"
+categories: "SoK"
 tags:
 - Notes
 - Course

@@ -2,11 +2,11 @@
 layout: single
 title: 计算机玄学——主要是踩的C的坑
 date: 2021-05-11 21:30:07
-categories: "Hack"
+categories: "Tech"
 tags:
-- 二进制
+- Binary
 - CS
-- 逆向工程
+- Reverse Engineering
 - C
 header:
   teaser: https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/64_qu%E1%BA%BB.png/330px-64_qu%E1%BA%BB.png

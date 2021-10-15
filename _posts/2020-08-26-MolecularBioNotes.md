@@ -2,7 +2,7 @@
 layout: single
 title: Neuroscience Notes - Molecular Biology
 date: 2020-09-16 21:10:07
-categories: "Notes"
+categories: "SoK"
 tags:
 - Notes
 - Course

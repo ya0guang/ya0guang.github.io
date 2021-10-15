@@ -4,7 +4,7 @@ title: 低成本安全硬件（一）——BadUSB on Arduino
 date: 2017-02-21 20:04:01
 categories: "Hack"
 tags:
-- 硬件安全
+- Hardware
 - BadUSB
 - Arduino
 header:

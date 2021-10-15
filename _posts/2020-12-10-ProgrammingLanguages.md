@@ -2,14 +2,14 @@
 layout: single
 title: Programming Language Review
 date: 2020-12-10 13:10:07
-categories: "Notes"
+categories: "SoK"
 tags:
 - Notes
 - Course
 - CS
-- Theory
+- PL
 header:
-  teaser: 
+  teaser: https://racket-lang.org/img/racket-logo.svg
 ---
 
 Review what I learned from programming language, a fundamental course of CS. The code is mainly in *typed* [racket](https://racket-lang.org/), a dialect of scheme. 

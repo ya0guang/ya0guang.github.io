@@ -1,10 +1,10 @@
 ---
 layout: single
-title: 摄影笔记
+title: 摄影小记
 date: 2019-09-29 09:58:07
-categories: "Photography"
+categories: "Caprice"
 tags:
-- 摄影
+- Photography
 - Notes
 header:
   teaser: /assets/images/photography-notes/unity&divergence3.jpg
