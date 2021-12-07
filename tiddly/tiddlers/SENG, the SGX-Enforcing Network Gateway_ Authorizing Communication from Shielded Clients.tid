@@ -1,0 +1,28 @@
+created: 20211206163258812
+modified: 20211206170120134
+tags: Defense Security SGX Paper Application
+title: SENG, the SGX-Enforcing Network Gateway: Authorizing Communication from Shielded Clients
+type: text/vnd.tiddlywiki
+
+[[Link|https://www.usenix.org/conference/usenixsecurity20/presentation/schwarz]]
+
+! Abstract
+
+Network administrators face a security-critical dilemma. While they want to tightly contain their hosts, they usually have to relax firewall policies to support a large variety of applications. However, liberal policies like this enable data exfiltration by unknown (and untrusted) client applications. An inability to attribute communication accurately and reliably to applications is at the heart of this problem. Firewall policies are restricted to coarse-grained features that are easy to evade and mimic, such as protocols or port numbers.
+
+We present SENG, a network gateway that enables firewalls to reliably attribute traffic to an application. SENG shields an application in an SGX-tailored LibOS and transparently establishes an attestation-based DTLS channel between the SGX enclave and the central network gateway. Consequently, administrators can perfectly attribute traffic to its originating application, and thereby enforce fine-grained per-application communication policies at a central firewall. Our prototype implementation demonstrates that SENG (i) allows administrators to readily use their favorite firewall to enforce network policies on a certified per-application basis and (ii) prevents local system-level attackers from interfering with the shielded application's communication.
+
+! Design
+
+[img[SENG1.png]]
+[img[SENG2&3.png]]
+
+! Challenges
+
+* EPC Memory Limit (SGX)
+* Frequent Measurement Update (of Apps)
+* Deployment: Mixed Environment, updates (of SENG), key management
+
+! Comments
+
+This paper mainly focuses on what are the benefits of putting a firewall into the enclave. Especially, what kind of protection can be provided and what kind of attacks can be defended.

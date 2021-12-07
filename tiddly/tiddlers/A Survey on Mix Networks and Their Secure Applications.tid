@@ -1,0 +1,21 @@
+created: 20211117011634301
+modified: 20211130172859350
+tags: Paper Security SideChannel System Defense
+title: A Survey on Mix Networks and Their Secure Applications
+type: text/vnd.tiddlywiki
+
+* [[Paper|https://ieeexplore.ieee.org/document/4077263]]
+
+* High level idea
+
+[img[mixnet1.png]]
+
+* Multiple stages
+
+[img[mixnet2.png]]
+
+* Layers(onion) in encryption
+[img[mixnet3.png]]
+
+* Reencryption
+[img[mixnet4.png]]

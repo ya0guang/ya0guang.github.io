@@ -1,6 +1,6 @@
 created: 20210929004213135
-modified: 20210929012353651
-tags: art sgx wasm
+modified: 20211025150003285
+tags: Artifact WASM SGX
 title: WAMR Installation & run in SGX enclave
 type: text/vnd.tiddlywiki
 

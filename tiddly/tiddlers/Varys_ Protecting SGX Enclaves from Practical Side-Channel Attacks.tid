@@ -1,0 +1,23 @@
+created: 20211025150352508
+modified: 20211025150705129
+tags: Paper SGX Defense SideChannel
+title: Varys: Protecting SGX Enclaves from Practical Side-Channel Attacks
+type: text/vnd.tiddlywiki
+
+! Abstract
+
+Numerous recent works have experimentally shown that Intel Software Guard Extensions (SGX) are vulnerable to cache timing and page table side-channel attacks which could be used to circumvent the data confidentiality guarantees provided by SGX. Existing mechanisms that protect against these attacks either incur high execution costs, are ineffective against certain attack variants, or require significant code modifications.
+
+We present Varys, a system that protects unmodified programs running in SGX enclaves from cache timing and page table side-channel attacks. Varys takes a pragmatic approach of strict reservation of physical cores to security-sensitive threads, thereby preventing the attacker from accessing shared CPU resources during enclave execution. The key challenge that we are addressing is that of maintaining the core reservation in the presence of an untrusted OS.
+
+Varys fully protects against all L1/L2 cache timing attacks and significantly raises the bar for page table side-channel attacks - all with only 15% overhead on average for Phoenix and PARSEC benchmarks. Additionally, we propose a set of minor hardware extensions that hold the potential to extend Varys' security guarantees to L3 cache and further improve its performance.
+
+! Method
+
+The basic idea is very simple: making the SGX threads on the same core and avoid preemption by OS or an attacking thread. At the same time, guaranteeing the AEX freq. is below a specific bound.
+
+! Implementation
+
+* LLVM pass -> instrumentation
+* Covert channel to detect threads are on the same core
+
