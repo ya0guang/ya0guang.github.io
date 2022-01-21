@@ -1,0 +1,45 @@
+created: 20220121222122653
+modified: 20220121230908548
+tags: System Formal PL Paper
+title: Using Lightweight Formal Methods to Validate a Key-Value Storage Node in Amazon S3
+type: text/vnd.tiddlywiki
+
+! Abstract
+
+This paper reports our experience applying lightweight formal methods to validate the correctness of ShardStore, a new key-value storage node implementation for the Amazon S3 cloud object storage service. By “lightweight formal methods" we mean a pragmatic approach to verifying the correctness of a production storage node that is under ongoing feature development by a full-time engineering team. We do not aim to achieve full formal verification, but instead emphasize automation, usability, and the ability to continually ensure correctness as both software and its specification evolve over time. Our approach decomposes correctness into independent properties, each checked by the most appropriate tool, and develops executable reference models as specifications to be checked against the implementation. Our work has prevented 16 issues from reaching production, including subtle crash consistency and concurrency problems, and has been extended by non-formal-methods experts to check new features and properties as ShardStore has evolved.
+
+! Summary
+
+This paper explains the experience of verifying ShardStore, a KV DB implemented in Rust on Amazon S3.
+They first introduces what's ShardStore, and then describe their goals and the anatomy of their tasks. There are 3 major parts for validation:
+
+# Correctness
+# Crash Consistency
+# Concurrent Execution
+
+Correctness refers to the functionalities should not deviate from the specification. So they build a reference model alone with source code in Rust and launch conformance checking on the model. When testing, they can further use the mock model in memory and avoid using low-speed disks for performance. 
+
+For crash consistency, they want to verify persistence(operations should be consistent if they are persisted before a crash) and forward progress(grace shutdown implies the operations are persisted). They use a dependency graph to depict the interdependencies of operations and such `Dependency` type can also be passed by the operations. By adding `DirtyReboot` to the aforementioned model, they can check this property.
+
+Finally for potential race conditions. they developed their own tool called Shuttle, since current tools cannot scale up. Their tool recruits random algorithm for model checking.
+
+However, there are still some properties relying on ''unsafe'' Rust and cannot be covered by the tools. So they use the Rust interpreter validate these parts. And for some security-critical components, they also utilize a formal verifier.
+
+It turns out that they found several problems, and more potential problems are eliminated before code review.
+
+! Comments
+
+This paper is really well-written. However, I don't think there is something pretty novel in the traditional way and I'm surprised this is the best paper in the System top conference. It's more like to share readers their methodology and experiences of tuning a huge system. However, I do believe the way they present solved a real-world problem in a lightweight manner, which is really valuable. 
+
+Besides, I think the concept, ''Continuous Validation'', is interesting. Although their method is not formal enough, they can build a system which allow the engineers without formal verification background to amend the specification(expected) model when contributing code for new functionalities, and therefore permits ''verifiability'' in the future.
+
+
+! Related Artifacts
+
+* [[P |https://github.com/p-org/P]]
+* [[shuttle |https://github.com/awslabs/shuttle]]
+* [[Prusti |https://github.com/viperproject/prusti-dev]]
+* [[sabi |https://github.com/pandaman64/sabi]]
+* [[MIRAI |https://github.com/facebookexperimental/MIRAI]]
+* [[Crux |https://crux.galois.com/]]
+* [[MIRI |https://github.com/rust-lang/miri]]
