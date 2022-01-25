@@ -1,0 +1,27 @@
+created: 20220125071533480
+modified: 20220125073338255
+tags: PL Security Paper
+title: Exploring and enforcing security guarantees via program dependence graphs
+type: text/vnd.tiddlywiki
+
+* [[PDF|https://dl.acm.org/doi/pdf/10.1145/2813885.2737957]]
+
+! Abstract
+
+We present PIDGIN, a program analysis and understanding tool that enables the specification and enforcement of precise application-specific information security guarantees. PIDGIN also allows developers to interactively explore the information flows in their applications to develop policies and investigate counter-examples. PIDGIN combines program dependence graphs (PDGs), which precisely capture the information flows in a whole application, with a custom PDG query language. Queries express properties about the paths in the PDG; because paths in the PDG correspond to information flows in the application, queries can be used to specify global security policies. PIDGIN is scalable. Generating a PDG for a 330k line Java application takes 90 seconds, and checking a policy on that PDG takes under 14 seconds. The query language is expressive, supporting a large class of precise, application-specific security guarantees. Policies are separate from the code and do not interfere with testing or development, and can be used for security regression testing. We describe the design and implementation of PIDGIN and report on using it: (1) to explore information security guarantees in legacy programs; (2) to develop and modify security policies concurrently with application development; and (3) to develop policies based on known vulnerabilities.
+
+! How PDG looks like
+
+[img[Screen Shot 2022-01-24 at 11.26.06 PM.png]]
+
+! Methodology
+
+# Generate PDG for a Program
+# Query the graph with PidginQL (according to the property to check)
+# Check the returned subgraph (if it's empty in most cases)
+
+! Comments
+
+This seems to be a lightweight method for validating the property of code. One thing worth notice is that the generation of PDG takes relatively long while, whereas querying it takes much less time (~5X). The properties to validate is dependent on the program, which means for different programs, the query could be different.
+
+However, this method lacks formal foundation. The soundness and completeness are not covered in this paper, and I'm not sure about the reliability of such PDG-based methods.

@@ -1,0 +1,28 @@
+created: 20220125065150174
+modified: 20220125071621382
+tags: PL Paper Formal
+title: Toward general diagnosis of static errors
+type: text/vnd.tiddlywiki
+
+* [[PDF|https://dl.acm.org/doi/pdf/10.1145/2535838.2535870]]
+
+! Abstract
+
+We introduce a general way to locate programmer mistakes that are detected by static analyses such as type checking. The program analysis is expressed in a constraint language in which mistakes result in unsatisfiable constraints. Given an unsatisfiable system of constraints, both satisfiable and unsatisfiable constraints are analyzed, to identify the program expressions most likely to be the cause of unsatisfiability. The likelihood of different error explanations is evaluated under the assumption that the programmer's code is mostly correct, so the simplest explanations are chosen, following Bayesian principles. For analyses that rely on programmer-stated assumptions, the diagnosis also identifies assumptions likely to have been omitted. The new error diagnosis approach has been implemented for two very different program analyses: type inference in OCaml and information flow checking in Jif. The effectiveness of the approach is evaluated using previously collected programs containing errors. The results show that when compared to existing compilers and other tools, the general technique identifies the location of programmer errors significantly more accurately.
+
+! Overview
+
+This work leverages constraint graph and Bayesian probability for Ocaml and Jif to output more meaningful compilation error report, especially on the accurate site of problematic code. The error report includes type error and/or missing assmuptions.
+
+! Methodology
+
+Type Information =>  Constraints => Constraint Graph => Satisfiability Checking => Inferring likely wrong entities/missing hypotheses
+
+! Comments
+
+Since I'm not very familiar with PL, some concepts confused a me for a long while until one professor explained them to me, which includes [[covariant/contravariant|https://en.wikipedia.org/wiki/Covariance_and_contravariance_(computer_science)]]. Fortunately, I've heard other terminologies more or less in the compiler or PL class, so it made easier for me to catch the big map and understand the essence of the paper. 
+
+!! Information Flow Control
+
+* (manually added) label for confidentiality level, partial order on the level, data-flow analysis to find out how the secret data is declassified. 
+* Data-flow analysis can also be used for inferring types.This will also produce the constraints (by using the rules) and help finding out unsatisfiable paths.
