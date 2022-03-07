@@ -8,7 +8,7 @@ tags:
 - PL
 - Notes
 header:
-  teaser: 
+  teaser: https://i.imgur.com/AB1jB3n.jpg
 ---
 
 今年手痒痒选了一个Implementation of PL的课，需要徒手搓编译器。这里来小记一下这个过程，感觉这可能是我校CS最硬核的课之一了。

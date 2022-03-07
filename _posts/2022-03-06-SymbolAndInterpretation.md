@@ -8,7 +8,7 @@ tags:
 - PL
 - Research
 header:
-  teaser: http://proofcafe.org/wiki/img/proofcafe_240x320.png
+  teaser: https://ilyasergey.net/pnp/coq-logo.png
 ---
 
 在被[Coq](https://coq.inria.fr/)折磨了快一个月后，终于我终于看完了Logic Foundation。作为[Software Foundations](https://softwarefoundations.cis.upenn.edu/)系列书籍中的第一员大将，它还是有点东西的。这里只浅谈一下我对于符号和解释这两个概念所产生的更深的理解。正文部分基本不涉及任何与编程本身相关的问题。
