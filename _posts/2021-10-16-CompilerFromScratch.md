@@ -495,5 +495,26 @@ Python里面的function是first class citizen，可以被当做变量来使用�
 
 ## Garbage Collection
 
+因为使用 heap 来存放tuple，所以需要GC。为此设置了一个 root stack(shadow stack)，用来存放所有的 tuple pointers。
+
+内存的形状是这样的：
+![root stack](/assets/images/Compiler/rootStack.png)
+
+把 tuple 都丢到shadow stack上面的原因是：GC需要一个 starting point 来捡垃圾，这个 shadow stack就是所谓 starting point。确切地说应该所有需要 garbage collection 的玩意都应该丢在那里。
+
+GC会寻找*所有能够通过 shadow stack索引到的元素*来保证它们不会被 collect，而那些找不到的就命途多舛了。能够被索引到的元素包括：root stack 中 pointer 指向的元素，以及 recursively 这些被指向元素中的 pointer 能够指向的元素。那么这就带来了一些问题：如果有一些元素被指向两次怎么办？如果有一些指针指成环儿了怎么办？
+
+所以实际上 tuple 在内存中的形状是这样的：
+![tupleStruct](/assets/images/Compiler/tupleStruct.png)
+
+tuple中的第一个 double word 来存储一些元数据，包括：
+- pointer mask: 表示 tuple 当中的那些是 pointer
+- vector length: 表示 tuple 的长度
+- forwarding: 在GC工作的时候来标记有没有被处理过
+
+具体的GC算法 Two-Space Copying。从字面意思上而言还是很好理解的，这里不多赘述了。详情可以参考 [Wiki](https://en.wikipedia.org/wiki/Cheney's_algorithm)。我读了一下这玩意的C实现，可以说是十分蛋痛了。虽然写的不算复杂，但是我如果不懂这个算法是啥的话还真的很难看出来这是个GC（可能是没经验吧）。
+
+由于GC的引入，需要做一些额外的事情：在程序开始执行时初始化 shadow stack；reserve 一个寄存器(`r15`)来用作 shadow stack 的指针；再 reserve 一个寄存器(`r11`)作为 tuple access 的指针（因为X86要求memory write 通过寄存器实现，而`rax`之前用在了 instruction patching 中来避免两个 oprand 都是内存的情况，故而无法复用在 tuple 这里）；在分配空间前检查够不够用，不够的话还需要 allocate。
+
 ## Data Flow Analysis
 
