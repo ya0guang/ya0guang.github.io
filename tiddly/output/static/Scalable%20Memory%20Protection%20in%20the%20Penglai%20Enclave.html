@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="generator" content="TiddlyWiki" />
-<meta name="tiddlywiki-version" content="5.2.1" />
+<meta name="tiddlywiki-version" content="5.1.23" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -11,42 +11,39 @@
 <meta name="format-detection" content="telephone=no">
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
 <link rel="stylesheet" href="static.css">
-<title>Scalable Memory Protection in the Penglai Enclave: ya0guang's notebook
-
-— Personality Backup
-</title>
+<title>Scalable Memory Protection in the Penglai Enclave: ya0guang's notebook — Personality Backup</title>
 </head>
 <body class="tc-body">
 
 <section class="tc-story-river tc-static-story-river">
-<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Paper tc-tagged-System tc-tagged-Security tc-tagged-Defense tc-tagged-Artifact" data-tags="Paper System Security Defense Artifact" data-tiddler-title="Scalable Memory Protection in the Penglai Enclave"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><span class="tc-tiddler-title-icon" style="fill:;"></span><h2 class="tc-title">Scalable Memory Protection in the Penglai Enclave</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
-<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>January 19, 2022 at 5:13 pm</div></div><div class=" tc-reveal">
-<div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Artifact">
-<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Paper tc-tagged-System tc-tagged-Security tc-tagged-Defense tc-tagged-Artifact" data-tags="Paper System Security Defense Artifact" data-tiddler-title="Scalable Memory Protection in the Penglai Enclave"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">Scalable Memory Protection in the Penglai Enclave</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>January 19, 2022 at 8:13 pm</div></div><div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 Artifact
 </span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Defense">
-<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 Defense
 </span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Paper">
-<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 Paper
 </span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Security">
-<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 Security
 </span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="System">
-<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
+<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 System
@@ -56,7 +53,12 @@ System
 
 <div class="tc-tiddler-body tc-reveal"><ul><li>OSDI'21 <a class="tc-tiddlylink-external" href="https://www.usenix.org/system/files/osdi21-feng.pdf" rel="noopener noreferrer" target="_blank">PDF</a></li><li>Artifact <a class="tc-tiddlylink-external" href="https://github.com/Penglai-Enclave" rel="noopener noreferrer" target="_blank">Github</a></li></ul><h1 class="">Abstract</h1><p>Secure hardware enclaves have been widely used for protecting security-critical applications in the cloud. However, existing enclave designs fail to meet the requirements of scalability demanded by new scenarios like serverless computing, mainly due to the limitations in their secure memory protection mechanisms, including static allocation, restricted capacity and high-cost initialization. In this paper, we propose a software-hardware co-design to support dynamic, fine-grained, large-scale secure memory as well as fast-initialization. We first introduce two new hardware primitives: 1) Guarded Page Table (GPT), which protects page table pages to support page-level secure memory isolation; 2) Mountable Merkle Tree (MMT), which supports scalable integrity protection for secure memory. Upon these two primitives, our system can scale to thousands of concurrent enclaves with high resource utilization and eliminate the high-cost initialization of secure memory using fork-style enclave creation without weakening the security guarantees.</p><p>We have implemented a prototype of our design based on Penglai, an open-sourced enclave system for RISC-V. The experimental results show that Penglai can support 1,000s enclave instances running concurrently and scale up to 512GB secure memory with both encryption and integrity protection. The overhead of GPT is 5% for memory-intensive workloads (e.g., Redis) and negligible for CPU-intensive workloads (e.g., RV8 and Coremarks). Penglai also reduces the latency of secure memory initialization by three orders of magnitude and gains 3.6x speedup for real-world applications (e.g., MapReduce).</p><h1 class="">Anatomy of Paper</h1><p>Although Penglai is a very large system, this paper mainly focuses on scalability, security, and (initialization) performance of their design. This paper first introduces their motivations and the limitations of current systems (TEEs). The author them list their goals for the new design, and presents an overview.</p><p>After that, they demonstrate the new design focusing on several components. </p><ol><li>Memory Isolation Model (guarded page table);</li><li>Memory Integrity (Mountable Merkle Tree), claimed challenges and novelty</li><li>Secure Enclave Initialization (shadow fork)</li><li>Cache-side channel mitigation (Cache Line Locking)</li></ol><p>I don't think they follow a clear logic order to introduce the details of these aspects, but I think they tried to mention the difficulties &amp; their solutions, and they explained them in a sensible way.</p><p>Their implementation is 2-fold, incorporating the hardware and software parts. They introduce the newly added commands, the tools &amp; components used to realized the system, and some unimplemented functionalities.</p><p>In evaluation, they first present some microbenchmarks to show Penglai (especially the new components) only induces minor performance degradation. Then in they compare Penglai with similar systems (keystone, native, etc.) on bigger tasks. Besides, they also have 2 case studies which exhibits Penglai's strength on FaaS and distributed tasks.</p><h1 class="">Comments</h1><p>I think this is a good and dense paper in general. Considering Penglai is a very huge system, the authors are clever since they focus on what made Penglai different: scalable enclave memory. However, some details are too vague and require a lot of background knowledge to understand, which is not covered in this paper. The 4 aspects in their design are scattered, and in each subsection I found no logic order, which made it difficult for understanding the big map.
 </p></div>
-</div></p>
+
+<div class="tc-tiddler-plugin-info tc-reveal"><p>
+</p></div>
+</div>
+
+</p>
 </section>
 </body>
 </html>

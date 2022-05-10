@@ -1,0 +1,13 @@
+created: 20220509193853715
+modified: 20220509194246477
+tags: Linux
+title: add existing ssh key
+type: text/vnd.tiddlywiki
+
+```sh
+chmod 600 ./id_rsa*
+# or
+chmod 644 ./id_rsa.pub
+eval $(ssh-agent -s)
+ssh-add ~/.ssh/id_rsa
+```
