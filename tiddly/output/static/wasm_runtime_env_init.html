@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="generator" content="TiddlyWiki" />
-<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="tiddlywiki-version" content="5.2.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -11,113 +11,116 @@
 <meta name="format-detection" content="telephone=no">
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
 <link rel="stylesheet" href="static.css">
-<title>wasm_runtime_env_init: ya0guang's notebook — Personality Backup</title>
+<title>wasm_runtime_env_init: ya0guang's notebook
+
+— Personality Backup
+</title>
 </head>
 <body class="tc-body">
 
 <section class="tc-story-river tc-static-story-river">
-<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists " data-tags="" data-tiddler-title="wasm_runtime_env_init"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">wasm_runtime_env_init</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists " data-tags="" data-tiddler-title="wasm_runtime_env_init"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><span class="tc-tiddler-title-icon" style="fill:;"></span><h2 class="tc-title">wasm_runtime_env_init</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
 <div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>May 23, 2021 at 11:04 pm</div></div><div class=" tc-reveal">
 <div class="tc-tags-wrapper"></div>
 </div>
 
-<div class="tc-tiddler-body tc-reveal"><h3 class="">The  symbols are a static array of <code>NativeSymbol</code></h3><pre class="c hljs"><code><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">NativeSymbol</span> {</span>
-    <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *symbol;
-    <span class="hljs-keyword">void</span> *func_ptr;
-    <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *signature;
+<div class="tc-tiddler-body tc-reveal"><h3 class="">The  symbols are a static array of <code>NativeSymbol</code></h3><pre class="hljs"><code class="c hljs"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">NativeSymbol</span> {</span>
+    <span class="hljs-type">const</span> <span class="hljs-type">char</span> *symbol;
+    <span class="hljs-type">void</span> *func_ptr;
+    <span class="hljs-type">const</span> <span class="hljs-type">char</span> *signature;
     <span class="hljs-comment">/* attachment which can be retrieved in native API by
        calling wasm_runtime_get_function_attachment(exec_env) */</span>
-    <span class="hljs-keyword">void</span> *attachment;
-} NativeSymbol;</code></pre><h3 class=""><code>wasm_native_init</code></h3><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">bool</span>
-<span class="hljs-title">wasm_native_init</span><span class="hljs-params">()</span>
-</span>{
+    <span class="hljs-type">void</span> *attachment;
+} NativeSymbol;</code></pre><h3 class=""><code>wasm_native_init</code></h3><pre class="hljs"><code class="c hljs"><span class="hljs-type">bool</span>
+<span class="hljs-title function_">wasm_native_init</span><span class="hljs-params">()</span>
+{
     NativeSymbol *native_symbols;
     uint32 n_native_symbols;
 
-<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LIBC_BUILTIN != 0</span>
+<span class="hljs-meta">#<span class="hljs-keyword">if</span> WASM_ENABLE_LIBC_BUILTIN != 0</span>
     n_native_symbols = get_libc_builtin_export_apis(&amp;native_symbols);
-    <span class="hljs-keyword">if</span> (!wasm_native_register_natives(<span class="hljs-string">"env"</span>,
+    <span class="hljs-keyword">if</span> (!wasm_native_register_natives(<span class="hljs-string">&quot;env&quot;</span>,
                                       native_symbols, n_native_symbols))
         <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span> <span class="hljs-comment">/* WASM_ENABLE_LIBC_BUILTIN */</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* WASM_ENABLE_LIBC_BUILTIN */</span></span>
 
-<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_SPEC_TEST</span>
+<span class="hljs-meta">#<span class="hljs-keyword">if</span> WASM_ENABLE_SPEC_TEST</span>
     n_native_symbols = get_spectest_export_apis(&amp;native_symbols);
-    <span class="hljs-keyword">if</span> (!wasm_native_register_natives(<span class="hljs-string">"spectest"</span>,
+    <span class="hljs-keyword">if</span> (!wasm_native_register_natives(<span class="hljs-string">&quot;spectest&quot;</span>,
                                       native_symbols, n_native_symbols))
         <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span> <span class="hljs-comment">/* WASM_ENABLE_SPEC_TEST */</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* WASM_ENABLE_SPEC_TEST */</span></span>
 
-<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LIBC_WASI != 0</span>
+<span class="hljs-meta">#<span class="hljs-keyword">if</span> WASM_ENABLE_LIBC_WASI != 0</span>
     n_native_symbols = get_libc_wasi_export_apis(&amp;native_symbols);
-    <span class="hljs-keyword">if</span> (!wasm_native_register_natives(<span class="hljs-string">"wasi_unstable"</span>,
+    <span class="hljs-keyword">if</span> (!wasm_native_register_natives(<span class="hljs-string">&quot;wasi_unstable&quot;</span>,
                                       native_symbols, n_native_symbols))
         <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-    <span class="hljs-keyword">if</span> (!wasm_native_register_natives(<span class="hljs-string">"wasi_snapshot_preview1"</span>,
+    <span class="hljs-keyword">if</span> (!wasm_native_register_natives(<span class="hljs-string">&quot;wasi_snapshot_preview1&quot;</span>,
                                       native_symbols, n_native_symbols))
         <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span>
 
-<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_BASE_LIB != 0</span>
+<span class="hljs-meta">#<span class="hljs-keyword">if</span> WASM_ENABLE_BASE_LIB != 0</span>
     n_native_symbols = get_base_lib_export_apis(&amp;native_symbols);
     <span class="hljs-keyword">if</span> (n_native_symbols &gt; <span class="hljs-number">0</span>
-        &amp;&amp; !wasm_native_register_natives(<span class="hljs-string">"env"</span>,
+        &amp;&amp; !wasm_native_register_natives(<span class="hljs-string">&quot;env&quot;</span>,
                                          native_symbols, n_native_symbols))
         <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span>
 
-<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_APP_FRAMEWORK != 0</span>
+<span class="hljs-meta">#<span class="hljs-keyword">if</span> WASM_ENABLE_APP_FRAMEWORK != 0</span>
     n_native_symbols = get_ext_lib_export_apis(&amp;native_symbols);
     <span class="hljs-keyword">if</span> (n_native_symbols &gt; <span class="hljs-number">0</span>
-        &amp;&amp; !wasm_native_register_natives(<span class="hljs-string">"env"</span>,
+        &amp;&amp; !wasm_native_register_natives(<span class="hljs-string">&quot;env&quot;</span>,
                                          native_symbols, n_native_symbols))
         <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span>
 
-<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LIB_PTHREAD != 0</span>
+<span class="hljs-meta">#<span class="hljs-keyword">if</span> WASM_ENABLE_LIB_PTHREAD != 0</span>
     <span class="hljs-keyword">if</span> (!lib_pthread_init())
         <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
 
     n_native_symbols = get_lib_pthread_export_apis(&amp;native_symbols);
     <span class="hljs-keyword">if</span> (n_native_symbols &gt; <span class="hljs-number">0</span>
-        &amp;&amp; !wasm_native_register_natives(<span class="hljs-string">"env"</span>,
+        &amp;&amp; !wasm_native_register_natives(<span class="hljs-string">&quot;env&quot;</span>,
                                          native_symbols, n_native_symbols))
         <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span>
 
-<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_LIBC_EMCC != 0</span>
+<span class="hljs-meta">#<span class="hljs-keyword">if</span> WASM_ENABLE_LIBC_EMCC != 0</span>
     n_native_symbols = get_libc_emcc_export_apis(&amp;native_symbols);
     <span class="hljs-keyword">if</span> (n_native_symbols &gt; <span class="hljs-number">0</span>
-        &amp;&amp; !wasm_native_register_natives(<span class="hljs-string">"env"</span>,
+        &amp;&amp; !wasm_native_register_natives(<span class="hljs-string">&quot;env&quot;</span>,
                                          native_symbols, n_native_symbols))
         <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span> <span class="hljs-comment">/* WASM_ENABLE_LIBC_EMCC */</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span> <span class="hljs-comment">/* WASM_ENABLE_LIBC_EMCC */</span></span>
 
     <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
-}</code></pre><h3 class=""><code>register_natives</code></h3><p>Regestered functions are organized as a linked list, each module holds several functions imported from a specific library:</p><pre class="c hljs"><code><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">NativeSymbolsNode</span> {</span>
+}</code></pre><h3 class=""><code>register_natives</code></h3><p>Regestered functions are organized as a linked list, each module holds several functions imported from a specific library:</p><pre class="hljs"><code class="c hljs"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">NativeSymbolsNode</span> {</span>
     <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">NativeSymbolsNode</span> *<span class="hljs-title">next</span>;</span>
-    <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *module_name;
+    <span class="hljs-type">const</span> <span class="hljs-type">char</span> *module_name;
     NativeSymbol *native_symbols;
     uint32 n_native_symbols;
-    <span class="hljs-keyword">bool</span> call_conv_raw;
-} NativeSymbolsNode, *NativeSymbolsList;</code></pre><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">bool</span>
-<span class="hljs-title">register_natives</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span> *module_name,
+    <span class="hljs-type">bool</span> call_conv_raw;
+} NativeSymbolsNode, *NativeSymbolsList;</code></pre><pre class="hljs"><code class="c hljs"><span class="hljs-type">static</span> <span class="hljs-type">bool</span>
+<span class="hljs-title function_">register_natives</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span> *module_name,
                  NativeSymbol *native_symbols,
                  uint32 n_native_symbols,
-                 <span class="hljs-keyword">bool</span> call_conv_raw)</span>
-</span>{
+                 <span class="hljs-type">bool</span> call_conv_raw)</span>
+{
     NativeSymbolsNode *node;
-<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> ENABLE_SORT_DEBUG != 0</span>
+<span class="hljs-meta">#<span class="hljs-keyword">if</span> ENABLE_SORT_DEBUG != 0</span>
     <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">timeval</span> <span class="hljs-title">start</span>;</span>
     <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">timeval</span> <span class="hljs-title">end</span>;</span>
-    <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> timer;
-<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+    <span class="hljs-type">unsigned</span> <span class="hljs-type">long</span> timer;
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span>
 
     <span class="hljs-keyword">if</span> (!(node = wasm_runtime_malloc(<span class="hljs-keyword">sizeof</span>(NativeSymbolsNode))))
         <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MEMORY_TRACING != 0</span>
-    os_printf(<span class="hljs-string">"Register native, size: %u\n"</span>, <span class="hljs-keyword">sizeof</span>(NativeSymbolsNode));
-<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">if</span> WASM_ENABLE_MEMORY_TRACING != 0</span>
+    os_printf(<span class="hljs-string">&quot;Register native, size: %u\n&quot;</span>, <span class="hljs-keyword">sizeof</span>(NativeSymbolsNode));
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span>
 
     node-&gt;module_name = module_name;
     node-&gt;native_symbols = native_symbols;
@@ -128,31 +131,26 @@
     node-&gt;next = g_native_symbols_list;
     g_native_symbols_list = node;
 
-<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> ENABLE_SORT_DEBUG != 0</span>
+<span class="hljs-meta">#<span class="hljs-keyword">if</span> ENABLE_SORT_DEBUG != 0</span>
     gettimeofday(&amp;start, <span class="hljs-literal">NULL</span>);
-<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span>
 
-<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> ENABLE_QUICKSORT == 0</span>
+<span class="hljs-meta">#<span class="hljs-keyword">if</span> ENABLE_QUICKSORT == 0</span>
     sort_symbol_ptr(native_symbols, n_native_symbols);
-<span class="hljs-meta">#<span class="hljs-meta-keyword">else</span></span>
-    quick_sort_symbols(native_symbols, <span class="hljs-number">0</span>, (<span class="hljs-keyword">int</span>)(n_native_symbols - <span class="hljs-number">1</span>));
-<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">else</span></span>
+    quick_sort_symbols(native_symbols, <span class="hljs-number">0</span>, (<span class="hljs-type">int</span>)(n_native_symbols - <span class="hljs-number">1</span>));
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span>
 
-<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> ENABLE_SORT_DEBUG != 0</span>
-    gettimeofday(&amp;<span class="hljs-built_in">end</span>, <span class="hljs-literal">NULL</span>);
-    timer = <span class="hljs-number">1000000</span> * (<span class="hljs-built_in">end</span>.tv_sec - start.tv_sec)
-            + (<span class="hljs-built_in">end</span>.tv_usec - start.tv_usec);
-    LOG_ERROR(<span class="hljs-string">"module_name: %s, nums: %d, sorted used: %ld us"</span>,
+<span class="hljs-meta">#<span class="hljs-keyword">if</span> ENABLE_SORT_DEBUG != 0</span>
+    gettimeofday(&amp;end, <span class="hljs-literal">NULL</span>);
+    timer = <span class="hljs-number">1000000</span> * (end.tv_sec - start.tv_sec)
+            + (end.tv_usec - start.tv_usec);
+    LOG_ERROR(<span class="hljs-string">&quot;module_name: %s, nums: %d, sorted used: %ld us&quot;</span>,
               module_name, n_native_symbols, timer);
-<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span>
     <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
 }</code></pre></div>
-
-<div class="tc-tiddler-plugin-info tc-reveal"><p>
-</p></div>
-</div>
-
-</p>
+</div></p>
 </section>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="generator" content="TiddlyWiki" />
-<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="tiddlywiki-version" content="5.2.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -11,27 +11,30 @@
 <meta name="format-detection" content="telephone=no">
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
 <link rel="stylesheet" href="static.css">
-<title>SDK_PF_Flush: ya0guang's notebook — Personality Backup</title>
+<title>SDK_PF_Flush: ya0guang's notebook
+
+— Personality Backup
+</title>
 </head>
 <body class="tc-body">
 
 <section class="tc-story-river tc-static-story-river">
-<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Artifact tc-tagged-SGX tc-tagged-Analysis" data-tags="Artifact SGX Analysis" data-tiddler-title="SDK_PF_Flush"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">SDK_PF_Flush</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Artifact tc-tagged-SGX tc-tagged-Analysis" data-tags="Artifact SGX Analysis" data-tiddler-title="SDK_PF_Flush"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><span class="tc-tiddler-title-icon" style="fill:;"></span><h2 class="tc-title">SDK_PF_Flush</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
 <div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>April 9, 2021 at 11:03 am</div></div><div class=" tc-reveal">
-<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Analysis">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 Analysis
 </span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Artifact">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 Artifact
 </span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="SGX">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 SGX
@@ -39,60 +42,55 @@ SGX
 <span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
 </div>
 
-<div class="tc-tiddler-body tc-reveal"><h1 class="">Steps</h1><ol><li>Write recovery file and set flags if needed</li><li>Update data and mht nodes if needed</li><li>Update meta data node and update flags</li><li>Write data to the disk</li></ol><ul><li>Perform the actual data write in <code>protected_fs_file::write_all_changes_to_disk</code>. </li><li>LRU cache is used here for performance.</li></ul><pre class="cpp hljs"><code><span class="hljs-function"><span class="hljs-keyword">bool</span> <span class="hljs-title">protected_fs_file::internal_flush</span><span class="hljs-params">(<span class="hljs-comment">/*bool mc,*/</span> <span class="hljs-keyword">bool</span> flush_to_disk)</span>
+<div class="tc-tiddler-body tc-reveal"><h1 class="">Steps</h1><ol><li>Write recovery file and set flags if needed</li><li>Update data and mht nodes if needed</li><li>Update meta data node and update flags</li><li>Write data to the disk</li></ol><ul><li>Perform the actual data write in <code>protected_fs_file::write_all_changes_to_disk</code>. </li><li>LRU cache is used here for performance.</li></ul><pre class="hljs"><code class="cpp hljs"><span class="hljs-function"><span class="hljs-type">bool</span> <span class="hljs-title">protected_fs_file::internal_flush</span><span class="hljs-params">(<span class="hljs-comment">/*bool mc,*/</span> <span class="hljs-type">bool</span> flush_to_disk)</span>
 </span>{
-    <span class="hljs-keyword">if</span> (need_writing == <span class="hljs-literal">false</span>) <span class="hljs-comment">// no changes at all</span>
-        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+	<span class="hljs-keyword">if</span> (need_writing == <span class="hljs-literal">false</span>) <span class="hljs-comment">// no changes at all</span>
+		<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
 
-    <span class="hljs-keyword">if</span> (encrypted_part_plain.size &gt; MD_USER_DATA_SIZE &amp;&amp; root_mht.need_writing == <span class="hljs-literal">true</span>) <span class="hljs-comment">// otherwise it's just one write - the meta-data node</span>
-    {
-        <span class="hljs-keyword">if</span> (_RECOVERY_HOOK_(<span class="hljs-number">0</span>) || write_recovery_file() != <span class="hljs-literal">true</span>)
-        {
-            file_status = SGX_FILE_STATUS_FLUSH_ERROR;
-            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-        }
+	<span class="hljs-keyword">if</span> (encrypted_part_plain.size &gt; MD_USER_DATA_SIZE &amp;&amp; root_mht.need_writing == <span class="hljs-literal">true</span>) <span class="hljs-comment">// otherwise it&#x27;s just one write - the meta-data node</span>
+	{
+		<span class="hljs-keyword">if</span> (_RECOVERY_HOOK_(<span class="hljs-number">0</span>) || <span class="hljs-built_in">write_recovery_file</span>() != <span class="hljs-literal">true</span>)
+		{
+			file_status = SGX_FILE_STATUS_FLUSH_ERROR;
+			<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+		}
 
-        <span class="hljs-keyword">if</span> (_RECOVERY_HOOK_(<span class="hljs-number">1</span>) || set_update_flag(flush_to_disk) != <span class="hljs-literal">true</span>)
-        {
-            file_status = SGX_FILE_STATUS_FLUSH_ERROR;
-            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-        }
+		<span class="hljs-keyword">if</span> (_RECOVERY_HOOK_(<span class="hljs-number">1</span>) || <span class="hljs-built_in">set_update_flag</span>(flush_to_disk) != <span class="hljs-literal">true</span>)
+		{
+			file_status = SGX_FILE_STATUS_FLUSH_ERROR;
+			<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+		}
 
-        <span class="hljs-keyword">if</span> (_RECOVERY_HOOK_(<span class="hljs-number">2</span>) || update_all_data_and_mht_nodes() != <span class="hljs-literal">true</span>)
-        {
-            clear_update_flag();
-            file_status = SGX_FILE_STATUS_CRYPTO_ERROR; <span class="hljs-comment">// this is something that shouldn't happen, can't fix this...</span>
-            <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-        }
-    }
+		<span class="hljs-keyword">if</span> (_RECOVERY_HOOK_(<span class="hljs-number">2</span>) || <span class="hljs-built_in">update_all_data_and_mht_nodes</span>() != <span class="hljs-literal">true</span>)
+		{
+			<span class="hljs-built_in">clear_update_flag</span>();
+			file_status = SGX_FILE_STATUS_CRYPTO_ERROR; <span class="hljs-comment">// this is something that shouldn&#x27;t happen, can&#x27;t fix this...</span>
+			<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+		}
+	}
 
-    <span class="hljs-keyword">if</span> (_RECOVERY_HOOK_(<span class="hljs-number">3</span>) || update_meta_data_node() != <span class="hljs-literal">true</span>)
-    {
-        clear_update_flag();
-        file_status = SGX_FILE_STATUS_CRYPTO_ERROR; <span class="hljs-comment">// this is something that shouldn't happen, can't fix this...</span>
-        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-    }
+	<span class="hljs-keyword">if</span> (_RECOVERY_HOOK_(<span class="hljs-number">3</span>) || <span class="hljs-built_in">update_meta_data_node</span>() != <span class="hljs-literal">true</span>)
+	{
+		<span class="hljs-built_in">clear_update_flag</span>();
+		file_status = SGX_FILE_STATUS_CRYPTO_ERROR; <span class="hljs-comment">// this is something that shouldn&#x27;t happen, can&#x27;t fix this...</span>
+		<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+	}
 
-    <span class="hljs-keyword">if</span> (_RECOVERY_HOOK_(<span class="hljs-number">4</span>) || write_all_changes_to_disk(flush_to_disk) != <span class="hljs-literal">true</span>)
-    {
-        <span class="hljs-comment">//if (mc == false)</span>
-            file_status = SGX_FILE_STATUS_WRITE_TO_DISK_FAILED; <span class="hljs-comment">// special case, need only to repeat write_all_changes_to_disk in order to repair it</span>
-        <span class="hljs-comment">//else</span>
-            <span class="hljs-comment">//file_status = SGX_FILE_STATUS_WRITE_TO_DISK_FAILED_NEED_MC; // special case, need to repeat write_all_changes_to_disk AND increase the monotonic counter in order to repair it</span>
+	<span class="hljs-keyword">if</span> (_RECOVERY_HOOK_(<span class="hljs-number">4</span>) || <span class="hljs-built_in">write_all_changes_to_disk</span>(flush_to_disk) != <span class="hljs-literal">true</span>)
+	{
+		<span class="hljs-comment">//if (mc == false)</span>
+			file_status = SGX_FILE_STATUS_WRITE_TO_DISK_FAILED; <span class="hljs-comment">// special case, need only to repeat write_all_changes_to_disk in order to repair it</span>
+		<span class="hljs-comment">//else</span>
+			<span class="hljs-comment">//file_status = SGX_FILE_STATUS_WRITE_TO_DISK_FAILED_NEED_MC; // special case, need to repeat write_all_changes_to_disk AND increase the monotonic counter in order to repair it</span>
 
-        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-    }
+		<span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
+	}
 
-    need_writing = <span class="hljs-literal">false</span>;
+	need_writing = <span class="hljs-literal">false</span>;
 
-    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
+	<span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
 }</code></pre></div>
-
-<div class="tc-tiddler-plugin-info tc-reveal"><p>
-</p></div>
-</div>
-
-</p>
+</div></p>
 </section>
 </body>
 </html>

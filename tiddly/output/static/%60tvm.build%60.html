@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="generator" content="TiddlyWiki" />
-<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="tiddlywiki-version" content="5.2.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -11,15 +11,18 @@
 <meta name="format-detection" content="telephone=no">
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
 <link rel="stylesheet" href="static.css">
-<title>`tvm.build`: ya0guang's notebook — Personality Backup</title>
+<title>`tvm.build`: ya0guang's notebook
+
+— Personality Backup
+</title>
 </head>
 <body class="tc-body">
 
 <section class="tc-story-river tc-static-story-river">
-<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-SourceCode" data-tags="SourceCode" data-tiddler-title="`tvm.build`"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">`tvm.build`</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-SourceCode" data-tags="SourceCode" data-tiddler-title="`tvm.build`"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><span class="tc-tiddler-title-icon" style="fill:;"></span><h2 class="tc-title">`tvm.build`</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
 <div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>July 22, 2021 at 3:25 pm</div></div><div class=" tc-reveal">
-<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="SourceCode">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 SourceCode
@@ -27,15 +30,15 @@ SourceCode
 <span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
 </div>
 
-<div class="tc-tiddler-body tc-reveal"><pre class="py hljs"><code><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">build</span><span class="hljs-params">(
-    inputs: Union[schedule.Schedule, PrimFunc, IRModule, Mapping[str, IRModule]],
-    args: Optional[List[Union[Buffer, tensor.Tensor, Var]]] = None,
-    target: Optional[Union[str, Target]] = None,
-    target_host: Optional[Union[str, Target]] = None,
-    name: Optional[str] = <span class="hljs-string">"default_function"</span>,
-    binds: Optional[Mapping[tensor.Tensor, Buffer]] = None,
-)</span>:</span>
-    <span class="hljs-string">"""Build a function with arguments as signature. Code will be generated
+<div class="tc-tiddler-body tc-reveal"><pre class="hljs"><code class="py hljs"><span class="hljs-keyword">def</span> <span class="hljs-title function_">build</span>(<span class="hljs-params">
+    inputs: <span class="hljs-type">Union</span>[schedule.Schedule, PrimFunc, IRModule, Mapping[<span class="hljs-built_in">str</span>, IRModule]],
+    args: <span class="hljs-type">Optional</span>[<span class="hljs-type">List</span>[<span class="hljs-type">Union</span>[Buffer, tensor.Tensor, Var]]] = <span class="hljs-literal">None</span>,
+    target: <span class="hljs-type">Optional</span>[<span class="hljs-type">Union</span>[<span class="hljs-built_in">str</span>, Target]] = <span class="hljs-literal">None</span>,
+    target_host: <span class="hljs-type">Optional</span>[<span class="hljs-type">Union</span>[<span class="hljs-built_in">str</span>, Target]] = <span class="hljs-literal">None</span>,
+    name: <span class="hljs-type">Optional</span>[<span class="hljs-built_in">str</span>] = <span class="hljs-string">&quot;default_function&quot;</span>,
+    binds: <span class="hljs-type">Optional</span>[Mapping[tensor.Tensor, Buffer]] = <span class="hljs-literal">None</span>,
+</span>):
+    <span class="hljs-string">&quot;&quot;&quot;Build a function with arguments as signature. Code will be generated
     for devices coupled with target information.
 
     Parameters
@@ -79,61 +82,61 @@ SourceCode
     .. code-block:: python
 
         n = 2
-        A = te.placeholder((n,), name='A')
-        B = te.placeholder((n,), name='B')
-        C = te.compute(A.shape, lambda *i: A(*i) + B(*i), name='C')
+        A = te.placeholder((n,), name=&#x27;A&#x27;)
+        B = te.placeholder((n,), name=&#x27;B&#x27;)
+        C = te.compute(A.shape, lambda *i: A(*i) + B(*i), name=&#x27;C&#x27;)
         s = tvm.te.create_schedule(C.op)
-        m = tvm.lower(s, [A, B, C], name="test_add")
-        rt_mod = tvm.build(m, target="llvm")
+        m = tvm.lower(s, [A, B, C], name=&quot;test_add&quot;)
+        rt_mod = tvm.build(m, target=&quot;llvm&quot;)
 
     2. it is a dict of compilation target to IRModule.
 
     .. code-block:: python
 
         n = 2
-        A = te.placeholder((n,), name='A')
-        B = te.placeholder((n,), name='B')
-        C = te.compute(A.shape, lambda *i: A(*i) + B(*i), name='C')
+        A = te.placeholder((n,), name=&#x27;A&#x27;)
+        B = te.placeholder((n,), name=&#x27;B&#x27;)
+        C = te.compute(A.shape, lambda *i: A(*i) + B(*i), name=&#x27;C&#x27;)
         s1 = tvm.te.create_schedule(C.op)
         with tvm.target.cuda() as cuda_tgt:
           s2 = topi.cuda.schedule_injective(cuda_tgt, [C])
-          m1 = tvm.lower(s1, [A, B, C], name="test_add1")
-          m2 = tvm.lower(s2, [A, B, C], name="test_add2")
-          rt_mod = tvm.build({"llvm": m1, "cuda": m2}, target_host="llvm")
+          m1 = tvm.lower(s1, [A, B, C], name=&quot;test_add1&quot;)
+          m2 = tvm.lower(s2, [A, B, C], name=&quot;test_add2&quot;)
+          rt_mod = tvm.build({&quot;llvm&quot;: m1, &quot;cuda&quot;: m2}, target_host=&quot;llvm&quot;)
 
     Note
     ----
     See the note on :any:`tvm.target` on target string format.
-    """</span>
-    <span class="hljs-keyword">if</span> isinstance(inputs, schedule.Schedule):
+    &quot;&quot;&quot;</span>
+    <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(inputs, schedule.Schedule):
         <span class="hljs-keyword">if</span> args <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:
-            <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">"args must be given for build from schedule"</span>)
+            <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;args must be given for build from schedule&quot;</span>)
         input_mod = lower(inputs, args, name=name, binds=binds)
-    <span class="hljs-keyword">elif</span> isinstance(inputs, (list, tuple, container.Array)):
+    <span class="hljs-keyword">elif</span> <span class="hljs-built_in">isinstance</span>(inputs, (<span class="hljs-built_in">list</span>, <span class="hljs-built_in">tuple</span>, container.Array)):
         merged_mod = tvm.IRModule({})
         <span class="hljs-keyword">for</span> x <span class="hljs-keyword">in</span> inputs:
             merged_mod.update(lower(x))
         input_mod = merged_mod
-    <span class="hljs-keyword">elif</span> isinstance(inputs, (tvm.IRModule, PrimFunc)):
+    <span class="hljs-keyword">elif</span> <span class="hljs-built_in">isinstance</span>(inputs, (tvm.IRModule, PrimFunc)):
         input_mod = lower(inputs)
-    <span class="hljs-keyword">elif</span> <span class="hljs-keyword">not</span> isinstance(inputs, (dict, container.Map)):
+    <span class="hljs-keyword">elif</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(inputs, (<span class="hljs-built_in">dict</span>, container.Map)):
         <span class="hljs-keyword">raise</span> ValueError(
-            <span class="hljs-string">f"Inputs must be Schedule, IRModule or dict of target to IRModule, "</span>
-            <span class="hljs-string">f"but got <span class="hljs-subst">{type(inputs)}</span>."</span>
+            <span class="hljs-string">f&quot;Inputs must be Schedule, IRModule or dict of target to IRModule, &quot;</span>
+            <span class="hljs-string">f&quot;but got <span class="hljs-subst">{<span class="hljs-built_in">type</span>(inputs)}</span>.&quot;</span>
         )
 
-    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> isinstance(inputs, (dict, container.Map)):
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(inputs, (<span class="hljs-built_in">dict</span>, container.Map)):
         target = Target.current() <span class="hljs-keyword">if</span> target <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">else</span> target
-        target = target <span class="hljs-keyword">if</span> target <span class="hljs-keyword">else</span> <span class="hljs-string">"llvm"</span>
+        target = target <span class="hljs-keyword">if</span> target <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;llvm&quot;</span>
         target_input_mod = {target: input_mod}
     <span class="hljs-keyword">else</span>:
         target_input_mod = inputs
 
     <span class="hljs-keyword">for</span> tar, mod <span class="hljs-keyword">in</span> target_input_mod.items():
-        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> isinstance(tar, (str, Target)):
-            <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">"The key of inputs must be str or "</span> <span class="hljs-string">"Target when inputs is dict."</span>)
-        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> isinstance(mod, tvm.IRModule):
-            <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">"inputs must be Schedule, IRModule,"</span> <span class="hljs-string">"or dict of str to IRModule."</span>)
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(tar, (<span class="hljs-built_in">str</span>, Target)):
+            <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;The key of inputs must be str or &quot;</span> <span class="hljs-string">&quot;Target when inputs is dict.&quot;</span>)
+        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(mod, tvm.IRModule):
+            <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;inputs must be Schedule, IRModule,&quot;</span> <span class="hljs-string">&quot;or dict of str to IRModule.&quot;</span>)
 
     target_input_mod, target_host = Target.check_and_update_host_consist(
         target_input_mod, target_host
@@ -147,7 +150,7 @@ SourceCode
                 target_host = tar
                 <span class="hljs-keyword">break</span>
     <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> target_host:
-        target_host = <span class="hljs-string">"llvm"</span> <span class="hljs-keyword">if</span> tvm.runtime.enabled(<span class="hljs-string">"llvm"</span>) <span class="hljs-keyword">else</span> <span class="hljs-string">"stackvm"</span>
+        target_host = <span class="hljs-string">&quot;llvm&quot;</span> <span class="hljs-keyword">if</span> tvm.runtime.enabled(<span class="hljs-string">&quot;llvm&quot;</span>) <span class="hljs-keyword">else</span> <span class="hljs-string">&quot;stackvm&quot;</span>
 
     target_input_mod, target_host = Target.check_and_update_host_consist(
         target_input_mod, target_host
@@ -169,33 +172,28 @@ SourceCode
         <span class="hljs-keyword">if</span> mdev:
             rt_mod_host.import_module(mdev)
 
-    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> isinstance(target_host, Target):
+    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">isinstance</span>(target_host, Target):
         target_host = Target(target_host)
     <span class="hljs-keyword">if</span> (
-        target_host.attrs.get(<span class="hljs-string">"runtime"</span>, tvm.runtime.String(<span class="hljs-string">"c++"</span>)) == <span class="hljs-string">"c"</span>
-        <span class="hljs-keyword">and</span> target_host.attrs.get(<span class="hljs-string">"system-lib"</span>, <span class="hljs-number">0</span>) == <span class="hljs-number">1</span>
+        target_host.attrs.get(<span class="hljs-string">&quot;runtime&quot;</span>, tvm.runtime.String(<span class="hljs-string">&quot;c++&quot;</span>)) == <span class="hljs-string">&quot;c&quot;</span>
+        <span class="hljs-keyword">and</span> target_host.attrs.get(<span class="hljs-string">&quot;system-lib&quot;</span>, <span class="hljs-number">0</span>) == <span class="hljs-number">1</span>
     ):
-        <span class="hljs-keyword">if</span> target_host.kind.name == <span class="hljs-string">"c"</span>:
+        <span class="hljs-keyword">if</span> target_host.kind.name == <span class="hljs-string">&quot;c&quot;</span>:
             create_csource_crt_metadata_module = tvm._ffi.get_global_func(
-                <span class="hljs-string">"runtime.CreateCSourceCrtMetadataModule"</span>
+                <span class="hljs-string">&quot;runtime.CreateCSourceCrtMetadataModule&quot;</span>
             )
             to_return = create_csource_crt_metadata_module([rt_mod_host], target_host)
 
-        <span class="hljs-keyword">elif</span> target_host.kind.name == <span class="hljs-string">"llvm"</span>:
+        <span class="hljs-keyword">elif</span> target_host.kind.name == <span class="hljs-string">&quot;llvm&quot;</span>:
             create_llvm_crt_metadata_module = tvm._ffi.get_global_func(
-                <span class="hljs-string">"runtime.CreateLLVMCrtMetadataModule"</span>
+                <span class="hljs-string">&quot;runtime.CreateLLVMCrtMetadataModule&quot;</span>
             )
             to_return = create_llvm_crt_metadata_module([rt_mod_host], target_host)
     <span class="hljs-keyword">else</span>:
         to_return = rt_mod_host
 
     <span class="hljs-keyword">return</span> OperatorModule.from_module(to_return, ir_module_by_target=target_input_mod, name=name)</code></pre></div>
-
-<div class="tc-tiddler-plugin-info tc-reveal"><p>
-</p></div>
-</div>
-
-</p>
+</div></p>
 </section>
 </body>
 </html>

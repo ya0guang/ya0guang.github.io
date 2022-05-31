@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="generator" content="TiddlyWiki" />
-<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="tiddlywiki-version" content="5.2.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -11,27 +11,30 @@
 <meta name="format-detection" content="telephone=no">
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
 <link rel="stylesheet" href="static.css">
-<title>SDK_PF_New: ya0guang's notebook — Personality Backup</title>
+<title>SDK_PF_New: ya0guang's notebook
+
+— Personality Backup
+</title>
 </head>
 <body class="tc-body">
 
 <section class="tc-story-river tc-static-story-river">
-<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-SGX tc-tagged-Analysis tc-tagged-Artifact" data-tags="SGX Analysis Artifact" data-tiddler-title="SDK_PF_New"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">SDK_PF_New</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-SGX tc-tagged-Analysis tc-tagged-Artifact" data-tags="SGX Analysis Artifact" data-tiddler-title="SDK_PF_New"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><span class="tc-tiddler-title-icon" style="fill:;"></span><h2 class="tc-title">SDK_PF_New</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
 <div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>April 8, 2021 at 11:45 am</div></div><div class=" tc-reveal">
-<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Analysis">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 Analysis
 </span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Artifact">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 Artifact
 </span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="SGX">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 SGX
@@ -39,190 +42,185 @@ SGX
 <span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
 </div>
 
-<div class="tc-tiddler-body tc-reveal"><h1 class="">Construction function</h1><ol><li>check key validity</li><li>create report</li><li>check if file exist</li><li>open file </li><li>check if it's a valid SGX SDK PF (by size)</li></ol><p><a class="tc-tiddlylink-external" href="https://github.com/intel/linux-sgx/blob/master/sdk/protected_fs/sgx_tprotected_fs/file_init.cpp" rel="noopener noreferrer" target="_blank">https://github.com/intel/linux-sgx/blob/master/sdk/protected_fs/sgx_tprotected_fs/file_init.cpp</a></p><pre class="c hljs"><code>protected_fs_file::protected_fs_file(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* filename, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* mode, <span class="hljs-keyword">const</span> <span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span>* import_key, <span class="hljs-keyword">const</span> <span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span>* kdk_key)
+<div class="tc-tiddler-body tc-reveal"><h1 class="">Construction function</h1><ol><li>check key validity</li><li>create report</li><li>check if file exist</li><li>open file </li><li>check if it's a valid SGX SDK PF (by size)</li></ol><p><a class="tc-tiddlylink-external" href="https://github.com/intel/linux-sgx/blob/master/sdk/protected_fs/sgx_tprotected_fs/file_init.cpp" rel="noopener noreferrer" target="_blank">https://github.com/intel/linux-sgx/blob/master/sdk/protected_fs/sgx_tprotected_fs/file_init.cpp</a></p><pre class="hljs"><code class="c hljs">protected_fs_file::protected_fs_file(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* filename, <span class="hljs-type">const</span> <span class="hljs-type">char</span>* mode, <span class="hljs-type">const</span> <span class="hljs-type">sgx_aes_gcm_128bit_key_t</span>* import_key, <span class="hljs-type">const</span> <span class="hljs-type">sgx_aes_gcm_128bit_key_t</span>* kdk_key)
 {
-    <span class="hljs-keyword">sgx_status_t</span> status = SGX_SUCCESS;
-    <span class="hljs-keyword">uint8_t</span> result = <span class="hljs-number">0</span>;
-    <span class="hljs-keyword">int32_t</span> result32 = <span class="hljs-number">0</span>;
-    
-    init_fields();
+	<span class="hljs-type">sgx_status_t</span> status = SGX_SUCCESS;
+	<span class="hljs-type">uint8_t</span> result = <span class="hljs-number">0</span>;
+	<span class="hljs-type">int32_t</span> result32 = <span class="hljs-number">0</span>;
+	
+	init_fields();
 
-    <span class="hljs-keyword">if</span> (filename == <span class="hljs-literal">NULL</span> || mode == <span class="hljs-literal">NULL</span> || 
-        strnlen(filename, <span class="hljs-number">1</span>) == <span class="hljs-number">0</span> || strnlen(mode, <span class="hljs-number">1</span>) == <span class="hljs-number">0</span>)
-    {
-        last_error = EINVAL;
-        <span class="hljs-keyword">return</span>;
-    }
+	<span class="hljs-keyword">if</span> (filename == <span class="hljs-literal">NULL</span> || mode == <span class="hljs-literal">NULL</span> || 
+		strnlen(filename, <span class="hljs-number">1</span>) == <span class="hljs-number">0</span> || strnlen(mode, <span class="hljs-number">1</span>) == <span class="hljs-number">0</span>)
+	{
+		last_error = EINVAL;
+		<span class="hljs-keyword">return</span>;
+	}
 
-    <span class="hljs-keyword">if</span> (strnlen(filename, FULLNAME_MAX_LEN) &gt;= FULLNAME_MAX_LEN - <span class="hljs-number">1</span>)
-    {
-        last_error = ENAMETOOLONG;
-        <span class="hljs-keyword">return</span>;
-    }
+	<span class="hljs-keyword">if</span> (strnlen(filename, FULLNAME_MAX_LEN) &gt;= FULLNAME_MAX_LEN - <span class="hljs-number">1</span>)
+	{
+		last_error = ENAMETOOLONG;
+		<span class="hljs-keyword">return</span>;
+	}
 
-    <span class="hljs-keyword">if</span> (import_key != <span class="hljs-literal">NULL</span> &amp;&amp; kdk_key != <span class="hljs-literal">NULL</span>)
-    {<span class="hljs-comment">// import key is used only with auto generated keys</span>
-        last_error = EINVAL;
-        <span class="hljs-keyword">return</span>;
-    }
+	<span class="hljs-keyword">if</span> (import_key != <span class="hljs-literal">NULL</span> &amp;&amp; kdk_key != <span class="hljs-literal">NULL</span>)
+	{<span class="hljs-comment">// import key is used only with auto generated keys</span>
+		last_error = EINVAL;
+		<span class="hljs-keyword">return</span>;
+	}
 
-    status = sgx_create_report(<span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, &amp;report);
-    <span class="hljs-keyword">if</span> (status != SGX_SUCCESS)
-    {
-        last_error = status;
-        <span class="hljs-keyword">return</span>;
-    }
+	status = sgx_create_report(<span class="hljs-literal">NULL</span>, <span class="hljs-literal">NULL</span>, &amp;report);
+	<span class="hljs-keyword">if</span> (status != SGX_SUCCESS)
+	{
+		last_error = status;
+		<span class="hljs-keyword">return</span>;
+	}
 
-    result32 = sgx_thread_mutex_init(&amp;mutex, <span class="hljs-literal">NULL</span>);
-    <span class="hljs-keyword">if</span> (result32 != <span class="hljs-number">0</span>)
-    {
-        last_error = result32;
-        <span class="hljs-keyword">return</span>;
-    }
+	result32 = sgx_thread_mutex_init(&amp;mutex, <span class="hljs-literal">NULL</span>);
+	<span class="hljs-keyword">if</span> (result32 != <span class="hljs-number">0</span>)
+	{
+		last_error = result32;
+		<span class="hljs-keyword">return</span>;
+	}
 
-    <span class="hljs-keyword">if</span> (init_session_master_key() == <span class="hljs-literal">false</span>) 
-        <span class="hljs-comment">// last_error already set</span>
-        <span class="hljs-keyword">return</span>;
+	<span class="hljs-keyword">if</span> (init_session_master_key() == <span class="hljs-literal">false</span>) 
+		<span class="hljs-comment">// last_error already set</span>
+		<span class="hljs-keyword">return</span>;
 
-    <span class="hljs-keyword">if</span> (kdk_key != <span class="hljs-literal">NULL</span>)
-    {
-        <span class="hljs-comment">// for new file, this value will later be saved in the meta data plain part (init_new_file)</span>
-        <span class="hljs-comment">// for existing file, we will later compare this value with the value from the file (init_existing_file)</span>
-        use_user_kdk_key = <span class="hljs-number">1</span>; 
-        <span class="hljs-built_in">memcpy</span>(user_kdk_key, kdk_key, <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span>));
-    }
-    
-    <span class="hljs-comment">// get the clean file name (original name might be clean or with relative path or with absolute path...)</span>
-    <span class="hljs-keyword">char</span> clean_filename[FILENAME_MAX_LEN];
-    <span class="hljs-keyword">if</span> (cleanup_filename(filename, clean_filename) == <span class="hljs-literal">false</span>)
-        <span class="hljs-comment">// last_error already set</span>
-        <span class="hljs-keyword">return</span>;
-    
-    <span class="hljs-keyword">if</span> (import_key != <span class="hljs-literal">NULL</span>)
-    {<span class="hljs-comment">// verify the key is not empty - note from SAFE review</span>
-        <span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span> empty_aes_key = {<span class="hljs-number">0</span>};
-        <span class="hljs-keyword">if</span> (consttime_memequal(import_key, &amp;empty_aes_key, <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span>)) == <span class="hljs-number">1</span>)
-        {
-            last_error = EINVAL;
-            <span class="hljs-keyword">return</span>;
-        }
-    }
+	<span class="hljs-keyword">if</span> (kdk_key != <span class="hljs-literal">NULL</span>)
+	{
+		<span class="hljs-comment">// for new file, this value will later be saved in the meta data plain part (init_new_file)</span>
+		<span class="hljs-comment">// for existing file, we will later compare this value with the value from the file (init_existing_file)</span>
+		use_user_kdk_key = <span class="hljs-number">1</span>; 
+		<span class="hljs-built_in">memcpy</span>(user_kdk_key, kdk_key, <span class="hljs-keyword">sizeof</span>(<span class="hljs-type">sgx_aes_gcm_128bit_key_t</span>));
+	}
+	
+	<span class="hljs-comment">// get the clean file name (original name might be clean or with relative path or with absolute path...)</span>
+	<span class="hljs-type">char</span> clean_filename[FILENAME_MAX_LEN];
+	<span class="hljs-keyword">if</span> (cleanup_filename(filename, clean_filename) == <span class="hljs-literal">false</span>)
+		<span class="hljs-comment">// last_error already set</span>
+		<span class="hljs-keyword">return</span>;
+	
+	<span class="hljs-keyword">if</span> (import_key != <span class="hljs-literal">NULL</span>)
+	{<span class="hljs-comment">// verify the key is not empty - note from SAFE review</span>
+		<span class="hljs-type">sgx_aes_gcm_128bit_key_t</span> empty_aes_key = {<span class="hljs-number">0</span>};
+		<span class="hljs-keyword">if</span> (consttime_memequal(import_key, &amp;empty_aes_key, <span class="hljs-keyword">sizeof</span>(<span class="hljs-type">sgx_aes_gcm_128bit_key_t</span>)) == <span class="hljs-number">1</span>)
+		{
+			last_error = EINVAL;
+			<span class="hljs-keyword">return</span>;
+		}
+	}
 
-    <span class="hljs-keyword">if</span> (parse_mode(mode) == <span class="hljs-literal">false</span>)
-    {
-        last_error = EINVAL;
-        <span class="hljs-keyword">return</span>;
-    }
+	<span class="hljs-keyword">if</span> (parse_mode(mode) == <span class="hljs-literal">false</span>)
+	{
+		last_error = EINVAL;
+		<span class="hljs-keyword">return</span>;
+	}
 
-    status = u_sgxprotectedfs_check_if_file_exists(&amp;result, filename); <span class="hljs-comment">// if result == 1 --&gt; file exists</span>
-    <span class="hljs-keyword">if</span> (status != SGX_SUCCESS)
-    {
-        last_error = status;
-        <span class="hljs-keyword">return</span>;
-    }
+	status = u_sgxprotectedfs_check_if_file_exists(&amp;result, filename); <span class="hljs-comment">// if result == 1 --&gt; file exists</span>
+	<span class="hljs-keyword">if</span> (status != SGX_SUCCESS)
+	{
+		last_error = status;
+		<span class="hljs-keyword">return</span>;
+	}
 
-    <span class="hljs-keyword">if</span> (open_mode.<span class="hljs-built_in">write</span> == <span class="hljs-number">1</span> &amp;&amp; result == <span class="hljs-number">1</span>)
-    {<span class="hljs-comment">// try to delete existing file</span>
-        <span class="hljs-keyword">int32_t</span> saved_errno = <span class="hljs-number">0</span>;
+	<span class="hljs-keyword">if</span> (open_mode.write == <span class="hljs-number">1</span> &amp;&amp; result == <span class="hljs-number">1</span>)
+	{<span class="hljs-comment">// try to delete existing file</span>
+		<span class="hljs-type">int32_t</span> saved_errno = <span class="hljs-number">0</span>;
 
-        result32 = <span class="hljs-built_in">remove</span>(filename);
-        <span class="hljs-keyword">if</span> (result32 != <span class="hljs-number">0</span>)
-        {
-            <span class="hljs-comment">// either can't delete or the file was already deleted by someone else</span>
-            saved_errno = errno;
-            errno = <span class="hljs-number">0</span>;
-        }
+		result32 = remove(filename);
+		<span class="hljs-keyword">if</span> (result32 != <span class="hljs-number">0</span>)
+		{
+			<span class="hljs-comment">// either can&#x27;t delete or the file was already deleted by someone else</span>
+			saved_errno = errno;
+			errno = <span class="hljs-number">0</span>;
+		}
 
-        <span class="hljs-comment">// re-check</span>
-        status = u_sgxprotectedfs_check_if_file_exists(&amp;result, filename);
-        <span class="hljs-keyword">if</span> (status != SGX_SUCCESS || result == <span class="hljs-number">1</span>)
-        {
-            last_error = (status != SGX_SUCCESS) ? status :
-                         (saved_errno != <span class="hljs-number">0</span>) ? saved_errno : EACCES;
-            <span class="hljs-keyword">return</span>;
-        }
-    }
+		<span class="hljs-comment">// re-check</span>
+		status = u_sgxprotectedfs_check_if_file_exists(&amp;result, filename);
+		<span class="hljs-keyword">if</span> (status != SGX_SUCCESS || result == <span class="hljs-number">1</span>)
+		{
+			last_error = (status != SGX_SUCCESS) ? status :
+						 (saved_errno != <span class="hljs-number">0</span>) ? saved_errno : EACCES;
+			<span class="hljs-keyword">return</span>;
+		}
+	}
 
-    <span class="hljs-keyword">if</span> (open_mode.<span class="hljs-built_in">read</span> == <span class="hljs-number">1</span> &amp;&amp; result == <span class="hljs-number">0</span>)
-    {<span class="hljs-comment">// file must exists</span>
-        last_error = ENOENT;
-        <span class="hljs-keyword">return</span>;
-    }
+	<span class="hljs-keyword">if</span> (open_mode.read == <span class="hljs-number">1</span> &amp;&amp; result == <span class="hljs-number">0</span>)
+	{<span class="hljs-comment">// file must exists</span>
+		last_error = ENOENT;
+		<span class="hljs-keyword">return</span>;
+	}
 
-    <span class="hljs-keyword">if</span> (import_key != <span class="hljs-literal">NULL</span> &amp;&amp; result == <span class="hljs-number">0</span>)
-    {<span class="hljs-comment">// file must exists - otherwise the user key is not used</span>
-        last_error = ENOENT;
-        <span class="hljs-keyword">return</span>;
-    }
+	<span class="hljs-keyword">if</span> (import_key != <span class="hljs-literal">NULL</span> &amp;&amp; result == <span class="hljs-number">0</span>)
+	{<span class="hljs-comment">// file must exists - otherwise the user key is not used</span>
+		last_error = ENOENT;
+		<span class="hljs-keyword">return</span>;
+	}
 
-    <span class="hljs-comment">// now open the file</span>
-    read_only = (open_mode.<span class="hljs-built_in">read</span> == <span class="hljs-number">1</span> &amp;&amp; open_mode.update == <span class="hljs-number">0</span>); <span class="hljs-comment">// read only files can be opened simultaneously by many enclaves</span>
+	<span class="hljs-comment">// now open the file</span>
+	read_only = (open_mode.read == <span class="hljs-number">1</span> &amp;&amp; open_mode.update == <span class="hljs-number">0</span>); <span class="hljs-comment">// read only files can be opened simultaneously by many enclaves</span>
 
-    <span class="hljs-keyword">do</span> {
-        status = u_sgxprotectedfs_exclusive_file_open(&amp;file, filename, read_only, &amp;real_file_size, &amp;result32);
-        <span class="hljs-keyword">if</span> (status != SGX_SUCCESS || file == <span class="hljs-literal">NULL</span>)
-        {
-            last_error = (status != SGX_SUCCESS) ? status :
-                         (result32 != <span class="hljs-number">0</span>) ? result32 : EACCES;
-            <span class="hljs-keyword">break</span>;
-        }
+	<span class="hljs-keyword">do</span> {
+		status = u_sgxprotectedfs_exclusive_file_open(&amp;file, filename, read_only, &amp;real_file_size, &amp;result32);
+		<span class="hljs-keyword">if</span> (status != SGX_SUCCESS || file == <span class="hljs-literal">NULL</span>)
+		{
+			last_error = (status != SGX_SUCCESS) ? status :
+					     (result32 != <span class="hljs-number">0</span>) ? result32 : EACCES;
+			<span class="hljs-keyword">break</span>;
+		}
 
-        <span class="hljs-keyword">if</span> (real_file_size &lt; <span class="hljs-number">0</span>)
-        {
-            last_error = EINVAL;
-            <span class="hljs-keyword">break</span>;
-        }
+		<span class="hljs-keyword">if</span> (real_file_size &lt; <span class="hljs-number">0</span>)
+		{
+			last_error = EINVAL;
+			<span class="hljs-keyword">break</span>;
+		}
 
-        <span class="hljs-keyword">if</span> (real_file_size % NODE_SIZE != <span class="hljs-number">0</span>)
-        {
-            last_error = SGX_ERROR_FILE_NOT_SGX_FILE;
-            <span class="hljs-keyword">break</span>;
-        }
-        
-        <span class="hljs-built_in">strncpy</span>(recovery_filename, filename, FULLNAME_MAX_LEN - <span class="hljs-number">1</span>); <span class="hljs-comment">// copy full file name</span>
-        recovery_filename[FULLNAME_MAX_LEN - <span class="hljs-number">1</span>] = <span class="hljs-string">'\0'</span>; <span class="hljs-comment">// just to be safe</span>
-        <span class="hljs-keyword">size_t</span> full_name_len = strnlen(recovery_filename, RECOVERY_FILE_MAX_LEN);
-        <span class="hljs-built_in">strncpy</span>(&amp;recovery_filename[full_name_len], <span class="hljs-string">"_recovery"</span>, <span class="hljs-number">10</span>);
+		<span class="hljs-keyword">if</span> (real_file_size % NODE_SIZE != <span class="hljs-number">0</span>)
+		{
+			last_error = SGX_ERROR_FILE_NOT_SGX_FILE;
+			<span class="hljs-keyword">break</span>;
+		}
+		
+		<span class="hljs-built_in">strncpy</span>(recovery_filename, filename, FULLNAME_MAX_LEN - <span class="hljs-number">1</span>); <span class="hljs-comment">// copy full file name</span>
+		recovery_filename[FULLNAME_MAX_LEN - <span class="hljs-number">1</span>] = <span class="hljs-string">&#x27;\0&#x27;</span>; <span class="hljs-comment">// just to be safe</span>
+		<span class="hljs-type">size_t</span> full_name_len = strnlen(recovery_filename, RECOVERY_FILE_MAX_LEN);
+		<span class="hljs-built_in">strncpy</span>(&amp;recovery_filename[full_name_len], <span class="hljs-string">&quot;_recovery&quot;</span>, <span class="hljs-number">10</span>);
 
-        <span class="hljs-keyword">if</span> (real_file_size &gt; <span class="hljs-number">0</span>)
-        {<span class="hljs-comment">// existing file</span>
-            <span class="hljs-keyword">if</span> (open_mode.<span class="hljs-built_in">write</span> == <span class="hljs-number">1</span>) <span class="hljs-comment">// redundant check, just in case</span>
-            {
-                last_error = EACCES;
-                <span class="hljs-keyword">break</span>;
-            }
+		<span class="hljs-keyword">if</span> (real_file_size &gt; <span class="hljs-number">0</span>)
+		{<span class="hljs-comment">// existing file</span>
+			<span class="hljs-keyword">if</span> (open_mode.write == <span class="hljs-number">1</span>) <span class="hljs-comment">// redundant check, just in case</span>
+			{
+				last_error = EACCES;
+				<span class="hljs-keyword">break</span>;
+			}
 
-            <span class="hljs-keyword">if</span> (init_existing_file(filename, clean_filename, import_key) == <span class="hljs-literal">false</span>)
-                <span class="hljs-keyword">break</span>;
-                
-            <span class="hljs-keyword">if</span> (open_mode.append == <span class="hljs-number">1</span> &amp;&amp; open_mode.update == <span class="hljs-number">0</span>)
-                offset = encrypted_part_plain.<span class="hljs-built_in">size</span>;
-        }
-        <span class="hljs-keyword">else</span>
-        {<span class="hljs-comment">// new file</span>
-            <span class="hljs-keyword">if</span> (init_new_file(clean_filename) == <span class="hljs-literal">false</span>)
-                <span class="hljs-keyword">break</span>;
-        }
+			<span class="hljs-keyword">if</span> (init_existing_file(filename, clean_filename, import_key) == <span class="hljs-literal">false</span>)
+				<span class="hljs-keyword">break</span>;
+				
+			<span class="hljs-keyword">if</span> (open_mode.append == <span class="hljs-number">1</span> &amp;&amp; open_mode.update == <span class="hljs-number">0</span>)
+				offset = encrypted_part_plain.size;
+		}
+		<span class="hljs-keyword">else</span>
+		{<span class="hljs-comment">// new file</span>
+			<span class="hljs-keyword">if</span> (init_new_file(clean_filename) == <span class="hljs-literal">false</span>)
+				<span class="hljs-keyword">break</span>;
+		}
 
-        file_status = SGX_FILE_STATUS_OK;
+		file_status = SGX_FILE_STATUS_OK;
 
-    } <span class="hljs-keyword">while</span>(<span class="hljs-number">0</span>);
+	} <span class="hljs-keyword">while</span>(<span class="hljs-number">0</span>);
 
-    <span class="hljs-keyword">if</span> (file_status != SGX_FILE_STATUS_OK)
-    {
-        <span class="hljs-keyword">if</span> (file != <span class="hljs-literal">NULL</span>)
-        {
-            u_sgxprotectedfs_fclose(&amp;result32, file); <span class="hljs-comment">// we don't care about the result</span>
-            file = <span class="hljs-literal">NULL</span>;
-        }
-    }
+	<span class="hljs-keyword">if</span> (file_status != SGX_FILE_STATUS_OK)
+	{
+		<span class="hljs-keyword">if</span> (file != <span class="hljs-literal">NULL</span>)
+		{
+			u_sgxprotectedfs_fclose(&amp;result32, file); <span class="hljs-comment">// we don&#x27;t care about the result</span>
+			file = <span class="hljs-literal">NULL</span>;
+		}
+	}
 }</code></pre></div>
-
-<div class="tc-tiddler-plugin-info tc-reveal"><p>
-</p></div>
-</div>
-
-</p>
+</div></p>
 </section>
 </body>
 </html>

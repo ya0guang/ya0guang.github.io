@@ -1,0 +1,18 @@
+created: 20220510015709685
+modified: 20220530021709788
+tags: Paper Research
+title: The Most Common Habits from more than 200 English Papers written by Graduate Chinese Engineering Students
+type: text/vnd.tiddlywiki
+
+[[Paper|https://www.chrisyttang.org/assets/misc/The%20Most%20Common%20Habits%20from%20more%20than%20200%20English%20Papers%20written.pdf]]
+
+This paper lists some common mistakes of Chinese-English technical papers.
+
+Some mistakes made by me:
+
+* How to use a, an, and the?
+* Sentences should not begin with numbers (e.g., 1) or "how".
+* Very long sentence! (>60 words)
+* Using inline symbols (e.g., >)
+* Placing the most important things at the beginning!
+* Format (taken care by latex)

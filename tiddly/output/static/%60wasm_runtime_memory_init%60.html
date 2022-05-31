@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="generator" content="TiddlyWiki" />
-<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="tiddlywiki-version" content="5.2.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -11,27 +11,30 @@
 <meta name="format-detection" content="telephone=no">
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
 <link rel="stylesheet" href="static.css">
-<title>`wasm_runtime_memory_init`: ya0guang's notebook — Personality Backup</title>
+<title>`wasm_runtime_memory_init`: ya0guang's notebook
+
+— Personality Backup
+</title>
 </head>
 <body class="tc-body">
 
 <section class="tc-story-river tc-static-story-river">
-<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Analysis tc-tagged-Artifact tc-tagged-WASM" data-tags="Analysis Artifact WASM" data-tiddler-title="`wasm_runtime_memory_init`"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">`wasm_runtime_memory_init`</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Analysis tc-tagged-Artifact tc-tagged-WASM" data-tags="Analysis Artifact WASM" data-tiddler-title="`wasm_runtime_memory_init`"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><span class="tc-tiddler-title-icon" style="fill:;"></span><h2 class="tc-title">`wasm_runtime_memory_init`</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
 <div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>July 15, 2021 at 10:05 am</div></div><div class=" tc-reveal">
-<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Analysis">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 Analysis
 </span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Artifact">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 Artifact
 </span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="WASM">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 WASM
@@ -39,9 +42,9 @@ WASM
 <span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
 </div>
 
-<div class="tc-tiddler-body tc-reveal"><pre class="c hljs"><code>wasm_memory_init_with_pool(<span class="hljs-keyword">void</span> *mem, <span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> bytes)
+<div class="tc-tiddler-body tc-reveal"><pre class="hljs"><code class="c hljs">wasm_memory_init_with_pool(<span class="hljs-type">void</span> *mem, <span class="hljs-type">unsigned</span> <span class="hljs-type">int</span> bytes)
 {
-    <span class="hljs-keyword">mem_allocator_t</span> _allocator = mem_allocator_create(mem, bytes);
+    <span class="hljs-type">mem_allocator_t</span> _allocator = mem_allocator_create(mem, bytes);
 
     <span class="hljs-keyword">if</span> (_allocator) {
         memory_mode = MEMORY_MODE_POOL;
@@ -49,60 +52,60 @@ WASM
         global_pool_size = bytes;
         <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;
     }
-    LOG_ERROR(<span class="hljs-string">"Init memory with pool (%p, %u) failed.\n"</span>, mem, bytes);
+    LOG_ERROR(<span class="hljs-string">&quot;Init memory with pool (%p, %u) failed.\n&quot;</span>, mem, bytes);
     <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;
-}</code></pre><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">mem_allocator_t</span> <span class="hljs-title">mem_allocator_create</span><span class="hljs-params">(<span class="hljs-keyword">void</span> *mem, <span class="hljs-keyword">uint32_t</span> <span class="hljs-built_in">size</span>)</span>
-</span>{
-    <span class="hljs-keyword">return</span> gc_init_with_pool((<span class="hljs-keyword">char</span> *) mem, <span class="hljs-built_in">size</span>);
-}</code></pre><h2 class=""><code>gc_init_with_pool</code></h2><p>The previous function invokes this one:</p><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">gc_handle_t</span>
-<span class="hljs-title">gc_init_with_pool</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *buf, <span class="hljs-keyword">gc_size_t</span> buf_size)</span>
-</span>{
-    <span class="hljs-keyword">char</span> *buf_end = buf + buf_size;
-    <span class="hljs-keyword">char</span> *buf_aligned = (<span class="hljs-keyword">char</span>*)(((<span class="hljs-keyword">uintptr_t</span>) buf + <span class="hljs-number">7</span>) &amp; (<span class="hljs-keyword">uintptr_t</span>)~<span class="hljs-number">7</span>);
-    <span class="hljs-keyword">char</span> *base_addr = buf_aligned + <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">gc_heap_t</span>);
-    <span class="hljs-keyword">gc_heap_t</span> *heap = (<span class="hljs-keyword">gc_heap_t</span>*)buf_aligned;
-    <span class="hljs-keyword">gc_size_t</span> heap_max_size;
+}</code></pre><pre class="hljs"><code class="c hljs"><span class="hljs-type">mem_allocator_t</span> <span class="hljs-title function_">mem_allocator_create</span><span class="hljs-params">(<span class="hljs-type">void</span> *mem, <span class="hljs-type">uint32_t</span> size)</span>
+{
+    <span class="hljs-keyword">return</span> gc_init_with_pool((<span class="hljs-type">char</span> *) mem, size);
+}</code></pre><h2 class=""><code>gc_init_with_pool</code></h2><p>The previous function invokes this one:</p><pre class="hljs"><code class="c hljs"><span class="hljs-type">gc_handle_t</span>
+<span class="hljs-title function_">gc_init_with_pool</span><span class="hljs-params">(<span class="hljs-type">char</span> *buf, <span class="hljs-type">gc_size_t</span> buf_size)</span>
+{
+    <span class="hljs-type">char</span> *buf_end = buf + buf_size;
+    <span class="hljs-type">char</span> *buf_aligned = (<span class="hljs-type">char</span>*)(((<span class="hljs-type">uintptr_t</span>) buf + <span class="hljs-number">7</span>) &amp; (<span class="hljs-type">uintptr_t</span>)~<span class="hljs-number">7</span>);
+    <span class="hljs-type">char</span> *base_addr = buf_aligned + <span class="hljs-keyword">sizeof</span>(<span class="hljs-type">gc_heap_t</span>);
+    <span class="hljs-type">gc_heap_t</span> *heap = (<span class="hljs-type">gc_heap_t</span>*)buf_aligned;
+    <span class="hljs-type">gc_size_t</span> heap_max_size;
 
     <span class="hljs-keyword">if</span> (buf_size &lt; APP_HEAP_SIZE_MIN) {
-        os_printf(<span class="hljs-string">"[GC_ERROR]heap init buf size (%u) &lt; %u\n"</span>,
+        os_printf(<span class="hljs-string">&quot;[GC_ERROR]heap init buf size (%u) &lt; %u\n&quot;</span>,
                   buf_size, APP_HEAP_SIZE_MIN);
         <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
     }
 
-    base_addr = (<span class="hljs-keyword">char</span>*) (((<span class="hljs-keyword">uintptr_t</span>) base_addr + <span class="hljs-number">7</span>) &amp; (<span class="hljs-keyword">uintptr_t</span>)~<span class="hljs-number">7</span>) + GC_HEAD_PADDING;
+    base_addr = (<span class="hljs-type">char</span>*) (((<span class="hljs-type">uintptr_t</span>) base_addr + <span class="hljs-number">7</span>) &amp; (<span class="hljs-type">uintptr_t</span>)~<span class="hljs-number">7</span>) + GC_HEAD_PADDING;
     heap_max_size = (uint32)(buf_end - base_addr) &amp; (uint32)~<span class="hljs-number">7</span>;
 
     <span class="hljs-keyword">return</span> gc_init_internal(heap, base_addr, heap_max_size);
-}</code></pre><p>and invokes the internal implementation:</p><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">gc_handle_t</span>
-<span class="hljs-title">gc_init_internal</span><span class="hljs-params">(<span class="hljs-keyword">gc_heap_t</span> *heap, <span class="hljs-keyword">char</span> *base_addr, <span class="hljs-keyword">gc_size_t</span> heap_max_size)</span>
-</span>{
-    <span class="hljs-keyword">hmu_tree_node_t</span> *root = <span class="hljs-literal">NULL</span>, *q = <span class="hljs-literal">NULL</span>;
-    <span class="hljs-keyword">int</span> ret;
+}</code></pre><p>and invokes the internal implementation:</p><pre class="hljs"><code class="c hljs"><span class="hljs-type">static</span> <span class="hljs-type">gc_handle_t</span>
+<span class="hljs-title function_">gc_init_internal</span><span class="hljs-params">(<span class="hljs-type">gc_heap_t</span> *heap, <span class="hljs-type">char</span> *base_addr, <span class="hljs-type">gc_size_t</span> heap_max_size)</span>
+{
+    <span class="hljs-type">hmu_tree_node_t</span> *root = <span class="hljs-literal">NULL</span>, *q = <span class="hljs-literal">NULL</span>;
+    <span class="hljs-type">int</span> ret;
 
     <span class="hljs-built_in">memset</span>(heap, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span> *heap);
     <span class="hljs-built_in">memset</span>(base_addr, <span class="hljs-number">0</span>, heap_max_size);
 
     ret = os_mutex_init(&amp;heap-&gt;lock);
     <span class="hljs-keyword">if</span> (ret != BHT_OK) {
-        os_printf(<span class="hljs-string">"[GC_ERROR]failed to init lock\n"</span>);
+        os_printf(<span class="hljs-string">&quot;[GC_ERROR]failed to init lock\n&quot;</span>);
         <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
     }
 
     <span class="hljs-comment">/* init all data structures*/</span>
     heap-&gt;current_size = heap_max_size;
     heap-&gt;base_addr = (gc_uint8*)base_addr;
-    heap-&gt;heap_id = (<span class="hljs-keyword">gc_handle_t</span>)heap;
+    heap-&gt;heap_id = (<span class="hljs-type">gc_handle_t</span>)heap;
 
     heap-&gt;total_free_size = heap-&gt;current_size;
     heap-&gt;highmark_size = <span class="hljs-number">0</span>;
 
     root = &amp;heap-&gt;kfc_tree_root;
     <span class="hljs-built_in">memset</span>(root, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span> *root);
-    root-&gt;<span class="hljs-built_in">size</span> = <span class="hljs-keyword">sizeof</span> *root;
+    root-&gt;size = <span class="hljs-keyword">sizeof</span> *root;
     hmu_set_ut(&amp;root-&gt;hmu_header, HMU_FC);
     hmu_set_size(&amp;root-&gt;hmu_header, <span class="hljs-keyword">sizeof</span> *root);
 
-    q = (<span class="hljs-keyword">hmu_tree_node_t</span> *) heap-&gt;base_addr;
+    q = (<span class="hljs-type">hmu_tree_node_t</span> *) heap-&gt;base_addr;
     <span class="hljs-built_in">memset</span>(q, <span class="hljs-number">0</span>, <span class="hljs-keyword">sizeof</span> *q);
     hmu_set_ut(&amp;q-&gt;hmu_header, HMU_FC);
     hmu_set_size(&amp;q-&gt;hmu_header, heap-&gt;current_size);
@@ -110,25 +113,20 @@ WASM
     hmu_mark_pinuse(&amp;q-&gt;hmu_header);
     root-&gt;right = q;
     q-&gt;parent = root;
-    q-&gt;<span class="hljs-built_in">size</span> = heap-&gt;current_size;
+    q-&gt;size = heap-&gt;current_size;
 
-    bh_assert(root-&gt;<span class="hljs-built_in">size</span> &lt;= HMU_FC_NORMAL_MAX_SIZE);
+    bh_assert(root-&gt;size &lt;= HMU_FC_NORMAL_MAX_SIZE);
 
-<span class="hljs-meta">#<span class="hljs-meta-keyword">if</span> WASM_ENABLE_MEMORY_TRACING != 0</span>
-    os_printf(<span class="hljs-string">"Heap created, total size: %u\n"</span>, buf_size);
-    os_printf(<span class="hljs-string">"   heap struct size: %u\n"</span>, <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">gc_heap_t</span>));
-    os_printf(<span class="hljs-string">"   actual heap size: %u\n"</span>, heap_max_size);
-    os_printf(<span class="hljs-string">"   padding bytes: %u\n"</span>,
-              buf_size - <span class="hljs-keyword">sizeof</span>(<span class="hljs-keyword">gc_heap_t</span>) - heap_max_size);
-<span class="hljs-meta">#<span class="hljs-meta-keyword">endif</span></span>
+<span class="hljs-meta">#<span class="hljs-keyword">if</span> WASM_ENABLE_MEMORY_TRACING != 0</span>
+    os_printf(<span class="hljs-string">&quot;Heap created, total size: %u\n&quot;</span>, buf_size);
+    os_printf(<span class="hljs-string">&quot;   heap struct size: %u\n&quot;</span>, <span class="hljs-keyword">sizeof</span>(<span class="hljs-type">gc_heap_t</span>));
+    os_printf(<span class="hljs-string">&quot;   actual heap size: %u\n&quot;</span>, heap_max_size);
+    os_printf(<span class="hljs-string">&quot;   padding bytes: %u\n&quot;</span>,
+              buf_size - <span class="hljs-keyword">sizeof</span>(<span class="hljs-type">gc_heap_t</span>) - heap_max_size);
+<span class="hljs-meta">#<span class="hljs-keyword">endif</span></span>
     <span class="hljs-keyword">return</span> heap;
 }</code></pre></div>
-
-<div class="tc-tiddler-plugin-info tc-reveal"><p>
-</p></div>
-</div>
-
-</p>
+</div></p>
 </section>
 </body>
 </html>

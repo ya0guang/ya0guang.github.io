@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="generator" content="TiddlyWiki" />
-<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="tiddlywiki-version" content="5.2.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -11,15 +11,18 @@
 <meta name="format-detection" content="telephone=no">
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
 <link rel="stylesheet" href="static.css">
-<title>LLVMModuleNode::Init: ya0guang's notebook — Personality Backup</title>
+<title>LLVMModuleNode::Init: ya0guang's notebook
+
+— Personality Backup
+</title>
 </head>
 <body class="tc-body">
 
 <section class="tc-story-river tc-static-story-river">
-<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-SourceCode" data-tags="SourceCode" data-tiddler-title="LLVMModuleNode::Init"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">LLVMModuleNode::Init</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-SourceCode" data-tags="SourceCode" data-tiddler-title="LLVMModuleNode::Init"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><span class="tc-tiddler-title-icon" style="fill:;"></span><h2 class="tc-title">LLVMModuleNode::Init</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
 <div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>July 23, 2021 at 12:22 pm</div></div><div class=" tc-reveal">
-<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="SourceCode">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 SourceCode
@@ -27,87 +30,82 @@ SourceCode
 <span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
 </div>
 
-<div class="tc-tiddler-body tc-reveal"><pre class="cc hljs"><code>  <span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Init</span><span class="hljs-params">(<span class="hljs-keyword">const</span> IRModule&amp; mod, <span class="hljs-keyword">const</span> Target&amp; target)</span> </span>{
-    InitializeLLVM();
-    tm_ = GetLLVMTargetMachine(target);
-    <span class="hljs-keyword">bool</span> system_lib = target-&gt;GetAttr&lt;Bool&gt;(<span class="hljs-string">"system-lib"</span>).value_or(Bool(<span class="hljs-literal">false</span>));
-    <span class="hljs-keyword">bool</span> target_c_runtime = (target-&gt;GetAttr&lt;<span class="hljs-keyword">String</span>&gt;(<span class="hljs-string">"runtime"</span>).value_or(<span class="hljs-string">""</span>) == kTvmRuntimeCrt);
-    ctx_ = <span class="hljs-built_in">std</span>::make_shared&lt;llvm::LLVMContext&gt;();
-    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">unique_ptr</span>&lt;CodeGenLLVM&gt; cg = CodeGenLLVM::Create(tm_.<span class="hljs-built_in">get</span>());
+<div class="tc-tiddler-body tc-reveal"><pre class="hljs"><code class="cc hljs">  <span class="hljs-function"><span class="hljs-type">void</span> <span class="hljs-title">Init</span><span class="hljs-params">(<span class="hljs-type">const</span> IRModule&amp; mod, <span class="hljs-type">const</span> Target&amp; target)</span> </span>{
+    <span class="hljs-built_in">InitializeLLVM</span>();
+    tm_ = <span class="hljs-built_in">GetLLVMTargetMachine</span>(target);
+    <span class="hljs-type">bool</span> system_lib = target-&gt;<span class="hljs-built_in">GetAttr</span>&lt;Bool&gt;(<span class="hljs-string">&quot;system-lib&quot;</span>).<span class="hljs-built_in">value_or</span>(<span class="hljs-built_in">Bool</span>(<span class="hljs-literal">false</span>));
+    <span class="hljs-type">bool</span> target_c_runtime = (target-&gt;<span class="hljs-built_in">GetAttr</span>&lt;String&gt;(<span class="hljs-string">&quot;runtime&quot;</span>).<span class="hljs-built_in">value_or</span>(<span class="hljs-string">&quot;&quot;</span>) == kTvmRuntimeCrt);
+    ctx_ = std::<span class="hljs-built_in">make_shared</span>&lt;llvm::LLVMContext&gt;();
+    std::unique_ptr&lt;CodeGenLLVM&gt; cg = CodeGenLLVM::<span class="hljs-built_in">Create</span>(tm_.<span class="hljs-built_in">get</span>());
 
-    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">vector</span>&lt;PrimFunc&gt; funcs;
-    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> entry_func;
-    Map&lt;<span class="hljs-keyword">String</span>, LinkedParam&gt; linked_params;
-    <span class="hljs-keyword">bool</span> found_linked_params = <span class="hljs-literal">false</span>;
-    <span class="hljs-keyword">bool</span> could_have_linked_params = target-&gt;GetAttr&lt;Bool&gt;(<span class="hljs-string">"link-params"</span>).value_or(Bool(<span class="hljs-literal">false</span>));
+    std::vector&lt;PrimFunc&gt; funcs;
+    std::string entry_func;
+    Map&lt;String, LinkedParam&gt; linked_params;
+    <span class="hljs-type">bool</span> found_linked_params = <span class="hljs-literal">false</span>;
+    <span class="hljs-type">bool</span> could_have_linked_params = target-&gt;<span class="hljs-built_in">GetAttr</span>&lt;Bool&gt;(<span class="hljs-string">&quot;link-params&quot;</span>).<span class="hljs-built_in">value_or</span>(<span class="hljs-built_in">Bool</span>(<span class="hljs-literal">false</span>));
     <span class="hljs-keyword">for</span> (<span class="hljs-keyword">auto</span> kv : mod-&gt;functions) {
       <span class="hljs-keyword">if</span> (could_have_linked_params &amp;&amp;
           kv.first-&gt;name_hint == ::tvm::runtime::symbol::tvm_lookup_linked_param) {
-        Map&lt;<span class="hljs-keyword">String</span>, ObjectRef&gt; attrs_dict =
-            Downcast&lt;Map&lt;<span class="hljs-keyword">String</span>, ObjectRef&gt;&gt;(kv.second-&gt;attrs-&gt;dict);
-        CHECK(attrs_dict.<span class="hljs-built_in">find</span>(::tvm::tir::attr::kLinkedParams) != attrs_dict.<span class="hljs-built_in">end</span>())
-            &lt;&lt; <span class="hljs-string">"no "</span> &lt;&lt; ::tvm::tir::attr::kLinkedParams &lt;&lt; <span class="hljs-string">" attribute found!"</span>;
+        Map&lt;String, ObjectRef&gt; attrs_dict =
+            Downcast&lt;Map&lt;String, ObjectRef&gt;&gt;(kv.second-&gt;attrs-&gt;dict);
+        <span class="hljs-built_in">CHECK</span>(attrs_dict.<span class="hljs-built_in">find</span>(::tvm::tir::attr::kLinkedParams) != attrs_dict.<span class="hljs-built_in">end</span>())
+            &lt;&lt; <span class="hljs-string">&quot;no &quot;</span> &lt;&lt; ::tvm::tir::attr::kLinkedParams &lt;&lt; <span class="hljs-string">&quot; attribute found!&quot;</span>;
         linked_params =
-            Downcast&lt;Map&lt;<span class="hljs-keyword">String</span>, LinkedParam&gt;&gt;(attrs_dict[::tvm::tir::attr::kLinkedParams]);
+            Downcast&lt;Map&lt;String, LinkedParam&gt;&gt;(attrs_dict[::tvm::tir::attr::kLinkedParams]);
         found_linked_params = <span class="hljs-literal">true</span>;
         <span class="hljs-keyword">continue</span>;
       }
-      <span class="hljs-keyword">if</span> (!kv.second-&gt;IsInstance&lt;PrimFuncNode&gt;()) {
+      <span class="hljs-keyword">if</span> (!kv.second-&gt;<span class="hljs-built_in">IsInstance</span>&lt;PrimFuncNode&gt;()) {
         <span class="hljs-comment">// (@jroesch): we relax constraints here, Relay functions will just be ignored.</span>
-        DLOG(INFO) &lt;&lt; <span class="hljs-string">"Can only lower IR Module with PrimFuncs, but got "</span>
-                   &lt;&lt; kv.second-&gt;GetTypeKey();
+        <span class="hljs-built_in">DLOG</span>(INFO) &lt;&lt; <span class="hljs-string">&quot;Can only lower IR Module with PrimFuncs, but got &quot;</span>
+                   &lt;&lt; kv.second-&gt;<span class="hljs-built_in">GetTypeKey</span>();
         <span class="hljs-keyword">continue</span>;
       }
-      <span class="hljs-keyword">auto</span> f = Downcast&lt;PrimFunc&gt;(kv.second);
-      <span class="hljs-keyword">auto</span> global_symbol = f-&gt;GetAttr&lt;<span class="hljs-keyword">String</span>&gt;(tvm::attr::kGlobalSymbol);
-      ICHECK(global_symbol.defined());
-      function_names_.push_back(global_symbol.value());
-      <span class="hljs-keyword">if</span> (f-&gt;HasNonzeroAttr(tir::attr::kIsEntryFunc)) {
-        entry_func = global_symbol.value();
+      <span class="hljs-keyword">auto</span> f = <span class="hljs-built_in">Downcast</span>&lt;PrimFunc&gt;(kv.second);
+      <span class="hljs-keyword">auto</span> global_symbol = f-&gt;<span class="hljs-built_in">GetAttr</span>&lt;String&gt;(tvm::attr::kGlobalSymbol);
+      <span class="hljs-built_in">ICHECK</span>(global_symbol.<span class="hljs-built_in">defined</span>());
+      function_names_.<span class="hljs-built_in">push_back</span>(global_symbol.<span class="hljs-built_in">value</span>());
+      <span class="hljs-keyword">if</span> (f-&gt;<span class="hljs-built_in">HasNonzeroAttr</span>(tir::attr::kIsEntryFunc)) {
+        entry_func = global_symbol.<span class="hljs-built_in">value</span>();
       }
-      funcs.push_back(f);
+      funcs.<span class="hljs-built_in">push_back</span>(f);
     }
     <span class="hljs-comment">// TODO(@jroesch): follow up on this condition.</span>
     <span class="hljs-comment">// ICHECK(funcs.size() &gt; 0 || (could_have_linked_params &amp;&amp; found_linked_params));</span>
     <span class="hljs-comment">// TODO(tqchen): remove the entry function behavior as it does not</span>
     <span class="hljs-comment">// makes sense when we start to use multiple modules.</span>
-    cg-&gt;Init(<span class="hljs-string">"TVMMod"</span>, tm_.<span class="hljs-built_in">get</span>(), ctx_.<span class="hljs-built_in">get</span>(), system_lib, system_lib, target_c_runtime);
+    cg-&gt;<span class="hljs-built_in">Init</span>(<span class="hljs-string">&quot;TVMMod&quot;</span>, tm_.<span class="hljs-built_in">get</span>(), ctx_.<span class="hljs-built_in">get</span>(), system_lib, system_lib, target_c_runtime);
 
-    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> <span class="hljs-keyword">auto</span>&amp; f : funcs) {
-      cg-&gt;AddFunction(f);
+    <span class="hljs-keyword">for</span> (<span class="hljs-type">const</span> <span class="hljs-keyword">auto</span>&amp; f : funcs) {
+      cg-&gt;<span class="hljs-built_in">AddFunction</span>(f);
     }
 
-    <span class="hljs-keyword">if</span> (entry_func.length() != <span class="hljs-number">0</span>) {
-      cg-&gt;AddMainFunction(entry_func);
+    <span class="hljs-keyword">if</span> (entry_func.<span class="hljs-built_in">length</span>() != <span class="hljs-number">0</span>) {
+      cg-&gt;<span class="hljs-built_in">AddMainFunction</span>(entry_func);
     }
 
     <span class="hljs-keyword">if</span> (found_linked_params) {
-      cg-&gt;LinkParameters(linked_params);
+      cg-&gt;<span class="hljs-built_in">LinkParameters</span>(linked_params);
     }
-    module_ = cg-&gt;Finish();
-    module_-&gt;addModuleFlag(llvm::Module::Warning, <span class="hljs-string">"tvm_target"</span>,
-                           llvm::MDString::<span class="hljs-built_in">get</span>(*ctx_, LLVMTargetToString(target)));
-    module_-&gt;addModuleFlag(llvm::Module::Override, <span class="hljs-string">"Debug Info Version"</span>,
+    module_ = cg-&gt;<span class="hljs-built_in">Finish</span>();
+    module_-&gt;<span class="hljs-built_in">addModuleFlag</span>(llvm::Module::Warning, <span class="hljs-string">&quot;tvm_target&quot;</span>,
+                           llvm::MDString::<span class="hljs-built_in">get</span>(*ctx_, <span class="hljs-built_in">LLVMTargetToString</span>(target)));
+    module_-&gt;<span class="hljs-built_in">addModuleFlag</span>(llvm::Module::Override, <span class="hljs-string">&quot;Debug Info Version&quot;</span>,
                            llvm::DEBUG_METADATA_VERSION);
 
-    <span class="hljs-keyword">if</span> (tm_-&gt;getTargetTriple().isOSDarwin()) {
-      module_-&gt;addModuleFlag(llvm::Module::Override, <span class="hljs-string">"Dwarf Version"</span>, <span class="hljs-number">2</span>);
+    <span class="hljs-keyword">if</span> (tm_-&gt;<span class="hljs-built_in">getTargetTriple</span>().<span class="hljs-built_in">isOSDarwin</span>()) {
+      module_-&gt;<span class="hljs-built_in">addModuleFlag</span>(llvm::Module::Override, <span class="hljs-string">&quot;Dwarf Version&quot;</span>, <span class="hljs-number">2</span>);
     }
 
-    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">string</span> verify_errors_storage;
+    std::string verify_errors_storage;
     <span class="hljs-function">llvm::raw_string_ostream <span class="hljs-title">verify_errors</span><span class="hljs-params">(verify_errors_storage)</span></span>;
-    LOG_IF(FATAL, llvm::verifyModule(*module_, &amp;verify_errors))
-        &lt;&lt; <span class="hljs-string">"LLVM module verification failed with the following errors: \n"</span>
-        &lt;&lt; verify_errors.str();
+    <span class="hljs-built_in">LOG_IF</span>(FATAL, llvm::<span class="hljs-built_in">verifyModule</span>(*module_, &amp;verify_errors))
+        &lt;&lt; <span class="hljs-string">&quot;LLVM module verification failed with the following errors: \n&quot;</span>
+        &lt;&lt; verify_errors.<span class="hljs-built_in">str</span>();
     target_ = target;
     mptr_ = module_.<span class="hljs-built_in">get</span>();
   }</code></pre></div>
-
-<div class="tc-tiddler-plugin-info tc-reveal"><p>
-</p></div>
-</div>
-
-</p>
+</div></p>
 </section>
 </body>
 </html>

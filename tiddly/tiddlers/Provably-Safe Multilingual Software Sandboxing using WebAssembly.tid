@@ -1,5 +1,32 @@
 created: 20220429170022356
-modified: 20220429170029989
-tags: Paper TODO
+modified: 20220530021637777
+tags: Paper System Security PL
 title: Provably-Safe Multilingual Software Sandboxing using WebAssembly
 type: text/vnd.tiddlywiki
+
+[[Paper|https://www.usenix.org/conference/usenixsecurity22/presentation/bosamiya]]
+[[Code|https://github.com/secure-foundations/provably-safe-sandboxing-wasm-usenix22]]
+
+! Abstract
+
+Many applications, from the Web to smart contracts, need to safely execute untrusted code. We observe that WebAssembly (Wasm) is ideally positioned to support such applications, since it promises safety and performance, while serving as a compiler target for many high-level languages. However, Wasm's safety guarantees are only as strong as the implementation that enforces them. Hence, we explore two distinct approaches to producing provably sandboxed Wasm code. One draws on traditional formal methods to produce mathematical, machine-checked proofs of safety. The second carefully embeds Wasm semantics in safe Rust code such that the Rust compiler can emit safe executable code with good performance. Our implementation and evaluation of these two techniques indicate that leveraging Wasm gives us provably-safe multilingual sandboxing with performance comparable to standard, unsafe approaches.
+
+! Methodology
+
+Two methods for securely hosting WASM code are proposed:
+
+!! [[vWASM|https://github.com/secure-foundations/vWasm/tree/main]]
+
+Verified sandbox: proven in F*, based on a x64 machine model
+
+!! [[rWASM|https://github.com/secure-foundations/rWasm/tree/main]]
+
+Translate WASM to Rust and using Rust compiler to compile it.
+Since Rust is designed to be a memory-safe language, the compiled binary should also be safe is no `unsafe` code is introduced.
+
+! Insights
+
+Building the model for machine and verifying some properties take a lot of effort! Their proof is written in F*, which leverage Z3 for automatic proving at its backend. Therefor it might be a little bit easier to use than Coq. But induction (so do inductive prove) is way more complex in F*, and programmer won't know "why" something cannot be proven when Z3 fails.
+
+Translating WASM to Rust seems like a stupid operation. However, the performance is better when compared to vWASM. Using Rust to make potentially insecure code secure seems like a viable solution.
+But will there be bugs? In other words, how to maintain semantics? Logic bugs might be introduced if semantics are not consistent.

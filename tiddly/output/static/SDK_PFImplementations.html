@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="generator" content="TiddlyWiki" />
-<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="tiddlywiki-version" content="5.2.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -11,27 +11,30 @@
 <meta name="format-detection" content="telephone=no">
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
 <link rel="stylesheet" href="static.css">
-<title>SDK_PFImplementations: ya0guang's notebook — Personality Backup</title>
+<title>SDK_PFImplementations: ya0guang's notebook
+
+— Personality Backup
+</title>
 </head>
 <body class="tc-body">
 
 <section class="tc-story-river tc-static-story-river">
-<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Analysis tc-tagged-SGX tc-tagged-Artifact" data-tags="Analysis SGX Artifact" data-tiddler-title="SDK_PFImplementations"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">SDK_PFImplementations</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Analysis tc-tagged-SGX tc-tagged-Artifact" data-tags="Analysis SGX Artifact" data-tiddler-title="SDK_PFImplementations"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><span class="tc-tiddler-title-icon" style="fill:;"></span><h2 class="tc-title">SDK_PFImplementations</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
 <div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>April 9, 2021 at 11:03 am</div></div><div class=" tc-reveal">
-<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Analysis">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 Analysis
 </span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Artifact">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 Artifact
 </span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="SGX">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 SGX
@@ -39,67 +42,62 @@ SGX
 <span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
 </div>
 
-<div class="tc-tiddler-body tc-reveal"><p>The implementations are in <a class="tc-tiddlylink-external" href="https://github.com/intel/linux-sgx/tree/master/sdk/protected_fs/sgx_tprotected_fs" rel="noopener noreferrer" target="_blank">https://github.com/intel/linux-sgx/tree/master/sdk/protected_fs/sgx_tprotected_fs</a>.</p><h1 class="">High Level Organization</h1><p>Protected files are objects in SGX SDK's implementation. The opened PFs contains important fields like key, report and file pointer received from the OS. Data in the file is maintained as Merkle Hash Tree Nodes, and each node contains node number and encrypted/decrypted data in its struct. Besides, metadata is also stored in a meta node, which includes MAC, key, file id and version info about CPU/ISV/PF. The encryption scheme is <strong>rijndael 128 GCM</strong> (AES 128 GCM) algorithm. To ensure PF operations are atomic, it also recruits mutex mechanism.</p><p>All the internal interfaces in the enclave relies on the untrusted code to perform file operations by OS. Those interfaces are in <a class="tc-tiddlylink-external" href="https://github.com/intel/linux-sgx/tree/master/sdk/protected_fs/sgx_uprotected_fs" rel="noopener noreferrer" target="_blank">https://github.com/intel/linux-sgx/tree/master/sdk/protected_fs/sgx_uprotected_fs</a>, and are of less interest.</p><h2 class="">Encryption</h2><pre class="cpp hljs"><code><span class="hljs-function"><span class="hljs-keyword">sgx_status_t</span> <span class="hljs-title">sgx_rijndael128GCM_encrypt</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span> *p_key, <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *p_src, <span class="hljs-keyword">uint32_t</span> src_len,  <span class="hljs-keyword">uint8_t</span> *p_dst, <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *p_iv, <span class="hljs-keyword">uint32_t</span> iv_len, <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *p_aad, <span class="hljs-keyword">uint32_t</span> aad_len,  <span class="hljs-keyword">sgx_aes_gcm_128bit_tag_t</span> *p_out_mac)</span></span></code></pre><h2 class="">Decryption</h2><pre class="cpp hljs"><code><span class="hljs-function"><span class="hljs-keyword">sgx_status_t</span> <span class="hljs-title">sgx_rijndael128GCM_decrypt</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">sgx_aes_gcm_128bit_key_t</span> *p_key, <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *p_src, <span class="hljs-keyword">uint32_t</span> src_len, <span class="hljs-keyword">uint8_t</span> *p_dst, <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *p_iv, <span class="hljs-keyword">uint32_t</span> iv_len, <span class="hljs-keyword">const</span> <span class="hljs-keyword">uint8_t</span> *p_aad, <span class="hljs-keyword">uint32_t</span> aad_len, <span class="hljs-keyword">const</span> <span class="hljs-keyword">sgx_aes_gcm_128bit_tag_t</span> *p_in_mac)</span></span></code></pre><h1 class="">See also:</h1><p><a class="tc-tiddlylink tc-tiddlylink-resolves" href="SDK_PF_New.html">SDK_PF_New</a> (<code>protected_fs_file::protected_fs_file</code>)</p><h1 class="">SDK_ProtectedFileClass</h1><p><a class="tc-tiddlylink tc-tiddlylink-resolves" href="SGX_PF_Class.html">SGX_PF_Class</a></p><h2 class="">Internal APIs</h2><h2 class="">Open</h2><ol><li>new <code>protected_fs_file</code> (<a class="tc-tiddlylink tc-tiddlylink-resolves" href="SDK_PF_New.html">SDK_PF_New</a>)</li><li>if no error, return handle</li></ol><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">static</span> SGX_FILE* <span class="hljs-title">sgx_fopen_internal</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* filename, <span class="hljs-keyword">const</span> <span class="hljs-keyword">char</span>* mode, <span class="hljs-keyword">const</span> <span class="hljs-keyword">sgx_key_128bit_t</span> *auto_key, <span class="hljs-keyword">const</span> <span class="hljs-keyword">sgx_key_128bit_t</span> *kdk_key)</span>
+<div class="tc-tiddler-body tc-reveal"><p>The implementations are in <a class="tc-tiddlylink-external" href="https://github.com/intel/linux-sgx/tree/master/sdk/protected_fs/sgx_tprotected_fs" rel="noopener noreferrer" target="_blank">https://github.com/intel/linux-sgx/tree/master/sdk/protected_fs/sgx_tprotected_fs</a>.</p><h1 class="">High Level Organization</h1><p>Protected files are objects in SGX SDK's implementation. The opened PFs contains important fields like key, report and file pointer received from the OS. Data in the file is maintained as Merkle Hash Tree Nodes, and each node contains node number and encrypted/decrypted data in its struct. Besides, metadata is also stored in a meta node, which includes MAC, key, file id and version info about CPU/ISV/PF. The encryption scheme is <strong>rijndael 128 GCM</strong> (AES 128 GCM) algorithm. To ensure PF operations are atomic, it also recruits mutex mechanism.</p><p>All the internal interfaces in the enclave relies on the untrusted code to perform file operations by OS. Those interfaces are in <a class="tc-tiddlylink-external" href="https://github.com/intel/linux-sgx/tree/master/sdk/protected_fs/sgx_uprotected_fs" rel="noopener noreferrer" target="_blank">https://github.com/intel/linux-sgx/tree/master/sdk/protected_fs/sgx_uprotected_fs</a>, and are of less interest.</p><h2 class="">Encryption</h2><pre class="hljs"><code class="cpp hljs"><span class="hljs-function"><span class="hljs-type">sgx_status_t</span> <span class="hljs-title">sgx_rijndael128GCM_encrypt</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">sgx_aes_gcm_128bit_key_t</span> *p_key, <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *p_src, <span class="hljs-type">uint32_t</span> src_len,  <span class="hljs-type">uint8_t</span> *p_dst, <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *p_iv, <span class="hljs-type">uint32_t</span> iv_len, <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *p_aad, <span class="hljs-type">uint32_t</span> aad_len,  <span class="hljs-type">sgx_aes_gcm_128bit_tag_t</span> *p_out_mac)</span></span></code></pre><h2 class="">Decryption</h2><pre class="hljs"><code class="cpp hljs"><span class="hljs-function"><span class="hljs-type">sgx_status_t</span> <span class="hljs-title">sgx_rijndael128GCM_decrypt</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">sgx_aes_gcm_128bit_key_t</span> *p_key, <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *p_src, <span class="hljs-type">uint32_t</span> src_len, <span class="hljs-type">uint8_t</span> *p_dst, <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *p_iv, <span class="hljs-type">uint32_t</span> iv_len, <span class="hljs-type">const</span> <span class="hljs-type">uint8_t</span> *p_aad, <span class="hljs-type">uint32_t</span> aad_len, <span class="hljs-type">const</span> <span class="hljs-type">sgx_aes_gcm_128bit_tag_t</span> *p_in_mac)</span></span></code></pre><h1 class="">See also:</h1><p><a class="tc-tiddlylink tc-tiddlylink-resolves" href="SDK_PF_New.html">SDK_PF_New</a> (<code>protected_fs_file::protected_fs_file</code>)</p><h1 class="">SDK_ProtectedFileClass</h1><p><a class="tc-tiddlylink tc-tiddlylink-resolves" href="SGX_PF_Class.html">SGX_PF_Class</a></p><h2 class="">Internal APIs</h2><h2 class="">Open</h2><ol><li>new <code>protected_fs_file</code> (<a class="tc-tiddlylink tc-tiddlylink-resolves" href="SDK_PF_New.html">SDK_PF_New</a>)</li><li>if no error, return handle</li></ol><pre class="hljs"><code class="c hljs"><span class="hljs-type">static</span> SGX_FILE* <span class="hljs-title function_">sgx_fopen_internal</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* filename, <span class="hljs-type">const</span> <span class="hljs-type">char</span>* mode, <span class="hljs-type">const</span> <span class="hljs-type">sgx_key_128bit_t</span> *auto_key, <span class="hljs-type">const</span> <span class="hljs-type">sgx_key_128bit_t</span> *kdk_key)</span>
+{
+	protected_fs_file* file = <span class="hljs-literal">NULL</span>;
+
+	<span class="hljs-keyword">if</span> (filename == <span class="hljs-literal">NULL</span> || mode == <span class="hljs-literal">NULL</span>)
+	{
+		errno = EINVAL;
+		<span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+	}
+
+	try {
+		file = new protected_fs_file(filename, mode, auto_key, kdk_key);
+	}
+	catch (<span class="hljs-built_in">std</span>::bad_alloc&amp; e) {
+		(<span class="hljs-type">void</span>)e; <span class="hljs-comment">// remove warning</span>
+		errno = ENOMEM;
+		<span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
+	}
+
+	<span class="hljs-keyword">if</span> (file-&gt;get_error() != SGX_FILE_STATUS_OK)
+	{
+		errno = file-&gt;get_error();
+		delete file;
+		file = <span class="hljs-literal">NULL</span>;
+	}
+
+	<span class="hljs-keyword">return</span> (SGX_FILE*)file;
+}</code></pre><h2 class="">Write</h2><pre class="hljs"><code class="c hljs"><span class="hljs-type">size_t</span> <span class="hljs-title function_">sgx_fwrite</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">void</span>* ptr, <span class="hljs-type">size_t</span> size, <span class="hljs-type">size_t</span> count, SGX_FILE* stream)</span>
+{
+	<span class="hljs-keyword">if</span> (ptr == <span class="hljs-literal">NULL</span> || stream == <span class="hljs-literal">NULL</span> || size == <span class="hljs-number">0</span> || count == <span class="hljs-number">0</span>)
+		<span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+
+	protected_fs_file* file = (protected_fs_file*)stream;
+
+	<span class="hljs-keyword">return</span> file-&gt;write(ptr, size, count);
+}</code></pre><p><a class="tc-tiddlylink tc-tiddlylink-resolves" href="SDK_PF_Write.html">Write in PF Class</a></p><h2 class="">Close</h2><pre class="hljs"><code class="cpp hljs"><span class="hljs-function"><span class="hljs-type">int32_t</span> <span class="hljs-title">sgx_fclose</span><span class="hljs-params">(SGX_FILE* stream)</span>
 </span>{
-    protected_fs_file* file = <span class="hljs-literal">NULL</span>;
-
-    <span class="hljs-keyword">if</span> (filename == <span class="hljs-literal">NULL</span> || mode == <span class="hljs-literal">NULL</span>)
-    {
-        errno = EINVAL;
-        <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
-    }
-
-    <span class="hljs-keyword">try</span> {
-        file = <span class="hljs-keyword">new</span> protected_fs_file(filename, mode, auto_key, kdk_key);
-    }
-    <span class="hljs-keyword">catch</span> (<span class="hljs-built_in">std</span>::bad_alloc&amp; e) {
-        (<span class="hljs-keyword">void</span>)e; <span class="hljs-comment">// remove warning</span>
-        errno = ENOMEM;
-        <span class="hljs-keyword">return</span> <span class="hljs-literal">NULL</span>;
-    }
-
-    <span class="hljs-keyword">if</span> (file-&gt;get_error() != SGX_FILE_STATUS_OK)
-    {
-        errno = file-&gt;get_error();
-        <span class="hljs-keyword">delete</span> file;
-        file = <span class="hljs-literal">NULL</span>;
-    }
-
-    <span class="hljs-keyword">return</span> (SGX_FILE*)file;
-}</code></pre><h2 class="">Write</h2><pre class="c hljs"><code><span class="hljs-function"><span class="hljs-keyword">size_t</span> <span class="hljs-title">sgx_fwrite</span><span class="hljs-params">(<span class="hljs-keyword">const</span> <span class="hljs-keyword">void</span>* ptr, <span class="hljs-keyword">size_t</span> <span class="hljs-built_in">size</span>, <span class="hljs-keyword">size_t</span> count, SGX_FILE* stream)</span>
+	<span class="hljs-keyword">return</span> <span class="hljs-built_in">sgx_fclose_internal</span>(stream, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">false</span>);
+}</code></pre><pre class="hljs"><code class="cpp hljs">
+<span class="hljs-function"><span class="hljs-type">static</span> <span class="hljs-type">int32_t</span> <span class="hljs-title">sgx_fclose_internal</span><span class="hljs-params">(SGX_FILE* stream, <span class="hljs-type">sgx_key_128bit_t</span> *key, <span class="hljs-type">bool</span> <span class="hljs-keyword">import</span>)</span>
 </span>{
-    <span class="hljs-keyword">if</span> (ptr == <span class="hljs-literal">NULL</span> || stream == <span class="hljs-literal">NULL</span> || <span class="hljs-built_in">size</span> == <span class="hljs-number">0</span> || count == <span class="hljs-number">0</span>)
-        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+	<span class="hljs-type">int32_t</span> retval = <span class="hljs-number">0</span>;
 
-    protected_fs_file* file = (protected_fs_file*)stream;
+	<span class="hljs-keyword">if</span> (stream == <span class="hljs-literal">NULL</span>)
+		<span class="hljs-keyword">return</span> EOF;
 
-    <span class="hljs-keyword">return</span> file-&gt;<span class="hljs-built_in">write</span>(ptr, <span class="hljs-built_in">size</span>, count);
-}</code></pre><p><a class="tc-tiddlylink tc-tiddlylink-resolves" href="SDK_PF_Write.html">Write in PF Class</a></p><h2 class="">Close</h2><pre class="cpp hljs"><code><span class="hljs-function"><span class="hljs-keyword">int32_t</span> <span class="hljs-title">sgx_fclose</span><span class="hljs-params">(SGX_FILE* stream)</span>
-</span>{
-    <span class="hljs-keyword">return</span> sgx_fclose_internal(stream, <span class="hljs-literal">NULL</span>, <span class="hljs-literal">false</span>);
-}</code></pre><pre class="cpp hljs"><code>
-<span class="hljs-function"><span class="hljs-keyword">static</span> <span class="hljs-keyword">int32_t</span> <span class="hljs-title">sgx_fclose_internal</span><span class="hljs-params">(SGX_FILE* stream, <span class="hljs-keyword">sgx_key_128bit_t</span> *key, <span class="hljs-keyword">bool</span> <span class="hljs-keyword">import</span>)</span>
-</span>{
-    <span class="hljs-keyword">int32_t</span> retval = <span class="hljs-number">0</span>;
+	protected_fs_file* file = (protected_fs_file*)stream;
 
-    <span class="hljs-keyword">if</span> (stream == <span class="hljs-literal">NULL</span>)
-        <span class="hljs-keyword">return</span> EOF;
+	<span class="hljs-keyword">if</span> (file-&gt;<span class="hljs-built_in">pre_close</span>(key, <span class="hljs-keyword">import</span>) == <span class="hljs-literal">false</span>)
+		retval = <span class="hljs-number">1</span>;
 
-    protected_fs_file* file = (protected_fs_file*)stream;
+	<span class="hljs-keyword">delete</span> file;
 
-    <span class="hljs-keyword">if</span> (file-&gt;pre_close(key, <span class="hljs-keyword">import</span>) == <span class="hljs-literal">false</span>)
-        retval = <span class="hljs-number">1</span>;
-
-    <span class="hljs-keyword">delete</span> file;
-
-    <span class="hljs-keyword">return</span> retval;
+	<span class="hljs-keyword">return</span> retval;
 }</code></pre><p><a class="tc-tiddlylink tc-tiddlylink-resolves" href="SDK_PF_Close.html">Close in PF Class</a></p><h2 class="">Flush</h2><p>Flush performs the actual encryption and write. </p><p><a class="tc-tiddlylink tc-tiddlylink-resolves" href="SDK_PF_Flush.html">Flush in PF</a></p></div>
-
-<div class="tc-tiddler-plugin-info tc-reveal"><p>
-</p></div>
-</div>
-
-</p>
+</div></p>
 </section>
 </body>
 </html>

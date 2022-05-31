@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="generator" content="TiddlyWiki" />
-<meta name="tiddlywiki-version" content="5.1.23" />
+<meta name="tiddlywiki-version" content="5.2.2" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -11,27 +11,30 @@
 <meta name="format-detection" content="telephone=no">
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
 <link rel="stylesheet" href="static.css">
-<title>SDK_PF_DataNode: ya0guang's notebook — Personality Backup</title>
+<title>SDK_PF_DataNode: ya0guang's notebook
+
+— Personality Backup
+</title>
 </head>
 <body class="tc-body">
 
 <section class="tc-story-river tc-static-story-river">
-<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Artifact tc-tagged-Analysis tc-tagged-SGX" data-tags="Artifact Analysis SGX" data-tiddler-title="SDK_PF_DataNode"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><span class=" tc-reveal"><button aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal"><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span><span class=" tc-reveal" hidden="true"></span></span><span><h2 class="tc-title">SDK_PF_DataNode</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Artifact tc-tagged-Analysis tc-tagged-SGX" data-tags="Artifact Analysis SGX" data-tiddler-title="SDK_PF_DataNode"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><span class="tc-tiddler-title-icon" style="fill:;"></span><h2 class="tc-title">SDK_PF_DataNode</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
 <div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>April 9, 2021 at 10:05 am</div></div><div class=" tc-reveal">
-<div class="tc-tags-wrapper"><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Analysis">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 Analysis
 </span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Artifact">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 Artifact
 </span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item">
-<span class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="SGX">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
 color:rgb(38, 38, 38);">
 SGX
@@ -39,30 +42,25 @@ SGX
 <span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
 </div>
 
-<div class="tc-tiddler-body tc-reveal"><h1 class="">Struct definition</h1><p><a class="tc-tiddlylink-external" href="https://github.com/intel/linux-sgx/blob/master/sdk/protected_fs/sgx_tprotected_fs/protected_fs_file.h#L94" rel="noopener noreferrer" target="_blank">SDK Code</a></p><pre class="c hljs"><code><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">file_data_node</span>
+<div class="tc-tiddler-body tc-reveal"><h1 class="">Struct definition</h1><p><a class="tc-tiddlylink-external" href="https://github.com/intel/linux-sgx/blob/master/sdk/protected_fs/sgx_tprotected_fs/protected_fs_file.h#L94" rel="noopener noreferrer" target="_blank">SDK Code</a></p><pre class="hljs"><code class="c hljs"><span class="hljs-keyword">typedef</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> _<span class="hljs-title">file_data_node</span>
 {</span>
-    <span class="hljs-comment">/* these are exactly the same as file_mht_node_t above, any change should apply to both (both are saved in the cache as void*) */</span>
-    <span class="hljs-keyword">uint8_t</span> type;
-    <span class="hljs-keyword">uint64_t</span> data_node_number;
-    <span class="hljs-keyword">file_mht_node_t</span>* parent;
-    <span class="hljs-keyword">bool</span> need_writing;
-    <span class="hljs-keyword">bool</span> new_node;
-    <span class="hljs-keyword">union</span> {
-        <span class="hljs-class"><span class="hljs-keyword">struct</span> {</span>
-            <span class="hljs-keyword">uint64_t</span> physical_node_number;
-            <span class="hljs-keyword">encrypted_node_t</span> encrypted; <span class="hljs-comment">// the actual data from the disk</span>
-        };
-        <span class="hljs-keyword">recovery_node_t</span> recovery_node;
-    };
-    <span class="hljs-comment">/* from here the structures are different */</span>
-    <span class="hljs-keyword">data_node_t</span> plain; <span class="hljs-comment">// decrypted data</span>
-} <span class="hljs-keyword">file_data_node_t</span>;</code></pre><p>This struct is nearly the same as <code>file_mht_node_t</code>, it seems like these are duplicated but working code.</p></div>
-
-<div class="tc-tiddler-plugin-info tc-reveal"><p>
-</p></div>
-</div>
-
-</p>
+	<span class="hljs-comment">/* these are exactly the same as file_mht_node_t above, any change should apply to both (both are saved in the cache as void*) */</span>
+	<span class="hljs-type">uint8_t</span> type;
+	<span class="hljs-type">uint64_t</span> data_node_number;
+	<span class="hljs-type">file_mht_node_t</span>* parent;
+	<span class="hljs-type">bool</span> need_writing;
+	<span class="hljs-type">bool</span> new_node;
+	<span class="hljs-class"><span class="hljs-keyword">union</span> {</span>
+		<span class="hljs-class"><span class="hljs-keyword">struct</span> {</span>
+			<span class="hljs-type">uint64_t</span> physical_node_number;
+			<span class="hljs-type">encrypted_node_t</span> encrypted; <span class="hljs-comment">// the actual data from the disk</span>
+		};
+		<span class="hljs-type">recovery_node_t</span> recovery_node;
+	};
+	<span class="hljs-comment">/* from here the structures are different */</span>
+	<span class="hljs-type">data_node_t</span> plain; <span class="hljs-comment">// decrypted data</span>
+} <span class="hljs-type">file_data_node_t</span>;</code></pre><p>This struct is nearly the same as <code>file_mht_node_t</code>, it seems like these are duplicated but working code.</p></div>
+</div></p>
 </section>
 </body>
 </html>
