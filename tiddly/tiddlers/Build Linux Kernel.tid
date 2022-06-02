@@ -1,0 +1,34 @@
+created: 20220602160035758
+modified: 20220602161714651
+tags: Linux Artifact
+title: Build Linux Kernel
+type: text/vnd.tiddlywiki
+
+References:
+
+* [[How to compile and install Linux Kernel 5.16.9 from source code|https://www.cyberciti.biz/tips/compiling-linux-kernel-26.html]]
+
+!! Dependencies
+
+```sh
+sudo apt install build-essential libncurses-dev bison flex libssl-dev libelf-dev
+sudo apt install dwarves zstd
+```
+
+!! Config
+```sh
+# Using current config
+cp -v /boot/config-$(uname -r) .config
+make menuconfig
+```
+
+Note that `CONFIG_SYSTEM_TRUSTED_KEYS=` and `CONFIG_SYSTEM_REVOCATION_KEYS` may need to be set into `""` in `.config` file, and `CONFIG_X86_X32` may not be supported.
+
+
+!! Build & Install
+```sh
+make -j32
+sudo make modules_install
+sudo make install
+sudo update-grub
+```

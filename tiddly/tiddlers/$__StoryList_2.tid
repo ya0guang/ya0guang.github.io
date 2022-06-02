@@ -1,2 +1,5 @@
-list: [[Apache Flink™: Stream and Batch Processing in a Single Engine]] [[ObliDC: An SGX-based Oblivious Distributed Computing Framework with Formal Proof]] [[Доверя́й, но проверя́й: SFI safety for native-compiled Wasm]] [[Proof-carring Code]]
+created: 20220602160027103
+list: [[Build Linux Kernel]] TEEPapers SystemPapers [[Apache Flink™: Stream and Batch Processing in a Single Engine]] [[ObliDC: An SGX-based Oblivious Distributed Computing Framework with Formal Proof]] [[Proof-carring Code]]
+modified: 20220602160031481
 title: $:/StoryList
+type: text/vnd.tiddlywiki
