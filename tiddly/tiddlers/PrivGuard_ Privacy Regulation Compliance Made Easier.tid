@@ -1,0 +1,28 @@
+created: 20220608141225204
+modified: 20220608142619719
+tags: Paper Security System PL Formal
+title: PrivGuard: Privacy Regulation Compliance Made Easier
+type: text/vnd.tiddlywiki
+
+[[Paper|https://www.usenix.org/conference/usenixsecurity22/presentation/wang-lun]]
+
+! Abstract
+
+Continuous compliance with privacy regulations, such as GDPR and CCPA, has become a costly burden for companies from small-sized start-ups to business giants. The culprit is the heavy reliance on human auditing in today's compliance process, which is expensive, slow, and error-prone. To address the issue, we propose PrivGuard, a novel system design that reduces human participation required and improves the productivity of the compliance process. PrivGuard is mainly comprised of two components: (1) PrivAnalyzer, a static analyzer based on abstract interpretation for partly enforcing privacy regulations, and (2) a set of components providing strong security protection on the data throughout its life cycle. To validate the effectiveness of this approach, we prototype PrivGuard and integrate it into an industrial-level data governance platform. Our case studies and evaluation show that PrivGuard can correctly enforce the encoded privacy policies on real-world programs with reasonable performance overhead.
+
+[img[PrivGuard.png]]
+
+! Methodology
+
+Users can prescribe their privacy policies, and the analyst can then leverage user data for data analysis tasks. However, the difference privacy policies are automatically enforced and satisfied by PrivGuard, which is executed inside TEE.
+
+The policy is prescribed in a formal language, and the data analysis program is statically analyzed by PrivAnalyzer to check privacy policy compliance. PrivAnalyzer use python interpreter as a abstract interpreter to check if the privacy policies might be broken by the program. Since the python program may use a lot of 3rd party libraries, the authors purpose functions summaries for these functions and over approximate the result.
+
+! Weakness
+
+* Intentional information leakage (analyst is assumed trusted)
+* Language level bypasses
+
+! Sidenote
+
+Some papers mentioned in this work is also interesting, especially those related to dealing with loops and branches in static analysis.
