@@ -1,0 +1,31 @@
+created: 20220603205810131
+modified: 20220603211648616
+tags: paper SGX System Formal PL
+title: A Formal Foundation for Secure Remote Execution of Enclaves
+type: text/vnd.tiddlywiki
+
+[[Paper|https://dl.acm.org/doi/abs/10.1145/3133956.3134098]]
+
+! Abstract
+
+Recent proposals for trusted hardware platforms, such as Intel SGX and the MIT Sanctum processor, offer compelling security features but lack formal guarantees. We introduce a verification methodology based on a trusted abstract platform (TAP), a formalization of idealized enclave platforms along with a parameterized adversary. We also formalize the notion of secure remote execution and present machine-checked proofs showing that the TAP satisfies the three key security properties that entail secure remote execution: integrity, confidentiality and secure measurement. We then present machine-checked proofs showing that SGX and Sanctum are refinements of the TAP under certain parameterizations of the adversary, demonstrating that these systems implement secure enclaves for the stated adversary models.
+
+! Methodology
+
+The enclave is formally modeled, including the program, state (e.g., memory, cache, registers), I/O, execution, and adversaries. The adversaries with privilege, cache access, and memory access are modeled differently.
+
+A trusted abstract platform (TAP) is built for modeling secure remote execution (SRE), which is defined formally and can be meet by satisfying three properties at the same time: Secure Measurement, Integrity, Confidentiality.
+
+Then, to prove that Sanctum and SGX satisfies SRE, the authors prove these architectures refine TAP in Boogie, and therefore meets SRE.
+
+!! Strength
+
+* Side-channel and Side-channel attackers are modeled
+* TAP is a general model for various TEEs
+* Formal proof
+
+!! Weakness
+
+* The refinement is not accurate enough, i.e., remote attestation seems missing
+* Source code?
+
