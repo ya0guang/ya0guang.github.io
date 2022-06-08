@@ -1,0 +1,22 @@
+created: 20220608142631068
+modified: 20220608150930394
+tags: Research
+title: To Read List
+type: text/vnd.tiddlywiki
+
+Paper planning to read
+
+! TEE/CC
+
+* [[SoK: Hardware-supported Trusted Execution Environments|https://arxiv.org/abs/2205.12742]]
+* [[Private delegated computations using strong isolation|https://arxiv.org/abs/2205.03322]]
+* [[SGXFuzz: Efficiently Synthesizing Nested Structures for SGX Enclave Fuzzing|https://publications.cispa.saarland/3644/]] Not available
+
+! Software Security
+
+* [[Compositional Security for Reentrant Applications|https://ieeexplore.ieee.org/abstract/document/9519436]]
+* [[Cross-Language Attacks|https://www.ndss-symposium.org/wp-content/uploads/2022-78-paper.pdf]]
+
+! Side-channel
+
+* [[An Analysis of Speculative Type Confusion Vulnerabilities in the Wild|https://www.usenix.org/system/files/sec21-kirzner.pdf]]

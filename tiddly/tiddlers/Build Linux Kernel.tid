@@ -1,5 +1,5 @@
 created: 20220602160035758
-modified: 20220602161714651
+modified: 20220602202916472
 tags: Linux Artifact
 title: Build Linux Kernel
 type: text/vnd.tiddlywiki
@@ -7,6 +7,8 @@ type: text/vnd.tiddlywiki
 References:
 
 * [[How to compile and install Linux Kernel 5.16.9 from source code|https://www.cyberciti.biz/tips/compiling-linux-kernel-26.html]]
+
+! Build
 
 !! Dependencies
 
@@ -32,3 +34,10 @@ sudo make modules_install
 sudo make install
 sudo update-grub
 ```
+
+! Uninstall
+
+Delete what have been installed in several places:
+
+* image: `/boot/*[kernel_ver]`
+* modules: `/lib/modules/[kernel_ver]`
