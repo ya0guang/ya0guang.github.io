@@ -1,0 +1,53 @@
+created: 20220608225657741
+modified: 20220609005137125
+tags: Research CS Paper Formal PL
+title: SAT & SMT
+type: text/vnd.tiddlywiki
+
+! Basic Concepts
+
+* [[Wiki|https://en.wikipedia.org/wiki/Satisfiability_modulo_theories]]
+
+! Proof Checker
+
+* [[drat-trim|https://github.com/marijnheule/drat-trim]]
+* [[GRAT|https://www21.in.tum.de/~lammich/grat/]] ''Certified''
+
+! Solver
+
+* [[Z3|https://github.com/Z3Prover/z3]]
+* CVC4
+* [[Vampire|https://vprover.github.io/]]
+
+!! Verified/Certified Solver
+
+!!! [[VeriT|https://www.verit-solver.org/]]
+
+* Can be used with external checkers, e.g. [[SMTCoq|https://github.com/smtcoq/smtcoq]]
+
+!!! [[versat: A Verified Modern SAT Solver|https://homepage.divms.uiowa.edu/~astump/papers/vmcai12.pdf]] 
+
+* No code, not usable
+*  Dependent Type; Guru-lang
+
+! Papers
+
+!! SMT Solver Funzzing
+
+* [[Detecting Critical Bugs in SMT Solvers Using Blackbox Mutational Fuzzing|https://dl.acm.org/doi/pdf/10.1145/3368089.3409763]]
+
+!! Formal(ly Verified) SAT/SMT Solver
+
+*  [[A Reflexive Formalization of a SAT Solver in Coq|http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.611.4977&rep=rep1&type=pdf#page=69]]
+* [[Formal verification of a modern SAT solver by shallow embedding into Isabelle/HOL|https://www.sciencedirect.com/science/article/pii/S0304397510004937]]
+
+!! Proof Checking
+
+* [[Rocket-Fast Proof Checking for SMT Solvers|https://link.springer.com/content/pdf/10.1007/978-3-540-78800-3_38.pdf]]
+* [[Fast and flexible proof checking for SMT|https://dl.acm.org/doi/abs/10.1145/1670412.1670414]]
+Also see the related articles.
+
+! Other Resources
+
+* [[SMT-LIB|https://smtlib.cs.uiowa.edu/index.shtml]]
+* [[Practical SAT Solving|https://baldur.iti.kit.edu/sat/#about]] A course
