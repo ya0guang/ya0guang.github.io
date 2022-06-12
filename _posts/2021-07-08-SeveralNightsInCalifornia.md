@@ -2,7 +2,7 @@
 layout: single
 title: 待在加州的一段时间
 date: 2021-07-08 22:00:07
-categories: "Tech"
+categories: "Caprice"
 tags:
 - Life
 - Caprice

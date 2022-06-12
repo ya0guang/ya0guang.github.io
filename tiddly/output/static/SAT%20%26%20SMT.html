@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.2.2" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>SAT & SMT: ya0guang's notebook
+
+— Personality Backup
+</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Research tc-tagged-CS tc-tagged-Paper tc-tagged-Formal tc-tagged-PL" data-tags="Research CS Paper Formal PL" data-tiddler-title="SAT &amp; SMT"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><span class="tc-tiddler-title-icon" style="fill:;"></span><h2 class="tc-title">SAT &amp; SMT</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
+<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>June 8, 2022 at 8:51 pm</div></div><div class=" tc-reveal">
+<div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="CS">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+CS
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Formal">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Formal
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Paper">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Paper
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="PL">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+PL
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Research">
+<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">
+Research
+</span>
+<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
+</div>
+
+<div class="tc-tiddler-body tc-reveal"><h1 class="">Basic Concepts</h1><ul><li><a class="tc-tiddlylink-external" href="https://en.wikipedia.org/wiki/Satisfiability_modulo_theories" rel="noopener noreferrer" target="_blank">Wiki</a></li></ul><h1 class="">Proof Checker</h1><ul><li><a class="tc-tiddlylink-external" href="https://github.com/marijnheule/drat-trim" rel="noopener noreferrer" target="_blank">drat-trim</a></li><li><a class="tc-tiddlylink-external" href="https://www21.in.tum.de/~lammich/grat/" rel="noopener noreferrer" target="_blank">GRAT</a> <strong>Certified</strong></li></ul><h1 class="">Solver</h1><ul><li><a class="tc-tiddlylink-external" href="https://github.com/Z3Prover/z3" rel="noopener noreferrer" target="_blank">Z3</a></li><li>CVC4</li><li><a class="tc-tiddlylink-external" href="https://vprover.github.io/" rel="noopener noreferrer" target="_blank">Vampire</a></li></ul><h2 class="">Verified/Certified Solver</h2><h3 class=""><a class="tc-tiddlylink-external" href="https://www.verit-solver.org/" rel="noopener noreferrer" target="_blank">VeriT</a></h3><ul><li>Can be used with external checkers, e.g. <a class="tc-tiddlylink-external" href="https://github.com/smtcoq/smtcoq" rel="noopener noreferrer" target="_blank">SMTCoq</a></li></ul><h3 class=""><a class="tc-tiddlylink-external" href="https://homepage.divms.uiowa.edu/~astump/papers/vmcai12.pdf" rel="noopener noreferrer" target="_blank">versat: A Verified Modern SAT Solver</a> </h3><ul><li>No code, not usable</li><li>Dependent Type; Guru-lang</li></ul><h1 class="">Papers</h1><h2 class="">SMT Solver Funzzing</h2><ul><li><a class="tc-tiddlylink-external" href="https://dl.acm.org/doi/pdf/10.1145/3368089.3409763" rel="noopener noreferrer" target="_blank">Detecting Critical Bugs in SMT Solvers Using Blackbox Mutational Fuzzing</a></li></ul><h2 class="">Formal(ly Verified) SAT/SMT Solver</h2><ul><li><a class="tc-tiddlylink-external" href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.611.4977&amp;rep=rep1&amp;type=pdf#page=69" rel="noopener noreferrer" target="_blank">A Reflexive Formalization of a SAT Solver in Coq</a></li><li><a class="tc-tiddlylink-external" href="https://www.sciencedirect.com/science/article/pii/S0304397510004937" rel="noopener noreferrer" target="_blank">Formal verification of a modern SAT solver by shallow embedding into Isabelle/HOL</a></li></ul><h2 class="">Proof Checking</h2><ul><li><a class="tc-tiddlylink-external" href="https://link.springer.com/content/pdf/10.1007/978-3-540-78800-3_38.pdf" rel="noopener noreferrer" target="_blank">Rocket-Fast Proof Checking for SMT Solvers</a></li><li><a class="tc-tiddlylink-external" href="https://dl.acm.org/doi/abs/10.1145/1670412.1670414" rel="noopener noreferrer" target="_blank">Fast and flexible proof checking for SMT</a></li></ul><p>Also see the related articles.</p><h1 class="">Other Resources</h1><ul><li><a class="tc-tiddlylink-external" href="https://smtlib.cs.uiowa.edu/index.shtml" rel="noopener noreferrer" target="_blank">SMT-LIB</a></li><li><a class="tc-tiddlylink-external" href="https://baldur.iti.kit.edu/sat/#about" rel="noopener noreferrer" target="_blank">Practical SAT Solving</a> A course</li></ul></div>
+</div></p>
+</section>
+</body>
+</html>
+
