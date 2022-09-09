@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.2.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>Trusted Computing Base TCB: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Research tc-tagged-SGX tc-tagged-System" data-tags="Research SGX System" data-tiddler-title="Trusted Computing Base TCB" role="article"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><h2 class="tc-title">Trusted Computing Base TCB</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div><div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a> September 8, 2022 at 9:48 pm</div></div><div class=" tc-reveal"><div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Research"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">Research</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="SGX"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">SGX</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="System"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">System</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span></div></div><div class="tc-tiddler-body tc-reveal"><h1 class="">Blog posts</h1><h2 class=""><a class="tc-tiddlylink-external" href="https://aliceevebob.com/2019/10/22/whats-a-trusted-compute-base/" rel="noopener noreferrer" target="_blank">What’s a Trusted Compute Base?</a></h2><h1 class="">Early Documents</h1><h2 class="">SPECIFICATION OF A TRUSTED COMPUTING BASE (TCB)</h2><ul><li>G. H. Nibaldi, 30 November 1979 <a class="tc-tiddlylink-external" href="https://apps.dtic.mil/sti/pdfs/ADA108831.pdf" rel="noopener noreferrer" target="_blank">PDF</a></li></ul><blockquote class="tc-quote"><p>A Trusted Computing Base (TCB) is the totality of access control mechanisms for an operating system.
+</p></blockquote><blockquote class="tc-quote"><p>A TCB is a hardware and softwere access control mechunism that
+establishes v protection environment to control the sharing of
+information in computer systems. A TCB is an implementation of a
+reference monitor, as defined in [Anderson 72), that controls when
+and how data is accessed.
+</p></blockquote><blockquote class="tc-quote"><p>Proof that the TCB will indeed enforce the relevant protection
+policy can only be provided through a fonrial, methodological
+approach to TCB design and verification...
+Because the TCB consists of all the security-related mechanisms, proof of its validity implies the remainder of
+the system will perform correctly with resWpct to the policy.
+</p></blockquote><h3 class="">Reference Monitor</h3><blockquote class="tc-quote"><p>a TCB is an implementation cf a reference monitor.
+</p></blockquote><ul><li>complete mediation of access</li><li>self-protecting</li><li>verifiable</li></ul><blockquote class="tc-quote"><p>Minimizing the complexity of TCB software is a major factor in raising the
+confidence level that can be assigned to the protection mechanisms it provides. </p><p>...two general design goals to follow after
+identifying all security relevant operations for inclusion in the
+TCB are (a) to exclude from the TCB software any operations not
+strictly security-related so that one can focus attention on those
+that are, and (b) to make as full use as possible of protection
+features available in the hardware.
+</p></blockquote><h2 class="">DEPARTMENT OF DEFENSE TRUSTED COMPUTER SYSTEM EVALUATION CRITERIA</h2><ul><li>DoD 5200.28 STD, l5 Aug 83 <a class="tc-tiddlylink-external" href="https://csrc.nist.gov/csrc/media/publications/conference-paper/1998/10/08/proceedings-of-the-21st-nissc-1998/documents/early-cs-papers/dod85.pdf" rel="noopener noreferrer" target="_blank">PDF</a></li></ul><blockquote class="tc-quote"><p>The heart of a trusted computer system is the Trusted Computing Base (TCB) which contains all of the elements of the system responsible for supporting the security policy and supporting the isolation of objects (code and data) on which the protection is based.</p><p>...  In the interest of understandable and maintainable protection, a TCB should be as simple as possible consistent with the functions it has to perform.  Thus, the TCB includes hardware, firmware, and software critical to protection and must be designed and implemented such that system elements excluded from it need not be trusted to maintain protection. 
+</p></blockquote><blockquote class="tc-quote"><p>Trusted Computing Base (TCB) - The totality of protection mechanisms within a computer system – including hardware, firmware, and software – the combination of which is responsible for enforcing a security policy. A TCB consists of one or more components that together enforce a unified security policy over a product or system. The ability of a trusted computing base to correctly enforce a security policy depends solely on the mechanisms within the TCB and on the correct input by system administrative personnel of parameters (e.g., a user's clearance) related to the security policy.
+</p></blockquote><p>Now the concept of TCB is applicable not only in OS but also embedded systems, and focuses on a security-critical portion of the system, including hardware and software.</p><p>Some system (Class A1) still requires a formal design specification and verification of TCB to ensure high degrees of assurance.</p><h2 class="">Authentication in Distributed Systems: Theory and Practice</h2><ul><li><a class="tc-tiddlylink-external" href="https://dl.acm.org/doi/abs/10.1145/121133.121160" rel="noopener noreferrer" target="_blank">Paper</a> </li></ul><blockquote class="tc-quote"><p>Another important concept is the ‘trusted computing base’ or TCB [9], a
+small amount of software and hardware that security depends on and that we
+distinguish from a much larger amount that can misbehave without affecting
+security
+</p></blockquote><h2 class="">Some weaknesses of the TCB model</h2><p>S&amp;P 1997 <a class="tc-tiddlylink-external" href="https://ieeexplore.ieee.org/abstract/document/601305" rel="noopener noreferrer" target="_blank">Paper</a></p><h2 class="">Authentication in Distributed Systems: Theory and Practice,</h2><p>ACM Transactions on Computer Systems, 1992</p><blockquote class="tc-quote"><p>It’s not quite true that components outside the TCB can fail without affecting security. Rather, the system should be ‘fail-secure’: if an untrusted component fails, the system may deny access it should have granted, but it won’t grant access it should have denied.
+</p></blockquote><h2 class="">An Efficient TCB for a Generic Content Distribution System</h2><p>2012 International Conference on Cyber-Enabled Distributed Computing and Knowledge Discover <a class="tc-tiddlylink-external" href="https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&amp;arnumber=6384937" rel="noopener noreferrer" target="_blank">PDF</a></p><blockquote class="tc-quote"><p>The trusted computing base (TCB) [1] for a system is a small amount of hardware and/or software that need to be trusted in order to realize the desired assurances. More specifically, the assurances are guaranteed even if all elements outside the TCB misbehave.</p><p>The lower the complexity of the elements in the TCB, the lower is the ability to hide malicious/accidental functionality in the TCB components. Consequently, in the design of any security solution it is necessary to lower the complexity of components in the TCB to the extent feasible.
+</p></blockquote><h1 class="">More Recent Study</h1><h2 class="">TCB Minimizing Model of Computation (TMMC)</h2><p>Bushra, Naila.  Mississippi State University ProQuest Dissertations Publishing,  2019. 27664004. <a class="tc-tiddlylink-external" href="https://www.proquest.com/docview/2335253086?pq-origsite=gscholar&amp;fromopenview=true" rel="noopener noreferrer" target="_blank">Paper</a></p><h2 class="">Reducing TCB Complexity for Security-Sensitive Applications: Three Case Studies</h2><p>EuroSys, 2006 <a class="tc-tiddlylink-external" href="https://os.inf.tu-dresden.de/papers_ps/eurosys2006.pdf" rel="noopener noreferrer" target="_blank">PDF</a></p><blockquote class="tc-quote"><p>The security requirements fall into four main categories: confidentiality, integrity, recoverability, and availability. For clarity, we present the definition of these terms.</p><ul><li>Confidentiality: Only authorized users (entities, principals, etc.) can access information (data, programs, etc.).</li><li>Integrity: Either information is current, correct, and complete, or it is possible to detect that these properties do not hold.</li><li>Recoverability: Information that has been damaged can be recovered eventually.</li><li>Availability: Data is available when and where an authorized user needs it. </li></ul></blockquote><h1 class="">Justifications of Reducing TCB</h1><h2 class="">Relationships between selected software measures and latent bug-density: Guidelines for improving quality</h2><p><a class="tc-tiddlylink-external" href="https://link.springer.com/chapter/10.1007/3-540-44839-X_76" rel="noopener noreferrer" target="_blank">Paper</a></p><p>It seems that nearly all code size/complexity measurements contributes to bug <strong>density</strong>, except Method Hiding Factor and Polymorphism Factor.</p><p>This work just focuses on C++ programs. What about using a different language, e.g., Rust?</p><h2 class="">Choice of Language also Matters</h2><p><a class="tc-tiddlylink-external" href="https://security.googleblog.com/2021/04/rust-in-android-platform.html" rel="noopener noreferrer" target="_blank">Rust in the Android platform</a></p><blockquote class="tc-quote"><p>Rust modernizes a range of other language aspects, which results in improved correctness of code:
+</p></blockquote><h1 class="">Other Related Work</h1><h2 class="">Œuf: Minimizing the Coq Extraction TCB</h2><h2 class="">Reducing TCB complexity for security-sensitive applications: Three case studies</h2></div>
+</div></p>
+</section>
+</body>
+</html>
+

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="generator" content="TiddlyWiki" />
-<meta name="tiddlywiki-version" content="5.2.2" />
+<meta name="tiddlywiki-version" content="5.2.3" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -11,32 +11,16 @@
 <meta name="format-detection" content="telephone=no">
 <link id="faviconLink" rel="shortcut icon" href="favicon.ico">
 <link rel="stylesheet" href="static.css">
-<title>Build Linux Kernel: ya0guang's notebook
-
-— Personality Backup
-</title>
+<title>Build Linux Kernel: ya0guang's notebook — Personality Backup</title>
 </head>
 <body class="tc-body">
 
 <section class="tc-story-river tc-static-story-river">
-<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Linux tc-tagged-Artifact" data-tags="Linux Artifact" data-tiddler-title="Build Linux Kernel"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><span class="tc-tiddler-title-icon" style="fill:;"></span><h2 class="tc-title">Build Linux Kernel</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div>
-<div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a>June 2, 2022 at 4:29 pm</div></div><div class=" tc-reveal">
-<div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Artifact">
-<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Linux tc-tagged-Artifact" data-tags="Linux Artifact" data-tiddler-title="Build Linux Kernel" role="article"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><h2 class="tc-title">Build Linux Kernel</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div><div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a> June 2, 2022 at 4:29 pm</div></div><div class=" tc-reveal"><div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Artifact"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
-color:rgb(38, 38, 38);">
-Artifact
-</span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Linux">
-<span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+color:rgb(38, 38, 38);">Artifact</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Linux"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
 fill:rgb(38, 38, 38);
-color:rgb(38, 38, 38);">
-Linux
-</span>
-<span class="tc-drop-down tc-reveal" hidden="true"></span></span></div>
-</div>
-
-<div class="tc-tiddler-body tc-reveal"><p>References:</p><ul><li><a class="tc-tiddlylink-external" href="https://www.cyberciti.biz/tips/compiling-linux-kernel-26.html" rel="noopener noreferrer" target="_blank">How to compile and install Linux Kernel 5.16.9 from source code</a></li></ul><h1 class="">Build</h1><h2 class="">Dependencies</h2><pre class="hljs"><code class="sh hljs">sudo apt install build-essential libncurses-dev bison flex libssl-dev libelf-dev
+color:rgb(38, 38, 38);">Linux</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span></div></div><div class="tc-tiddler-body tc-reveal"><p>References:</p><ul><li><a class="tc-tiddlylink-external" href="https://www.cyberciti.biz/tips/compiling-linux-kernel-26.html" rel="noopener noreferrer" target="_blank">How to compile and install Linux Kernel 5.16.9 from source code</a></li></ul><h1 class="">Build</h1><h2 class="">Dependencies</h2><pre class="hljs"><code class="sh hljs">sudo apt install build-essential libncurses-dev bison flex libssl-dev libelf-dev
 sudo apt install dwarves zstd</code></pre><h2 class="">Config</h2><pre class="hljs"><code class="sh hljs"><span class="hljs-comment"># Using current config</span>
 <span class="hljs-built_in">cp</span> -v /boot/config-$(<span class="hljs-built_in">uname</span> -r) .config
 make menuconfig</code></pre><p>Note that <code>CONFIG_SYSTEM_TRUSTED_KEYS=</code> and <code>CONFIG_SYSTEM_REVOCATION_KEYS</code> may need to be set into <code>""</code> in <code>.config</code> file, and <code>CONFIG_X86_X32</code> may not be supported.</p><h2 class="">Build &amp; Install</h2><pre class="hljs"><code class="sh hljs">make -j32
