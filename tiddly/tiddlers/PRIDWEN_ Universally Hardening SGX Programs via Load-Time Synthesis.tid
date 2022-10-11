@@ -1,0 +1,22 @@
+created: 20221010191252102
+modified: 20221010194656101
+tags: Paper Syste SGX SideChannel Defense Research Security WASM
+title: PRIDWEN: Universally Hardening SGX Programs via Load-Time Synthesis
+type: text/vnd.tiddlywiki
+
+[[PDF|https://www.usenix.org/system/files/atc22-sang.pdf]]
+
+[img[PRIDWEN_Overview.png]]
+
+WASM bin is instrumented according to hardware configuration detected by the Prober and a configuration file. The instrumented binary is then validated and can be attested by the remote user. 
+
+* The validator works like a final binary verifier to check if the instrumentations exist as expected.
+* Attestation: software attestation in PRIDWEN
+
+! Contributions
+
+* The first platform-aware load-time synthesis framework for SGX programs
+* Attestable in-enclave Wasm instrumentation and compilation toolchain.
+* Extensive evaluation.
+
+

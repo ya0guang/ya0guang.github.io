@@ -1,0 +1,26 @@
+created: 20221009201924579
+modified: 20221010024613311
+tags: Paper PL Security Research
+title: Safe, Untrusted Agents Using Proof-Carrying Code
+type: text/vnd.tiddlywiki
+
+[[Safe, Untrusted Agents Using Proof-Carrying Code|https://link.springer.com/chapter/10.1007/3-540-68671-1_5]]
+
+! PCC Charactristics
+
+# General
+# Low-risk & automatic
+# Efficient
+# Don't need to trust code producer
+# Flexible
+
+! Components
+
+[img[Screen Shot 2022-10-09 at 18.28.47.png]]
+
+The code and annotations are sent to a parser, which generates IL to be executed in a symbolic evaluator. The symbolic evaluator derives a predicate and asks an untrusted prover to solve it. The proof is encoded in Edinburgh Logical Framework. A type of proof is type checked means proving the right predicate.
+
+! Gadgets
+
+* Invariant annotation is the most important one
+* Their security policy: safe read/write; execution time bounded

@@ -1,0 +1,13 @@
+created: 20221010185457910
+modified: 20221010185637144
+tags: SGX Paper
+title: An efficient and secure scheme of verifiable computation for Intel SGX
+type: text/vnd.tiddlywiki
+
+[[Paper|https://arxiv.org/abs/2106.14253]]
+
+Attack: Function (Call) sequence can be modified by an untrusted attacker.
+
+Solution: hash chain built by trusted functions, which can be verified by the user.
+
+Not a very interesting paper.
