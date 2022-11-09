@@ -1,0 +1,24 @@
+created: 20221028233413358
+modified: 20221028233826051
+tags: PL Fuzz Paper Security
+title: Symbolic Execution for Software Testing: Three Decades Later
+type: text/vnd.tiddlywiki
+
+[[Paper|http://people.eecs.berkeley.edu/~raluca/cs261-f15/readings/symb.pdf]]
+
+! Techniques
+
+* Constraint solving
+* Symbolic value generation & searching
+
+! Challenges
+
+* Path Explosion
+* Constraint Solving
+* Memory modeling
+* Concurrency 
+
+! Solutions
+
+* Concolic execution
+* Imprecision vs. completeness in dynamic symbolic exe- cution

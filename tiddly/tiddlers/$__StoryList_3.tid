@@ -1,2 +1,2 @@
-list: [[PRIDWEN: Universally Hardening SGX Programs via Load-Time Synthesis]] [[Safe, Untrusted Agents Using Proof-Carrying Code]] [[Trusted Computing Base TCB]] [[To Read List]]
+list: [[Leaky DNN: Stealing Deep-learning Model Secret with GPU Context-switching Side-channel]] [[SGXFUZZ: Efficiently Synthesizing Nested Structures for SGX Enclave Fuzzing]] [[Towards Formal Verification of State Continuity for Enclave Programs]] [[PRIDWEN: Universally Hardening SGX Programs via Load-Time Synthesis]] [[Safe, Untrusted Agents Using Proof-Carrying Code]] [[Trusted Computing Base TCB]] [[To Read List]]
 title: $:/StoryList

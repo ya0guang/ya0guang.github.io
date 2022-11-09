@@ -1,5 +1,5 @@
 created: 20220608142631068
-modified: 20220611015651956
+modified: 20221027193933660
 tags: Research
 title: To Read List
 type: text/vnd.tiddlywiki
@@ -17,7 +17,6 @@ Paper planning to read
 
 * [[SoK: Hardware-supported Trusted Execution Environments|https://arxiv.org/abs/2205.12742]]
 * [[Private delegated computations using strong isolation|https://arxiv.org/abs/2205.03322]]
-* [[SGXFuzz: Efficiently Synthesizing Nested Structures for SGX Enclave Fuzzing|https://publications.cispa.saarland/3644/]] Not available
 
 !! Middlewares
 
