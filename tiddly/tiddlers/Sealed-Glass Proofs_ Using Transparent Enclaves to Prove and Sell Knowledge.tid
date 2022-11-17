@@ -1,0 +1,31 @@
+created: 20221117170210614
+modified: 20221117193042013
+tags: Paper Blockchain SGX Security SideChannel WIP
+title: Sealed-Glass Proofs: Using Transparent Enclaves to Prove and Sell Knowledge
+type: text/vnd.tiddlywiki
+
+! Abstract 
+
+Trusted hardware systems, such as Intel's new SGX instruction set architecture extension, aim to provide strong confidentiality and integrity assurances for applications. Recent work, however, raises serious concerns about the vulnerability of such systems to side-channel attacks. We propose, formalize, and explore a cryptographic primitive called a Sealed-Glass Proof (SGP) that models computation possible in an isolated execution environment with unbounded leakage, and thus in the face of arbitrary side-channels. A SGP specifically models the capabilities of trusted hardware that can attest to correct execution of a piece of code, but whose execution is transparent, meaning that an application's secrets and state are visible to other processes on the same host. Despite this strong threat model, we show that SGPs enable a range of practical applications. Our key observation is that SGPs permit safe verifiable computing in zero-knowledge, as data leakage results only in the prover learning her own secrets. Among other applications, we describe the implementation of an end-to-end bug bounty (or zero-day solicitation) platform that couples a SGX-based SGP with a smart contract. Our platform enables a marketplace that achieves fair exchange, protects against unfair bounty withdrawals, and resists denial-of-service attacks by dishonest sellers. We also consider a slight relaxation of the SGP model that permits black-box modules instantiating minimal, side-channel resistant primitives, yielding a still broader range of applications. Our work shows how trusted hardware systems such as SGX can support trustworthy applications even in the presence of side channels.
+
+! Overview
+
+* Transparent enclave execution (protects integrity)
+* Sealed-Glass Proofs -> verifiable computing, commitment schemes, ZK proofs
+* SGP -> smart contract -> knowledge marketplace -> bug bounty
+
+!! Important building blocks
+
+[img[sgp_1.png]]
+
+[img[sgp_2png]]
+
+[img[sgp_3.png]]
+
+[img[sgp_4png]]
+
+! Important Gadgets
+
+* Secret (of the prover) is processed on prover's host, therefore the system is resistant to side-channel
+* Multiple provers is also permitted by an extended design
+* A bug bounty mechanism needs careful design to protect the buyer and sellers

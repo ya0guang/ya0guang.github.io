@@ -68,6 +68,7 @@ Mainly focus on Security, System & PL.
   - 最近才发现王垠大佬也在IU念过书
   - 虽然并非很认同他的一些观点，但是感觉从哲学的层面上他的思维和我很像:)
 - [Hongliang Tian](https://www.tatetian.io/) 真·全栈。可以作为偶像了
+- [刘未鹏](http://mindhacks.cn) 看到[这篇文章](http://mindhacks.cn/2006/10/15/cantor-godel-turing-an-eternal-golden-diagonal/)感觉学到的很多东西突然串了起来，神奇
 
 # CS-related Blogs
 
