@@ -1,0 +1,12 @@
+created: 20221227025004879
+modified: 20221227025109599
+tags: Paper Formal Analysis
+title: Towards Formal Proof Metrics
+type: text/vnd.tiddlywiki
+
+! Abstract
+
+Abstract. Recent years have seen increasing success in building large formal proof developments using interactive theorem provers (ITPs). Some proofs have involved many authors, years of effort, and resulted in large, complex interdependent sets of proof “source code” files. Developing these in the first place, and maintaining and extending them afterwards, is a considerable challenge. It has prompted the idea of Proof Engineering as a new sub-field, to find methods and tools to help. It is natural to try to borrow ideas from Software Engineering for this.
+
+In this paper we investigate the idea of defining proof metrics by analogy with software metrics. We seek metrics that may help to monitor and compare formal proof developments, which might be used to guide good practice, locate likely problem areas, or suggest refactorings. Starting from metrics that have been proposed for object-oriented design, we define analogues for formal proofs. We show that our metrics enjoy reasonable properties, and we demonstrate their behaviour with some practical experiments, showing changes over time as proof developments evolve, and making comparisons across between different ITPs
+

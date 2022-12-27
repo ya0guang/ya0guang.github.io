@@ -15,6 +15,11 @@ header:
 
 last update: Oct. 22, 2020
 
+# Meta
+
+- 付费CD下载：[DizzyLab](www.dizzylab.net)
+- 偷猴DB：[touhoudb](https://touhoudb.com/)
+
 # EDM
 
 ## ShibayanRecords
@@ -39,10 +44,25 @@ last update: Oct. 22, 2020
 
 最近(2020.10)把粽子的所有砖搞下来了在慢慢听。虽然有些歌曲的录音质量糟糕到破音快破穿耳机振膜了，不过不得不说编曲和故事性上，他家真是独具一格的！`Merami`和各种来串门的歌姬都很强！
 
-不错的专辑：
+### 不错的专辑
+
 - `2009-宴` 为数不多的几乎全砖都喜欢的同人专辑了
+
+### 非常不错的曲目
+
+- 
 
 # Metal & Rock
 
 # Symphoney
 
+# Rap
+
+## 魂音泉
+
+其实我不怎么听rap的，不过他家的rap有一些还是不错的。
+
+### 不错的曲目
+
+- Dreamy Noise
+- 幻灯花

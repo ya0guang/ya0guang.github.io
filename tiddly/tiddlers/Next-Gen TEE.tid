@@ -1,0 +1,9 @@
+created: 20221205195134088
+modified: 20221205195344626
+tags: Research System Security
+title: Next-Gen TEE
+type: text/vnd.tiddlywiki
+
+! Hardware Side
+
+* [[Attestation of System Components v1.0 Requirements and Recommendations |https://www.opencompute.org/documents/attestation-v1-0-20201104-pdf]]

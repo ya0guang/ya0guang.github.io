@@ -60,6 +60,13 @@ Mainly focus on Security, System & PL.
 - [TEECert](https://teecertlabs.com/)
 - [Bryan Parno](https://www.andrew.cmu.edu/user/bparno/)
 - [Sanjit A. Seshia](http://people.eecs.berkeley.edu/~sseshia/)
+- [Haobin](https://hiroki-chen.notion.site/)
+
+## PL
+
+- [Machine Logic](https://lawrencecpaulson.github.io/)
+- [Rupak Majumdar](https://people.mpi-sws.org/~rupak/)
+- [Appel](https://www.cs.princeton.edu/~appel/)
 
 # Engineer
 

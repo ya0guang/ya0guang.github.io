@@ -1,0 +1,66 @@
+created: 20221205195348746
+modified: 20221206050929708
+tags: Security Research SGX SEV Analysis
+title: Potential Threats of Memory Integrity on SEV(SNP), (Scalable) SGX2, and TDX
+type: text/vnd.tiddlywiki
+
+! SGX2 Memory Integrity
+
+!! Documents
+
+* https://www.intel.com/content/dam/www/public/us/en/documents/white-papers/supporting-intel-sgx-on-mulit-socket-platforms.pdf
+* https://heartever.github.io/files/scalable_sgx_public.pdf
+￼
+*[img[memory_protect_summary_sgx.png]]
+
+!! Potential Attacks
+
+[img[sgx2_aliasing.png]]
+
+* Inside-in Aliasing￼
+* Outside-in Aliasing
+
+!! Possible sources of aliasing
+
+!!! Server’s RAS feature
+
+* Memory Address Range Mirroring
+* Memory Predictive Failure Analysis (PFA)
+
+PFA: if a physical memory page is believed to be affected by an underlying hardware fault (e.g., a weak cell or faulty row in a memory chip or DRAM), the affected page can be retired by relocating its content to another physical page, and placing the retired page on a list of physical pages that should not be subsequently allocated by the virtual memory system.
+
+!!! Documents
+
+* https://lenovopress.lenovo.com/lp0778.pdf
+* https://www.supermicro.com/manuals/other/Memory_RAS_Configuration_User_Guide.pd
+
+
+! Possible attack from OS?
+
+!! Via Memory Components (System Software)
+
+* Program critical system hardware devices, e.g., memory controller, DMA engines (doc1, p113) DMA is controlled by the CPU in x86-64 systems
+* Program page tables/EPT => inside-in alias (doc1, p113)
+
+! Other possible attack
+
+* Firmware <= defend by secure boot/PFR/Intel Hardware Shield (doc.2)
+
+Documents
+
+# https://www.intel.com/content/dam/develop/external/us/en/documents/332680-001-720907.pdf
+# [[Intel PFR Github|https://github.com/intel/pfr-wilson-city]]
+
+! Related Papers
+
+* https://os.itec.kit.edu/downloads/publ_2017_hillenbrand_xeon_decoding.pdf
+* [[PIkit: A New Kernel-Independent Processor-Interconnect Rootkit|https://www.usenix.org/conference/usenixsecurity16/technical-sessions/presentation/song]]
+* [[SGX Explained|https://eprint.iacr.org/2016/086.pdf]]
+
+! TDX Problems
+
+
+
+!! References
+
+# [[Intel TDX|https://www.intel.com/content/dam/develop/external/us/en/documents/tdx-whitepaper-v4.pdf]]
