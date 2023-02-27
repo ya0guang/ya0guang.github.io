@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.2.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>Constant-Time Foundations for the New Spectre Era: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Paper tc-tagged-Formal tc-tagged-PL tc-tagged-Defense tc-tagged-SideChannel" data-tags="Paper Formal PL Defense SideChannel" data-tiddler-title="Constant-Time Foundations for the New Spectre Era" role="article"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><h2 class="tc-title">Constant-Time Foundations for the New Spectre Era</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div><div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a> February 27, 2023 at 5:48 pm</div></div><div class=" tc-reveal"><div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Defense"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">Defense</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Formal"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">Formal</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Paper"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">Paper</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="PL"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">PL</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="SideChannel"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">SideChannel</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span></div></div><div class="tc-tiddler-body tc-reveal"><ul><li><a class="tc-tiddlylink-external" href="https://dl.acm.org/doi/pdf/10.1145/3385412.3385970" rel="noopener noreferrer" target="_blank">PDF</a></li><li><a class="tc-tiddlylink-external" href="https://github.com/PLSysSec/pitchfork-angr" rel="noopener noreferrer" target="_blank">Code</a></li><li><a class="tc-tiddlylink-external" href="https://arxiv.org/pdf/1910.01755.pdf" rel="noopener noreferrer" target="_blank">Full Paper</a></li></ul><h1 class="">Abstract</h1><p>The constant-time discipline is a software-based countermeasure used for protecting high assurance cryptographic implementations against timing side-channel attacks. Constant-time is effective (it protects against many known attacks), rigorous (it can be formalized using program semantics), and amenable to automated verification. Yet, the advent of micro-architectural attacks makes constant-time as it exists today far less useful.</p><p>This paper lays foundations for constant-time programming in the presence of speculative and out-of-order execution. We present an operational semantics and a formal definition of constant-time programs in this extended setting. Our semantics eschews formalization of microarchitectural features (that are instead assumed under adversary control), and yields a notion of constant-time that retains the elegance and tractability of the usual notion. We demonstrate the relevance of our semantics in two ways: First, by contrasting existing Spectre-like attacks with our definition of constant-time. Second, by implementing a static analysis tool, Pitchfork, which detects violations of our extended constant-time property in real world cryptographic libraries.</p><h1 class="">Methodology</h1><ul><li>A model to incorporate speculative execution.</li><li>Abstract machine: fetch, execute, retire.</li><li>Reorder buffer =&gt; out-of-order and speculative execution</li><li>Directives can be initiated to model the detailed schedule of the reordered micro-ops</li><li>Observations are also modeled in such process to mimic the leakage visible to the attacker</li><li>Modeled instructions: <code>op</code>, <code>fence</code>, <code>load</code>, <code>store</code>, <code>br</code>, <code>call</code>, <code>ret</code></li></ul><h1 class="">Artifact</h1><ul><li>Symbolic execution based on angr</li><li>Schedule the worst case reorder buffer =&gt; maximize potential leakage</li><li>Can indeed found threat</li></ul><h1 class="">Comments</h1><ul><li>Are the threats confirmed by the developers?</li><li>Is the model formalized in a proof checker?</li><li>Execution time of instructions is not modeled? (or need not to be modeled?)</li></ul></div>
+</div></p>
+</section>
+</body>
+</html>
+

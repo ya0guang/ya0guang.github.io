@@ -1,0 +1,13 @@
+created: 20230227224734482
+modified: 20230227225936735
+tags: Paper PL Defense
+title: FaCT: A Flexible, Constant-Time Programming Language
+type: text/vnd.tiddlywiki
+
+* [[PDF|http://www.sysnet.ucsd.edu/~bjohanne/assets/papers/2017secdev.pdf]]
+
+! Facts
+
+<<<
+Compiler optimization passes can introduce new vulnerabilities into correctly written code. For example, an optimization pass may introduce branching instructions in originally branchless C code [46].
+<<<

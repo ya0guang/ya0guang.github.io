@@ -1,0 +1,13 @@
+created: 20230222211325691
+modified: 20230223034624348
+tags: Paper Defense System PL
+title: SafeStack & CPI
+type: text/vnd.tiddlywiki
+
+* [[Clang Document|https://clang.llvm.org/docs/SafeStack.html]]
+* [[CPI Paper|https://dslab.epfl.ch/pubs/cpi.pdf]]
+
+Questions in the code:
+
+* https://github.com/llvm/llvm-project/blob/main/llvm/lib/CodeGen/SafeStack.cpp#L210 what's `!C`?
+* What's DI?
