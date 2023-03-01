@@ -61,6 +61,12 @@ Mainly focus on Security, System & PL.
 - [Bryan Parno](https://www.andrew.cmu.edu/user/bparno/)
 - [Sanjit A. Seshia](http://people.eecs.berkeley.edu/~sseshia/)
 - [Haobin](https://hiroki-chen.notion.site/)
+- [BINSEC](https://binsec.github.io/) Open source binary security to from academia
+
+## Verification
+
+- [Gilles Barthe](https://gbarthe.github.io)
+- [José Bacelar Almeida](https://www.inesctec.pt/en/people/jose-bacelar-almeida#short_bio)
 
 ## PL
 

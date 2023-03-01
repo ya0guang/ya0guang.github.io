@@ -1,13 +1,27 @@
 created: 20230227224734482
-modified: 20230227225936735
+modified: 20230228042523724
 tags: Paper PL Defense
 title: FaCT: A Flexible, Constant-Time Programming Language
 type: text/vnd.tiddlywiki
 
 * [[PDF|http://www.sysnet.ucsd.edu/~bjohanne/assets/papers/2017secdev.pdf]]
+* [[Code|https://github.com/PLSysSec/FaCT]]
 
 ! Facts
 
 <<<
 Compiler optimization passes can introduce new vulnerabilities into correctly written code. For example, an optimization pass may introduce branching instructions in originally branchless C code [46].
 <<<
+
+! Idea
+
+Constant-time in(similar to) C is not very easy:
+
+* Compiler may optimize the CT instructions away with branches
+* CT code is not easy to write in C (and hard to read)
+* The generated CT code is not very efficient (e.g., not use CT-related instructions like  `cmov`, `adc`)
+
+FaCT also has a IFC label on data to determine is security level.
+
+[img[FaCT_Arch.png]]
+
