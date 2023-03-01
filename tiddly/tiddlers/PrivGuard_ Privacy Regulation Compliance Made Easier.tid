@@ -1,5 +1,5 @@
 created: 20220608141225204
-modified: 20220608142619719
+modified: 20230301215822766
 tags: Paper Security System PL Formal
 title: PrivGuard: Privacy Regulation Compliance Made Easier
 type: text/vnd.tiddlywiki
@@ -26,3 +26,5 @@ The policy is prescribed in a formal language, and the data analysis program is 
 ! Sidenote
 
 Some papers mentioned in this work is also interesting, especially those related to dealing with loops and branches in static analysis.
+
+''This paper may need to be checked again!''

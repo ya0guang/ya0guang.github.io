@@ -1,6 +1,6 @@
 ---
 layout: single
-title: Constant Time
+title: Verifying Constant-time
 date: 2023-03-01 10:10:07
 categories: "Tech"
 tags:
@@ -12,7 +12,9 @@ header:
   teaser: 
 ---
 
-# Intro
+Constant-time的验证方法们。
+
+## Intro
 
 Constant-time作为密码学实现上一个重要的property，在抵御side-channel上面有很重要的作用。尤其是在这个Post-spectre的年代，microarchitectural level的side-channel attack已经成为了一个很大的威胁。近年来这个领域的researcher们飙了很多关于constant time的文章，很多都和microarchitectural side-channel相关。其中A哥（Almeida）和B哥(Barthe)尤甚。我还发现这个领域的大佬们似乎有很多欧洲的，可能也和欧洲佬数学好，喜欢搞各种verification有关。
 
@@ -48,6 +50,23 @@ Constant-time作为密码学实现上一个重要的property，在抵御side-cha
 ## Executable Binary
 
 这个level的工作一般而言不是很好formalize。似乎大多数都是使用接近于test的方法去做的（[DATE'17](#DATE'17), [SP'20](#SP'20)）。
+
+## Related Work
+
+### Patching
+
+Rewrite the code/binary to make it constant-time
+
+### Implementation
+
+业界有不少实现。如何在高性能的情况下实现constant-time？
+
+## Some Thoughts
+
+如何在其他general purpose的语言（非C/C++）下实现constant-time？现在Rust能够保证safety，这对于crypto这种application而言也是十分重要的。在Rust下如何实现constant-time？我看到了[subtle](https://github.com/dalek-cryptography/subtle)这个crate，但不知道它能否在Rust这种一直进化的语言中实现constant time。我能想到的两个问题是：
+
+- 在emit assembly code的时候，Rustc实际上没有对于LLVM backend的控制不会那么强。如何（or if any）控制LLVM IR to ASM的时候不会violate constant-time？这个问题实际上也存在于之前那些用LLVM来验证constant-time的工作中。
+- Rust仍然在不断进化（e.g., MIR）。有没有一种比较有效的方法能够在这种系统上（high-levelly）去验证constant-time？[MIRAI](https://github.com/facebookexperimental/MIRAI/blob/main/documentation/TagAnalysis.md)实际上提供了constant-time的验证。但是根据我们的经验，其验证十分拉胯。
 
 ## Reference
 
