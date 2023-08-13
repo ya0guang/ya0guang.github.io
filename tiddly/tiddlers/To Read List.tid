@@ -1,5 +1,5 @@
 created: 20220608142631068
-modified: 20230224150432359
+modified: 20230424200925076
 tags: Research
 title: To Read List
 type: text/vnd.tiddlywiki
@@ -10,6 +10,7 @@ Paper planning to read
 
 * Handbook of Satisfiability
 * Refactoring
+* [[PL Books]]
 
 ! Papers
 
@@ -31,6 +32,8 @@ Paper planning to read
 !! Side-channel
 
 * [[An Analysis of Speculative Type Confusion Vulnerabilities in the Wild|https://www.usenix.org/system/files/sec21-kirzner.pdf]]
+* [[A Systematic Evaluation of Transient Execution Attacks and Defenses]]
+* [[Survey of Transient Execution Attacks and Their Mitigations]] Wenjie Xiong
 
 ! Blog Posts
 

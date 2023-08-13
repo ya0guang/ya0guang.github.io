@@ -48,3 +48,15 @@ Creation Date: Sep, 2020
 
 - [betrusted project](https://betrusted.io/)
 - [Light Commands](https://lightcommands.com/)
+- [pl-enthusiast](http://www.pl-enthusiast.net/)
+
+# Engineers
+
+- [Huang Xuan](https://huangxuan.me) 很牛逼的工程师
+- [王垠](https://www.yinwang.org/)
+  - 最近才发现王垠大佬也在IU念过书
+  - 虽然并非很认同他的一些观点，但是感觉从哲学的层面上他的思维和我很像:)
+- [Hongliang Tian](https://www.tatetian.io/) 真·全栈。可以作为偶像了
+- [刘未鹏](http://mindhacks.cn) 看到[这篇文章](http://mindhacks.cn/2006/10/15/cantor-godel-turing-an-eternal-golden-diagonal/)感觉学到的很多东西突然串了起来，神奇
+- [程序员的喵](https://catcoding.me/)  文章还是很有深度的
+- [Linus](https://thesephist.com) 韩国的独立开发者

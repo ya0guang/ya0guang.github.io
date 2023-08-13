@@ -1,0 +1,16 @@
+created: 20230305031050637
+modified: 20230307025811308
+tags: PL CS TODO
+title: PL Books
+type: text/vnd.tiddlywiki
+
+! Compiler
+
+* [[SSA-based Compiler Design|https://link.springer.com/book/10.1007/978-3-030-80515-9]]
+
+! PL Theory
+
+* [[Software Foundations (SF)|https://softwarefoundations.cis.upenn.edu/]]
+* [[Programming Language Foundations in Agda (PLFA)|https://plfa.inf.ed.ac.uk/]]
+* [[Practical Foundations for Programming Languages (PFPL)|http://www.cs.cmu.edu/~rwh/pfpl.html]]
+* [[Essentials of Programming Languages (EOPL)|https://eopl3.com/]]
