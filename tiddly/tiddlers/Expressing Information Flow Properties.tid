@@ -1,0 +1,36 @@
+created: 20230906154942363
+modified: 20230906160619847
+tags: Paper PL Security System SideChannel WIP
+title: Expressing Information Flow Properties
+type: text/vnd.tiddlywiki
+
+! Abstract
+
+Industries and governments are increasingly compelled by regulations and public pressure to handle sensitive information responsibly. Regulatory requirements and user expectations may be complex and have subtle implications for the use of data. Information flow properties can express complex restrictions on data usage by specifying how sensitive data (and data derived from sensitive data) may flow throughout computation. Controlling these flows of information according to the appropriate specification can prevent both leakage of confidential information to adversaries and corruption of critical data by adversaries. There is a rich literature expressing information flow properties to describe the complex restrictions on data usage required by today’s digital society. This monograph summarizes how the expressiveness of information flow properties has evolved over the last four decades to handle different threat models, computational models, and conditions that determine whether flows are allowed. In addition to highlighting the significant advances of this area, we identify some remaining problems worthy of further investigation.
+
+! Considerations
+
+!! Theoretical Foundations
+
+* Lattice theory
+* Noninterference
+* Logic models (e.g., temporal logic)
+
+!! Threat Models
+
+* Termination: does termination leaks high*?
+* Time: different time
+* Interaction: input/output flow
+* Program code
+
+!! Computational Models
+
+* Nondeterminism: the program is not deterministic
+* Composition of systems: e.g., feedback: the output becomes next input. Composition can lead to nondeterminism
+* Concurrency
+
+!! Re(de)classification
+
+* Need to consider: what, where, when, and who
+* Introduce Delimited Release to declassify
+

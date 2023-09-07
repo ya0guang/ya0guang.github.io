@@ -33,9 +33,10 @@ last update: Oct. 22, 2020
 新东方（误），是我的入坑团之一了。其中的`nayuta`，`花咲あんな`唱功都蛮不错的。
 
 
-推荐的曲目：  
+推荐的曲目：
+
 - Urahara ff
-- You're the love of my life... 
+- You're the love of my life...
 - 各种八字真言曲
 
 # J-Pop

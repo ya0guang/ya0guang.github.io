@@ -1,0 +1,37 @@
+created: 20230906160959514
+modified: 20230907202002438
+tags: LLM Research Security Analysis
+title: LLM (for) Security
+type: text/vnd.tiddlywiki
+
+! Resources
+
+* [[LLM Security|https://llmsecurity.net/]]; twitter [[@llm_sec|https://twitter.com/llm_sec]]
+* [[GPT-4 Technical Report|https://arxiv.org/pdf/2303.08774.pdf]]
+
+! LLM for Security
+
+!! Fuzzing
+
+* [[Large Language Models are Zero-Shot Fuzzers: Fuzzing Deep-Learning Libraries via Large Language Models]]
+* [[Large Language Models are Edge-Case Fuzzers: Testing Deep Learning Libraries via FuzzGPT]]
+* [[Large Language Models for Fuzzing Parsers (Registered Report)]]
+* [[Universal Fuzzing via Large Language Models]]
+
+!! Program Repair
+
+* [[A New Era in Software Security: Towards Self-Healing Software via Large Language Models and Formal Verification]]
+* [[InferFix: End-to-End Program Repair with LLMs over Retrieval-Augmented Prompts]]
+
+!! Code Analysis
+
+* [[The Hitchhiker’s Guide to Program Analysis: A Journey with Large Language Models]]
+
+!! Test Geenration
+
+* [[Large Language Models are Few-shot Testers: Exploring LLM-based General Bug Reproduction]]
+* [[An Empirical Evaluation of Using Large Language Models for Automated Unit Test Generation]]
+
+!! MISC
+
+* [[Large Language Models are Pretty Good Zero-Shot Video Game Bug Detectors|https://arxiv.org/pdf/2210.02506.pdf]]

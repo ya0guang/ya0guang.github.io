@@ -1,0 +1,18 @@
+created: 20230821191841753
+modified: 20230821193316575
+tags: SEV System GPUTEE
+title: NVIDIA H100: Trust Establishment
+type: text/vnd.tiddlywiki
+
+Resources from: [[https://images.nvidia.com/aem-dam/en-zz/Solutions/data-center/HCC-Whitepaper-v1.0.pdf]]
+
+!! Host Side
+
+# Secure Boot: BIOS validates the certificates of the main OS (boot loader)
+# BL boots kernel, and the kernel validates the firmware (as it has access to the firmware after loaded)
+# Kernel drivers query the mother board vendor: validate the certificates (stored)
+# Conduct attestation of the hardware (e.g., firmware configurations)
+
+!! Guest Side
+
+The CVM still needs to ensure the GPU is trusted.

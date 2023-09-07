@@ -1,0 +1,15 @@
+created: 20230821193319616
+modified: 20230906153149180
+tags: GPUTEE System TODO
+title: GPU TEE: Potential Problems
+type: text/vnd.tiddlywiki
+
+!! Partial GPU
+
+> Passing a partial GPU to a VM using vGPU and SRIOV.
+
+This shared case can be dangerous.
+
+!! Isolation inside the CVM
+
+How exactly does the GPU access the CVM's memory? Part of the memory is marked as shared, while encrypted.
