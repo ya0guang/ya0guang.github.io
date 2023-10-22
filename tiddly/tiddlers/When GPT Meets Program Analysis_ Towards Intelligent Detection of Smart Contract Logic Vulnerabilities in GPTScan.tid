@@ -1,0 +1,106 @@
+created: 20231022151657134
+modified: 20231022181404789
+tags: LLM Paper Analysis
+title: When GPT Meets Program Analysis: Towards Intelligent Detection of Smart Contract Logic Vulnerabilities in GPTScan
+type: text/vnd.tiddlywiki
+
+[[Arxiv Paper|https://arxiv.org/pdf/2308.03314.pdf]]
+
+Using LLM (GPT3.5) to discover logic bugs in smart contracts
+
+! Questions
+
+* How to reduce false positives? Vulnerability confirmation.
+* Does `temperature = 0` really increase reliability? To my understanding, it just makes the answer deterministic. They do “mimic-in-thebackground” prompting, is that a good method? Any evaluations?
+* How are the Filtering Types determined for different types of vulnerabilities?
+
+! Highlights
+
+!! Importance of Logic Vulnerabilities
+
+The third group of vulnerabilities requires highlevel semantical oracles for detection and is closely related to the business logic. Most of these vulnerabilities are not detectable by existing static analysis tools. This group comprises six main types of vulnerabilities: (S1) price manipulation, (S2) ID-related violations, (S3) erroneous state updates, (S4) atomicity violation, (S5) privilege escalation, and (S6) erroneous accounting.
+
+!! Use of Cheaper GPT-3.5 
+
+! Methodology
+
+[img[Screenshot 2023-10-22 at 11.23.07.png]]
+
+!! Challenges
+
+* Big code base cannot be directly feed into GPT as a whole => narrow down the scope 
+
+<<<
+Can we break down vulnerability types in a manner that allows GPT, as a generic and intelligent code understanding tool, to recognize them directly from code-level semantics?
+<<<
+
+* Unreliable answers (FP?) => confirm vulnerabilities
+
+! Some Gadgets
+
+!! GPT's Disadvantages (may not be general to LLMs)
+
+<<<
+However, we found that GPT struggles to comprehend the concept of “before,”
+<<<
+
+!! Missing Context Can Cause FP
+
+<<< 
+For these two types, the main reason for the false alarms is that these vulnerabilities require specific triggering conditions involving other related logic, which may not be contained within a single function and its callers or callees. 
+<<<
+
+!! New Vulnerabilities
+
+<<<
+GPTScan successfully discovered 9 vulnerabilities from 3 different types, which did not appear in the audit reports of Code4rena
+<<<
+
+!! GPT4 
+We also conducted a preliminary test using GPT-4, but we did not
+observe a notable improvement, while the cost increased 20 times.
+
+! Prompts
+
+!! Prompt for scenario and property matching
+
+''System'': You are a smart contract auditor. You will be asked
+questions related to code properties. You can mimic answering them in the background five times and provide me
+with the most frequently appearing answer. Furthermore,
+please strictly adhere to the output format specified in the
+question; there is no need to explain your answer.
+
+''Scenario Matching''
+
+Given the following smart contract code, answer the
+questions below and organize the result in a json format
+like {"1": "Yes" or "No", "2": "Yes" or "No"}.
+
+"1": ''[%SCENARIO_1%]?''
+
+"2": ''[%SCENARIO_2%]?''
+
+''[%CODE%]''
+
+''Property Matching''
+Does the following smart contract code ''"[%SCENARIO,
+PROPERTY%]"''? Answer only "Yes" or "No".
+
+''[%CODE%]''
+
+!! Prompt for finding related variables/statements.
+
+In this function, which variable holds the value of total
+minted share or amount? Please answer in a section starts
+with "VariableA:".
+In this function, which variable or function holds the total
+supply/liquidity AND is used by the conditional branch to
+determine the supply/liquidity is 0? Please answer in a
+section starts with "VariableB:".
+In this function, which variable or function holds the
+value of the deposit/mint/add amount? Please answer in a
+section starts with "VariableC:".
+Please answer in the following json format:
+{"VariableA":{"Variable name":"Description"}, "VariableB":{"Variable name":"Description"}, "VariableC":{"Variable name":"Description"}}
+
+''[%CODE%]''

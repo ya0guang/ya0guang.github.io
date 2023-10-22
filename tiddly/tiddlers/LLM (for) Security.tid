@@ -1,13 +1,18 @@
 created: 20230906160959514
-modified: 20230907202002438
+modified: 20230907203751151
 tags: LLM Research Security Analysis
 title: LLM (for) Security
 type: text/vnd.tiddlywiki
 
-! Resources
+! Meta Research
 
 * [[LLM Security|https://llmsecurity.net/]]; twitter [[@llm_sec|https://twitter.com/llm_sec]]
+
+! Technical Reports
+
 * [[GPT-4 Technical Report|https://arxiv.org/pdf/2303.08774.pdf]]
+* [[CodeT5+: Open Code Large Language Models for Code Understanding and Generation]]
+* [[Tree of Thoughts: Deliberate Problem Solving with Large Language Models]]
 
 ! LLM for Security
 

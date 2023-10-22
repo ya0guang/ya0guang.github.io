@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.2.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>ConfLLVM: A Compiler for Enforcing Data Confidentiality in Low-Level Code: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Analysis tc-tagged-Paper tc-tagged-System tc-tagged-PL" data-tags="Analysis Paper System PL" data-tiddler-title="ConfLLVM: A Compiler for Enforcing Data Confidentiality in Low-Level Code" role="article"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><h2 class="tc-title">ConfLLVM: A Compiler for Enforcing Data Confidentiality in Low-Level Code</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div><div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a> October 22, 2023 at 11:16 am</div></div><div class=" tc-reveal"><div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Analysis"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">Analysis</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Paper"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">Paper</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="PL"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">PL</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="System"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
+fill:rgb(38, 38, 38);
+color:rgb(38, 38, 38);">System</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span></div></div><div class="tc-tiddler-body tc-reveal"><p><a class="tc-tiddlylink-external" href="https://people.mpi-sws.org/~dg/papers/eurosys19.pdf" rel="noopener noreferrer" target="_blank">PDF</a></p><h1 class="">Abstract</h1><p>We present a compiler-based scheme to protect the confidentiality of sensitive data in low-level applications (e.g. those written in C) in the presence of an active adversary. In our scheme, the programmer marks sensitive data by lightweight annotations on the top-level definitions in the source code. The compiler then uses a combination of static dataflow analysis, runtime instrumentation, and a novel taint-aware form of control-flow integrity to prevent data leaks even in the presence of low-level attacks. To reduce runtime overheads, the compiler uses a novel memory layout.</p><p>We implement our scheme within the LLVM framework and evaluate it on the standard SPEC-CPU benchmarks, and on larger, real-world applications, including the NGINX webserver and the OpenLDAP directory server. We find that the performance overheads introduced by our instrumentation are moderate (average 12% on SPEC), and the programmer effort to port the applications is minimal.</p><h1 class="">Methodology</h1><p><strong>Key insight</strong>: complete memory safety and perfect control-flow integrity (CFI) are neither sufficient nor necessary for preventing data leaks.</p><ul><li>Compiler performs dataflow analysis: analyzer infer expected type of taint</li><li>Different types are placed into two separate regions</li><li>Not requiring alias analysis</li><li>Exclude the compiler from the TCB via a tiny verifier</li></ul></div>
+</div></p>
+</section>
+</body>
+</html>
+
