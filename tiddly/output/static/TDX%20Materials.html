@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.3.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>TDX Materials: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Research tc-tagged-TDX tc-tagged-System" data-tags="Research TDX System" data-tiddler-title="TDX Materials" role="article"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><h2 class="tc-title">TDX Materials</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class="tc-reveal"></div><div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a> December 3, 2023 at 8:45 pm</div></div><div class=" tc-reveal"><div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Research"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">Research</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="System"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">System</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="TDX"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">TDX</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span></div></div><div class="tc-tiddler-body tc-reveal"><p><a class="tc-tiddlylink-external" href="https://www.intel.com/content/www/us/en/developer/tools/trust-domain-extensions/documentation.html" rel="noopener noreferrer" target="_blank">Documents AIO</a></p><h1 class="">Interesting Things</h1><ul><li>TDX defends agains side-channel attacks? </li></ul><blockquote class="tc-quote"><p>an example of such policy would be the module using the Indirect- Branch- Prediction Barrier (IBPB) when switching TDs to help keep a TD-indirect-branch prediction from being influenced by code in a previously executed TD.
+</p></blockquote><p>From <a class="tc-tiddlylink-external" href="https://cdrdv2.intel.com/v1/dl/getContent/690419" rel="noopener noreferrer" target="_blank">whitepaper</a>.</p><ul><li>PAMT (Physical-Address-Metadata Table) tracks pages mapped into the TD. Similar to RMP in SEV-SNP.</li><li>TD partitioning: TD Partitioning extends the base TDX architecture by allowing TDs to contain multiple virtual machines (VMs).</li><li>TD Preserving Architecture provides the ability to update TDX Module at runtime, while persisting TD State and minimum TD interruption.</li><li>Two EPTs: Secure Extended page table (private key ID + PA) and Shared Extended </li></ul><p>(shared key ID + PA) page table</p><h1 class="">Questions</h1><ul><li>Are the states of a TD encrypted?</li></ul></div>
+</div></p>
+</section>
+</body>
+</html>
+

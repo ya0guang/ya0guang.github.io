@@ -1,0 +1,16 @@
+created: 20231210023513993
+modified: 20231210024035345
+tags: PL System Paper Formal
+title: Why3: Shepherd Your Herd of Provers
+type: text/vnd.tiddlywiki
+
+! Abstract
+
+Why3 is the next generation of the Why software verification platform. Why3 clearly separates the purely logical specification part from generation of verification conditions for programs. This article focuses on the former part. Why3 comes with a new enhanced language of logical specification. It features a rich library of proof task transformations that can be chained to produce a suitable input for a large set of theorem provers, including SMT solvers, TPTP provers, as well as interactive proof assistants.
+
+! Methods
+
+# Provide a logic system (with grammar)
+# Can write theories (with grammar)
+# Converter: to SMT formats
+# Leverage other proof assistants (e.g., certificate in Coq)

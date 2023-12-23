@@ -1,0 +1,11 @@
+created: 20231027213908444
+modified: 20231027214333247
+tags: LLM Paper Analysis
+title: Frustrated with Code Quality Issues? LLMs can Help!
+type: text/vnd.tiddlywiki
+
+[[Arxiv|https://arxiv.org/pdf/2309.12938.pdf]]
+
+Code Fixing Framework using LLM
+
+Proposer + Ranker architecture => reduce FP

@@ -1,0 +1,18 @@
+created: 20231204021746877
+modified: 20231204035641175
+tags: TrustZone CCA Research System
+title: TEEs on ARM
+type: text/vnd.tiddlywiki
+
+The case is a bit more complex on ARM. This is like Intel, where TDX and SGX coexists.
+
+However, the things are different and more complex. 
+
+[[CCA Documents AIO|https://www.arm.com/architecture/security-features/arm-confidential-compute-architecture]]
+
+[img[ARMWorlds.png]]
+
+* Root: the combination of the Root security state and Root physical address space.
+* Normal: like the host on X86
+* Secure: has a Trusted OS (TOS). Virtualization to the Secure world allows you to manage multiple Secure Partitions in the Secure world. The Secure Partition Manager (SPM) has a similar functionality to the hypervisor in the Normal world.
+* Realm: contains confidential VM launched in the normal world.

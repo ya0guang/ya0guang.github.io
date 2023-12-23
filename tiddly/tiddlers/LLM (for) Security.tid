@@ -1,5 +1,5 @@
 created: 20230906160959514
-modified: 20230907203751151
+modified: 20231030011925101
 tags: LLM Research Security Analysis
 title: LLM (for) Security
 type: text/vnd.tiddlywiki
@@ -27,6 +27,8 @@ type: text/vnd.tiddlywiki
 
 * [[A New Era in Software Security: Towards Self-Healing Software via Large Language Models and Formal Verification]]
 * [[InferFix: End-to-End Program Repair with LLMs over Retrieval-Augmented Prompts]]
+* [[Frustrated with Code Quality Issues? LLMs can Help!]]
+* [[Examining Zero-Shot Vulnerability Repair with Large Language Models]]
 
 !! Code Analysis
 

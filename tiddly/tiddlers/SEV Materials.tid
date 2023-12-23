@@ -1,0 +1,23 @@
+created: 20231203151117969
+modified: 20231204004908973
+tags: SEV Research System
+title: SEV Materials
+type: text/vnd.tiddlywiki
+
+[[Documents AIO|https://www.amd.com/en/developer/sev.html]]
+
+! White Papers
+
+* [[AMD SEV-SNP: Strengthening VM Isolation with Integrity Protection and More|https://www.amd.com/content/dam/amd/en/documents/epyc-business-docs/white-papers/SEV-SNP-strengthening-vm-isolation-with-integrity-protection-and-more.pdf]]
+
+! Architectural Changes
+
+* C-bit: denoting the page is encrypted/not
+* Reverse Map Table (RMP): check the owner of the accessed pages
+* VMPL
+* vTOM (virtual top of memory): memory below vTOM is private and above vTOM is shared.
+
+! Questions
+
+* New CPU instructions enables RMP's manipulation, and these instructions are performed by the hyper => how to ensure that the hypervisor conducts these tasks in a trustworthy way? There is a Validated bit that is set by the guest via a new CPU instruction, `PVALIDATE`.
+* How, for the guest VMs, to know that the page is valid?

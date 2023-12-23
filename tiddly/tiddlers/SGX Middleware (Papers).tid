@@ -1,5 +1,5 @@
 created: 20210402141906526
-modified: 20210506154659730
+modified: 20231127164622564
 tags: Research Security SGX
 title: SGX Middleware (Papers)
 type: text/vnd.tiddlywiki
@@ -17,6 +17,10 @@ type: text/vnd.tiddlywiki
 * [[RATEL|Dynamic Binary Translation for SGX Enclaves (Ratel)]] 
 * CAT `Need updates`
 * Civet [[Paper|https://www.usenix.org/conference/usenixsecurity20/presentation/tsai]] (graphene)
+* Enarx
+* Oak
+* Mystikos
+
 
 !! Language-specific
 

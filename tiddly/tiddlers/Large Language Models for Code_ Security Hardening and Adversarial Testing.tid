@@ -1,0 +1,33 @@
+created: 20231201161633324
+modified: 20231203151058760
+tags: LLM Paper
+title: Large Language Models for Code: Security Hardening and Adversarial Testing
+type: text/vnd.tiddlywiki
+
+[[PDF|https://arxiv.org/pdf/2302.05319.pdf]]
+
+Propose a system: SVEN: property-specific continuous vectors to guide program generation towards the given property, without modifying the LM’s weights. 
+
+* Two studies: security hardening and adversarial testing
+
+
+!! Goods
+
+* Great evaluation result
+* Lots of efforts
+
+!! Questions
+
+* Does other methods degrade the performance (i.e., functional correctness?)
+* How do they evaluate functional correctness?
+* Does the training set contains source code of different lanauges?
+* Can we get the same performance via prompt engineering? I.e., using prompts to lead LLMs to the hidden state led by the vectors.
+
+!! Interesting Things
+
+* The refined model performs better on CWEs which are not covered in the training data.
+
+!! Lacks
+
+* Understanding: why the model performs well on other CWEs?
+* Only a baseline prompt is evaluated. What about more complex prompts?

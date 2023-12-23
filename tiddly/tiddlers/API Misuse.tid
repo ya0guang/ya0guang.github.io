@@ -1,0 +1,13 @@
+created: 20231030011926281
+modified: 20231030012024497
+tags: Research Paper
+title: API Misuse
+type: text/vnd.tiddlywiki
+
+! Surveys
+
+[[Detecting Misuses of Security APIs: A Systematic Review]]
+
+! Graph-based
+
+[[API-Misuse Detection Driven by Fine-Grained API-Constraint Knowledge Graph]]

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="generator" content="TiddlyWiki" />
-<meta name="tiddlywiki-version" content="5.2.3" />
+<meta name="tiddlywiki-version" content="5.3.3" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -16,21 +16,132 @@
 <body class="tc-body">
 
 <section class="tc-story-river tc-static-story-river">
-<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Attack tc-tagged-Fuzz tc-tagged-Paper tc-tagged-Research tc-tagged-Security tc-tagged-System tc-tagged-TrustZone" data-tags="Attack Fuzz Paper Research Security System TrustZone" data-tiddler-title="PARTEMU: Enabling Dynamic Analysis of Real-World TrustZone Software Using Emulation" role="article"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><h2 class="tc-title">PARTEMU: Enabling Dynamic Analysis of Real-World TrustZone Software Using Emulation</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class=" tc-reveal" hidden="true"></div><div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a> April 5, 2021 at 10:04 am</div></div><div class=" tc-reveal"><div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Attack"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
-fill:rgb(38, 38, 38);
-color:rgb(38, 38, 38);">Attack</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Fuzz"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
-fill:rgb(38, 38, 38);
-color:rgb(38, 38, 38);">Fuzz</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Paper"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
-fill:rgb(38, 38, 38);
-color:rgb(38, 38, 38);">Paper</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Research"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
-fill:rgb(38, 38, 38);
-color:rgb(38, 38, 38);">Research</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Security"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
-fill:rgb(38, 38, 38);
-color:rgb(38, 38, 38);">Security</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="System"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
-fill:rgb(38, 38, 38);
-color:rgb(38, 38, 38);">System</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="TrustZone"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="background-color:;
-fill:rgb(38, 38, 38);
-color:rgb(38, 38, 38);">TrustZone</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span></div></div><div class="tc-tiddler-body tc-reveal"><h1>PartEmu</h1><ul><li><em>USENIX Security 2020</em></li><li><a class="tc-tiddlylink-external" href="https://www.usenix.org/conference/usenixsecurity20/presentation/harrison" rel="noopener noreferrer" target="_blank">Paper</a></li><li><strong>Source code unavailable</strong></li></ul><p>Traditional TrustZone OSes and Applications is not easy to fuzz because they cannot be instrumented or modified easily in the original hardware environment. So to emulate them for fuzzing purpose.</p><h2>Targets</h2><ul><li>Emulate TrustZone OSes(TZOS) and Trusted Applications (TAs)</li><li>Abstract and reimplement a subset of hardware/software interfaces</li><li>Fuzz these components</li><li>TZOSes: QSEE, Huawei, OPTEE, Kinibi, TEEGRIS(Samsung) &amp; TAs</li></ul><h2>Design &amp; Method</h2><p><img class=" tc-image-loading" src="https://ya0guang.com/assets/images/CCPapers/PARTEMU2.png" title="Architecture"></p><ul><li>Re-host the TZOS frimware</li><li>Choose the components to reuse/emulate carefully<ul><li>Bootloader</li><li>Secure Monitor</li><li>TEE driver and TEE userspace</li><li>MMIO registers (easy to emulate)</li></ul></li></ul><h3>Tools</h3><ul><li>TriforceAFL + QEMU</li><li>Manually written Interfaces</li></ul><h2>Results</h2><p>Emulations works well. For upgraded TZOSes, only a few efforts are needed for compatibility.</p><h3>TAs</h3><h4>Challenges</h4><ul><li>Identifying the fuzzed target</li><li>Result stability (migrate to hardware, reproducibility)</li><li>Randomness</li></ul><table><thead><tr><th>Class</th><th>Vulnerability Types</th><th>Crashes</th></tr></thead><tbody><tr><td>Availability</td><td>Null-pointer  dereferences</td><td>9</td></tr><tr><td></td><td>Insufficient shared memory crashes</td><td>10</td></tr><tr><td></td><td>Other</td><td>8</td></tr><tr><td>Confidentiality</td><td>Read from attacker-controlled pointer  to shared memory</td><td>8</td></tr><tr><td></td><td>Read from attacker-controlled</td><td>0</td></tr><tr><td></td><td>OOB buffer length to shared memory</td></tr><tr><td>Integrity</td><td>Write to secure memory using  attacker-controlled pointer</td><td>11</td></tr><tr><td></td><td>Write to secure memory using</td><td>2</td></tr><tr><td></td><td>attacker-controlled OOB buffer length</td><td></td></tr></tbody></table><p>Just like the previous paper, the main causes of the crashes can be attributed to:</p><ul><li>Assumptions of Normal-World Call Sequence</li><li>Unvalidated Pointers from Normal World</li><li>Unvalidated Types</li></ul><h3>TZOSes</h3><ul><li>Normal-World Checks</li><li>Assumptions of Normal-World Call Sequence</li></ul><h2>Review</h2><h3>Strength</h3><ul><li>Solid work</li><li>Efforts taken to run TZOS and TA in emulation environment</li><li>Acceptable performance</li></ul><h3>Weakness</h3><ul><li>Low coverage</li><li>Crashes -X-&gt; vulnerabilities</li></ul></div>
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Attack tc-tagged-Fuzz tc-tagged-Paper tc-tagged-Research tc-tagged-Security tc-tagged-System tc-tagged-TrustZone" data-tags="Attack Fuzz Paper Research Security System TrustZone" data-tiddler-title="PARTEMU: Enabling Dynamic Analysis of Real-World TrustZone Software Using Emulation" role="article"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><h2 class="tc-title">PARTEMU: Enabling Dynamic Analysis of Real-World TrustZone Software Using Emulation</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class="tc-reveal"></div><div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a> April 5, 2021 at 10:04 am</div></div><div class=" tc-reveal"><div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Attack"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">Attack</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Fuzz"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">Fuzz</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Paper"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">Paper</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Research"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">Research</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Security"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">Security</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="System"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">System</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="TrustZone"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">TrustZone</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span></div></div><div class="tc-tiddler-body tc-reveal"><div class="markdown">
+<h1>PartEmu</h1>
+<ul>
+<li><em>USENIX Security 2020</em></li>
+<li><a class="tc-tiddlylink-external _codified_" href="https://www.usenix.org/conference/usenixsecurity20/presentation/harrison" rel="noopener noreferrer" target="_blank">Paper</a></li>
+<li><strong>Source code unavailable</strong></li>
+</ul>
+<p>Traditional TrustZone OSes and Applications is not easy to fuzz because they cannot be instrumented or modified easily in the original hardware environment. So to emulate them for fuzzing purpose.
+</p>
+<h2>Targets</h2>
+<ul>
+<li>Emulate TrustZone OSes(TZOS) and Trusted Applications (TAs)</li>
+<li>Abstract and reimplement a subset of hardware/software interfaces</li>
+<li>Fuzz these components</li>
+<li>TZOSes: QSEE, Huawei, OPTEE, Kinibi, TEEGRIS(Samsung) &amp; TAs</li>
+</ul>
+<h2>Design &amp; Method</h2>
+<p><img alt="Architecture" class=" tc-image-loading" src="https://ya0guang.com/assets/images/CCPapers/PARTEMU2.png">
+</p>
+<ul>
+<li>Re-host the TZOS frimware</li>
+<li>Choose the components to reuse/emulate carefully
+<ul>
+<li>Bootloader</li>
+<li>Secure Monitor</li>
+<li>TEE driver and TEE userspace</li>
+<li>MMIO registers (easy to emulate)</li>
+</ul>
+</li>
+</ul>
+<h3>Tools</h3>
+<ul>
+<li>TriforceAFL + QEMU</li>
+<li>Manually written Interfaces</li>
+</ul>
+<h2>Results</h2>
+<p>Emulations works well. For upgraded TZOSes, only a few efforts are needed for compatibility.
+</p>
+<h3>TAs</h3>
+<h4>Challenges</h4>
+<ul>
+<li>Identifying the fuzzed target</li>
+<li>Result stability (migrate to hardware, reproducibility)</li>
+<li>Randomness</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th>Vulnerability Types</th>
+<th>Crashes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Availability</td>
+<td>Null-pointer  dereferences</td>
+<td>9</td>
+</tr>
+<tr>
+<td></td>
+<td>Insufficient shared memory crashes</td>
+<td>10</td>
+</tr>
+<tr>
+<td></td>
+<td>Other</td>
+<td>8</td>
+</tr>
+<tr>
+<td>Confidentiality</td>
+<td>Read from attacker-controlled pointer  to shared memory</td>
+<td>8</td>
+</tr>
+<tr>
+<td></td>
+<td>Read from attacker-controlled</td>
+<td>0</td>
+</tr>
+<tr>
+<td></td>
+<td>OOB buffer length to shared memory</td>
+<td></td>
+</tr>
+<tr>
+<td>Integrity</td>
+<td>Write to secure memory using  attacker-controlled pointer</td>
+<td>11</td>
+</tr>
+<tr>
+<td></td>
+<td>Write to secure memory using</td>
+<td>2</td>
+</tr>
+<tr>
+<td></td>
+<td>attacker-controlled OOB buffer length</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Just like the previous paper, the main causes of the crashes can be attributed to:
+</p>
+<ul>
+<li>Assumptions of Normal-World Call Sequence</li>
+<li>Unvalidated Pointers from Normal World</li>
+<li>Unvalidated Types</li>
+</ul>
+<h3>TZOSes</h3>
+<ul>
+<li>Normal-World Checks</li>
+<li>Assumptions of Normal-World Call Sequence</li>
+</ul>
+<h2>Review</h2>
+<h3>Strength</h3>
+<ul>
+<li>Solid work</li>
+<li>Efforts taken to run TZOS and TA in emulation environment</li>
+<li>Acceptable performance</li>
+</ul>
+<h3>Weakness</h3>
+<ul>
+<li>Low coverage</li>
+<li>Crashes -X-&gt; vulnerabilities</li>
+</ul>
+</div></div>
 </div></p>
 </section>
 </body>
