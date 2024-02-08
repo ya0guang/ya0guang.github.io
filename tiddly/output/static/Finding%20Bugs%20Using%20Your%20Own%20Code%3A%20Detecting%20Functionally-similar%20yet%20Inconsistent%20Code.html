@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.3.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>Finding Bugs Using Your Own Code: Detecting Functionally-similar yet Inconsistent Code: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Detection tc-tagged-Paper" data-tags="Detection Paper" data-tiddler-title="Finding Bugs Using Your Own Code: Detecting Functionally-similar yet Inconsistent Code" role="article"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><h2 class="tc-title">Finding Bugs Using Your Own Code: Detecting Functionally-similar yet Inconsistent Code</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class="tc-reveal"></div><div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a> February 1, 2024 at 4:01 pm</div></div><div class=" tc-reveal"><div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Detection"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">Detection</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Paper"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">Paper</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span></div></div><div class="tc-tiddler-body tc-reveal"><p>Applying cluster on code to find inconsistency.</p><p><strong>Key insight</strong>: Our approach is inspired by the observation that many bugs in software manifest as inconsistencies deviating from their non-buggy counterparts, namely the code snippets that implement the similar logic in the same codebase. Such bugs, regardless of their types, can be detected by identifying functionally-similar yet inconsistent code snippets in the same codebase</p><h1 class="">Pros</h1><ul><li>Two-level clustering</li><li>Embedding on program dependency graph</li><li>Found bugs (at function level) in large projects</li><li>Embedding on code structures</li><li>Generality</li></ul><h1 class="">Cons</h1><ul><li>Need repo-specific training</li><li>Literals are removed at the IR level </li></ul><blockquote class="tc-quote"><p>To abstract Constructs, we preserve only the variable types for each program statement and remove all variable names and versions.
+</p></blockquote><ul><li>Needs repository-specific configuration of thresholds</li><li>Still very high FP</li></ul><h1 class="">Others</h1><ul><li>Granularity at the function level</li></ul><blockquote class="tc-quote"><p>If an inconsistent cluster contains more than a fixed number (e.g., 2) of deviating nodes (i.e., nodes in Table 2), the inconsistency is deprioritized because it is unlikely to be a true inconsistency (i.e., a single inconsistency rarely involves many deviations).
+</p></blockquote></div>
+</div></p>
+</section>
+</body>
+</html>
+

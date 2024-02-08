@@ -1,0 +1,14 @@
+created: 20240208182548282
+modified: 20240208182848590
+tags: Paper GPUTEE System
+title: Honeycomb: Secure and Efficient GPU Executions via Static Validation
+type: text/vnd.tiddlywiki
+
+OSDI'23
+
+[img[honeycomb.png]]
+
+* Huge implementation effort
+* Type 1 hypervisor
+* Static analysis (validator-based)
+* Still need to rely on the driver (but not //fully// trust it)

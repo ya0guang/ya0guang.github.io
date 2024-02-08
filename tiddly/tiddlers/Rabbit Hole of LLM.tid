@@ -1,0 +1,22 @@
+created: 20231228190135256
+modified: 20231229021630813
+tags: LLM
+title: Rabbit Hole of LLM
+type: text/vnd.tiddlywiki
+
+! Background
+
+!! Transformer
+
+* Learn by this video [[YouTube: Hung-yi Lee, Transformer|https://www.youtube.com/watch?v=ugWDIIOHtPA]]
+* Summarized in [[these tweets|https://twitter.com/cwolferesearch/status/1641932082283700226?s=20]]
+
+!!! Questions
+
+* How do we train those weight matrixes?
+
+! Blog Posts
+
+* [[Language Model Training and Inference: From Concept to Code|https://cameronrwolfe.substack.com/p/language-model-training-and-inference]]  [img[gpt_decoder.png]]
+[img[gpt_inference.png]]
+* [[Graph-Based Prompting and Reasoning with Language Models|https://cameronrwolfe.substack.com/p/graph-based-prompting-and-reasoning#%C2%A7the-transformer-from-top-to-bottom]]

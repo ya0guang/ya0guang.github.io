@@ -1,0 +1,34 @@
+created: 20240201205135286
+modified: 20240201210114062
+tags: Detection Paper
+title: Finding Bugs Using Your Own Code: Detecting Functionally-similar yet Inconsistent Code
+type: text/vnd.tiddlywiki
+
+Applying cluster on code to find inconsistency.
+
+''Key insight'': Our approach is inspired by the observation that many bugs in software manifest as inconsistencies deviating from their non-buggy counterparts, namely the code snippets that implement the similar logic in the same codebase. Such bugs, regardless of their types, can be detected by identifying functionally-similar yet inconsistent code snippets in the same codebase
+
+! Pros
+
+* Two-level clustering
+* Embedding on program dependency graph
+* Found bugs (at function level) in large projects
+* Embedding on code structures
+* Generality
+
+! Cons
+
+* Need repo-specific training
+* Literals are removed at the IR level 
+<<<
+To abstract Constructs, we preserve only the variable types for each program statement and remove all variable names and versions.
+<<<
+* Needs repository-specific configuration of thresholds
+* Still very high FP
+
+! Others
+
+* Granularity at the function level
+<<<
+If an inconsistent cluster contains more than a fixed number (e.g., 2) of deviating nodes (i.e., nodes in Table 2), the inconsistency is deprioritized because it is unlikely to be a true inconsistency (i.e., a single inconsistency rarely involves many deviations).
+<<<

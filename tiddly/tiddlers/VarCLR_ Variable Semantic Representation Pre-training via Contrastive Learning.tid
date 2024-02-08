@@ -1,0 +1,11 @@
+created: 20240202205524472
+modified: 20240205202542432
+tags: Paper
+title: VarCLR: Variable Semantic Representation Pre-training via Contrastive Learning
+type: text/vnd.tiddlywiki
+
+[[Paper|https://dl.acm.org/doi/pdf/10.1145/3510003.3510162]]
+
+There is a dataset: GitHubRenames
+
+* Variable Spelling Error Correction (released database)

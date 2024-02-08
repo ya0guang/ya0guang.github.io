@@ -1,0 +1,17 @@
+created: 20240202203351299
+modified: 20240202203744853
+tags: Paper
+title: Deep Just-In-Time Inconsistency Detection Between Comments and Source Code
+type: text/vnd.tiddlywiki
+
+AAAI'21, [[PDF|https://arxiv.org/pdf/2010.01625.pdf]]
+
+! Abstract
+
+Natural language comments convey key aspects of source code such as implementation, usage, and pre- and postconditions. Failure to update comments accordingly when the corresponding code is modified introduces inconsistencies, which is known to lead to confusion and software bugs. In this paper, we aim to detect whether a comment becomes inconsistent as a result of changes to the corresponding body of code, in order to catch potential inconsistencies just-in-time, i.e., before they are committed to a code base. To achieve this, we develop a deep-learning approach that learns to correlate a comment with code changes. By evaluating on a large corpus of comment/code pairs spanning various comment types, we show that our model outperforms multiple baselines by significant margins. For extrinsic evaluation, we show the usefulness of our approach by combining it with a comment update model to build a more comprehensive automatic comment maintenance system which can both detect and resolve inconsistent comments based on code changes.
+
+[img[Screenshot 2024-02-02 at 15.34.39.png]]
+
+* Learn on AST code edit (GGNN, gated graph neural networks)
+* BiGRU encoding
+* Use in //post hoc// and //just-in-time// from commit
