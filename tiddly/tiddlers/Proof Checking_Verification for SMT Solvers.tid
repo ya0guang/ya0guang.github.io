@@ -1,0 +1,32 @@
+created: 20240414213539725
+modified: 20240502173615508
+tags: Formal System Paper
+title: Proof Checking/Verification for SMT Solvers
+type: text/vnd.tiddlywiki
+
+! Survey
+
+* [[Proofs for Satisfiability Problems|https://cca.informatik.uni-freiburg.de/papers/HeuleBiere-APPA15.pdf]]
+* [[Generating and Exploiting Automated Reasoning Proof Certificates|https://dl.acm.org/doi/pdf/10.1145/3587692]]
+* [[PROOFS FOR SMT|https://z3prover.github.io/slides/proofs.html#/]]
+
+! Projects
+
+* [[SMTCoq|https://smtcoq.github.io/]]
+
+! Verifiers
+
+* [[SMTCoq: A Plug-In for Integrating SMT Solvers into Coq|https://link.springer.com/chapter/10.1007/978-3-319-63390-9_7]]
+* [[CARCARA: An Efficient Proof Checker and Elaborator for SMT Proofs in the Alethe Format|https://link.springer.com/chapter/10.1007/978-3-031-30823-9_19]]
+* [[A Resolution-Based Interactive Proof System for UNSAT|https://link.springer.com/chapter/10.1007/978-3-031-57231-9_6]]
+
+! Proof Formats
+
+* [[RESOLUTE|https://ultimate.informatik.uni-freiburg.de/smtinterpol/proof-format.html]]
+* [[LFSC|https://github.com/cvc5/LFSC]] CVC5
+* [[DRAT-based Bit-Vector Proofs in CVC4|https://u.cs.biu.ac.il/~zoharyo1/sat19.pdf]]
+* [[The Alethe Proof Format|https://verit.gitlabpages.uliege.be/alethe/specification.pdf]]
+
+! Work Based on Proof Checking
+
+* [[ZKSMT: A VM for Proving SMT Theorems in Zero Knowledge|https://www.cs.yale.edu/homes/antonopoulos-timos/USENIX-Security-2024.pdf]]

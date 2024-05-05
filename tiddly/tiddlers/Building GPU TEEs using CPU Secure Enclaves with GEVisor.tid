@@ -1,0 +1,34 @@
+created: 20240208202407987
+modified: 20240208210756627
+tags: GPUTEE System Paper
+title: Building GPU TEEs using CPU Secure Enclaves with GEVisor
+type: text/vnd.tiddlywiki
+
+SoCC'23
+
+! System
+
+* Trust TPM & Secure Boot
+* Security Monitor implemented at VMX-root level, and the model(with implementation) are formally verified.
+* Enforce access control by trapping instrcuctions
+
+[img[GEVisor.png]]
+
+[img[GEVisor2.png]]
+
+!! Covered Attacks Surfaces
+
+* DMA buffer
+* MMIO mapping
+* GPU context
+
+Attack vectors targeting these surfaces:
+
+* Malicious peripherals
+* Concurrent CPU Access (specific to GEVisor)
+
+!! Question
+
+* How to ensure the integrity of Hypercalls? (i.e., protect the ring buffer)
+* How to //prove// ''active'' attackers would be detected by GEVisor? (and how to define active attackers?)
+* Why does the formal verification pass for GEVisor with flaws? (or what does //pass// mean for GEVisor?)

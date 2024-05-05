@@ -1,0 +1,17 @@
+created: 20240414212008160
+modified: 20240502173617380
+tags: PL Paper System Defense Formal
+title: PCC: Conventional and Foundational
+type: text/vnd.tiddlywiki
+
+! Conventional
+
+* [[Proof-carrying code|https://dl.acm.org/doi/pdf/10.1145/263699.263712]]
+* [[A certifying compiler for Java|https://dl.acm.org/doi/pdf/10.1145/358438.349315]]
+
+! Foundational
+
+* [[Foundational proof-carrying code|https://www.cs.princeton.edu/~appel/papers/fpcc.pdf]]
+* [[A Syntactic Approach to Foundational Proof-Carrying Code|https://personal.utdallas.edu/~hamlen/Papers/hamid02.pdf]]
+* [[An Open Framework for Foundational Proof-Carrying Code|https://flint.cs.yale.edu/certikos/publications/ocap.pdf]]
+* [[Interfacing Hoare Logic and Type Systems for Foundational Proof-Carrying Code|https://flint.cs.yale.edu/flint/publications/rtpcc.pdf]]
