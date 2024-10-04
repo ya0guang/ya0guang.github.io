@@ -1,0 +1,12 @@
+created: 20240919193642043
+modified: 20240919193740008
+tags: Paper System IFC
+title: Information Flow Tracking for Heterogeneous Compartmentalized Software
+type: text/vnd.tiddlywiki
+
+* [[Paper|https://dl.acm.org/doi/10.1145/3607199.3607235]]
+
+! Abstract
+
+We are now seeing increased hardware support for improving the security and performance of privilege separation and compartmentalization techniques. Today, developers can benefit from multiple compartmentalization mechanisms such as process-based sandboxes, trusted execution environments (TEEs)/enclaves, and even intra-address space compartments (i.e., intra-process or intra-enclave). We dub such a computing model a “hetero-compartment” environment and observe that existing system stacks still assume single-compartment models (i.e., user space processes), leading to limitations in using, integrating, and monitoring heterogeneous compartments from a security and performance perspective.
+We introduce Deluminator, a set of OS abstractions and a userspace framework to enable extensible and fine-grained information flow tracking in hetero-compartment environments. Deluminator allows developers to securely use and combine compartments, define security policies over shared system resources, and audit policy violations and perform digital forensics across heterogeneous compartments. We implemented Deluminator on Linux-based ARM and x86-64 platforms, which supports diverse compartment types ranging from processes, SGX enclaves, TrustZone Trusted Apps (TAs), and intra-address space compartments. Our evaluation shows that our kernel and hardware-assisted approach results in a reasonable overhead (on average 7-29%) that makes it suitable for real-world applications.

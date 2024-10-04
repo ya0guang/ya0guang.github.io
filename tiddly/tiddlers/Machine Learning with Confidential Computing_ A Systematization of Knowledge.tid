@@ -1,0 +1,9 @@
+created: 20240917210104037
+modified: 20240917210358138
+tags: Paper SGX SEV TDX System AI GPUTEE
+title: Machine Learning with Confidential Computing: A Systematization of Knowledge
+type: text/vnd.tiddlywiki
+
+This is an interesting work.
+
+The idea of GPU record and replay combining with TEE can be trace back to 2021 from an arxiv paper: [[Safe and Practical GPU Acceleration in TrustZone|https://arxiv.org/pdf/2111.03065]]. This should be the arxiv version of the ASPLOS'22 paper [[GPUReplay: a 50-KB GPU stack for client ML|https://dl.acm.org/doi/abs/10.1145/3503222.3507754]].

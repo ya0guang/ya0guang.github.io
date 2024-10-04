@@ -1,0 +1,19 @@
+created: 20241004212314651
+modified: 20241004213031078
+tags: Paper Research System Defense
+title: Software Debloating
+type: text/vnd.tiddlywiki
+
+Diving into this topic, I found that there are plenty of questions regarding this idea.
+
+! Questions
+
+* What are the motivations?
+** Reducing available gadgets seems like a good motivation, but it's not clear whether this can enhance software security. There seems to be other factors: whether these gadgets are exploitable?
+* How to measure the effectiveness of debloating?
+** This is a more complex question. As 1) how to assure the trimmed software components are not used by users? and 2) how to claim the security is indeed enhanced?
+** The metrics seem to be too indirect. For example, reduced #gadgets cannot represent how many ''exploitable'' vulnerabilities are fixed.
+
+! Papers
+
+* [[Is Less Really More? Towards Better Metrics for Measuring Security Improvements Realized Through Software Debloating|https://www.usenix.org/conference/cset19/presentation/brown]]

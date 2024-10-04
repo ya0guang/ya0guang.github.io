@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.3.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>Evaluating Fuzz Testing: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-Paper" data-tags="Paper" data-tiddler-title="Evaluating Fuzz Testing" role="article"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><h2 class="tc-title">Evaluating Fuzz Testing</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class="tc-reveal"></div><div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a> October 3, 2024 at 6:11 pm</div></div><div class=" tc-reveal"><div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Paper"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">Paper</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span></div></div><div class="tc-tiddler-body tc-reveal"><h1 class="">Abstract</h1><p>Fuzz testing has enjoyed great success at discovering security critical bugs in real software. Recently, researchers have devoted significant effort to devising new fuzzing techniques, strategies, and algorithms. Such new ideas are primarily evaluated experimentally so an important question is: What experimental setup is needed to produce trustworthy results? We surveyed the recent research literature and assessed the experimental evaluations carried out by 32 fuzzing papers. We found problems in every evaluation we considered. We then performed our own extensive experimental evaluation using an existing fuzzer. Our results showed that the general problems we found in existing experimental evaluations can indeed translate to actual wrong or misleading assessments. We conclude with some guidelines that we hope will help improve experimental evaluations of fuzz testing algorithms, making reported results more robust.</p><ul><li><a class="tc-tiddlylink-external" href="https://dl.acm.org/doi/10.1145/3243734.3243804" rel="noopener noreferrer" target="_blank">Paper</a></li></ul><p>This is a very interesting paper. It points out some "unscientific" aspects in fuzzing, including:</p><ul><li>Not unified test suite and various fuzzing targets (also different versions)</li><li>Important factors like execution time and seed selection</li></ul><p>They suggest using more statistical methodology (e.g., statistical tests) to support one fuzzer beats another.</p><ul><li>Interestingly, there is a new SoK paper in 2024 discussing this similar topic: <a class="tc-tiddlylink-external" href="https://ieeexplore.ieee.org/abstract/document/10646824" rel="noopener noreferrer" target="_blank">SoK: Prudent Evaluation Practices for Fuzzing</a>.</li></ul></div>
+</div></p>
+</section>
+</body>
+</html>
+

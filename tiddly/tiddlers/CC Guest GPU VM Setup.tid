@@ -1,0 +1,18 @@
+created: 20241001202840014
+modified: 20241001203311959
+tags: System Linux
+title: CC Guest GPU VM Setup
+type: text/vnd.tiddlywiki
+
+! After Reboot
+
+
+```sh
+# On Host
+sudo modprobe vfio-pci
+sudo sh -c "echo 10de 2331 > /sys/bus/pci/drivers/vfio-pci/new_id"
+# Optionally 
+sudo python3 ./nvidia_gpu_tools.py --gpu-name=H100 --set-cc-mode=devtools --reset-after-cc-mode-switch
+# Launch VM; In VM
+sudo nvidia-smi conf-compute -srs 1
+```

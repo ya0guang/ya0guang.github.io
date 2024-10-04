@@ -1,0 +1,33 @@
+created: 20240505211124628
+modified: 20240509010252030
+tags: LLM Attack
+title: Attack in Compositional AI Systems
+type: text/vnd.tiddlywiki
+
+! Research Papers
+
+!! Attacks
+
+* [[A New Era in LLM Security: Exploring Security Concerns in Real-World LLM-based Systems|https://arxiv.org/abs/2402.18649]]
+* [[A First Look at GPT Apps: Landscape and Vulnerability|https://arxiv.org/pdf/2402.15105]] steals system prompt/files
+* [[LLM Platform Security: Applying a Systematic Evaluation Framework to OpenAI’s ChatGPT Plugins|https://arxiv.org/pdf/2309.10254]]
+* [[Demystifying RCE Vulnerabilities in LLM-Integrated Apps|https://arxiv.org/pdf/2309.02926]] RCE based on prompts
+
+!! Defense
+
+* [[SECGPT: An Execution Isolation Architecture for LLM-Based Systems|https://arxiv.org/pdf/2403.04960]]
+[img[secgpt.png]]
+
+!! MISC
+
+* [[Whispers in the Machine: Confidentiality in LLM-integrated Systems|https://arxiv.org/pdf/2402.06922]]
+
+! Previous Attack
+
+* [[XSS|https://www.imperva.com/blog/xss-marks-the-spot-digging-up-vulnerabilities-in-chatgpt/]]
+* [[Cache Deception|https://nokline.github.io/bugbounty/2024/02/04/ChatGPT-ATO.html]]
+* [[Unauthorized access|https://salt.security/blog/security-flaws-within-chatgpt-extensions-allowed-access-to-accounts-on-third-party-websites-and-sensitive-data]]
+
+! Jailbreak
+
+* [[DAN|https://gist.github.com/coolaj86/6f4f7b30129b0251f61fa7baaa881516]]

@@ -1,0 +1,21 @@
+created: 20241002210752704
+modified: 20241003221122237
+tags: Paper
+title: Evaluating Fuzz Testing
+type: text/vnd.tiddlywiki
+
+! Abstract
+
+Fuzz testing has enjoyed great success at discovering security critical bugs in real software. Recently, researchers have devoted significant effort to devising new fuzzing techniques, strategies, and algorithms. Such new ideas are primarily evaluated experimentally so an important question is: What experimental setup is needed to produce trustworthy results? We surveyed the recent research literature and assessed the experimental evaluations carried out by 32 fuzzing papers. We found problems in every evaluation we considered. We then performed our own extensive experimental evaluation using an existing fuzzer. Our results showed that the general problems we found in existing experimental evaluations can indeed translate to actual wrong or misleading assessments. We conclude with some guidelines that we hope will help improve experimental evaluations of fuzz testing algorithms, making reported results more robust.
+
+
+* [[Paper|https://dl.acm.org/doi/10.1145/3243734.3243804]]
+
+This is a very interesting paper. It points out some "unscientific" aspects in fuzzing, including:
+
+* Not unified test suite and various fuzzing targets (also different versions)
+* Important factors like execution time and seed selection
+
+They suggest using more statistical methodology (e.g., statistical tests) to support one fuzzer beats another.
+
+* Interestingly, there is a new SoK paper in 2024 discussing this similar topic: [[SoK: Prudent Evaluation Practices for Fuzzing|https://ieeexplore.ieee.org/abstract/document/10646824]].
