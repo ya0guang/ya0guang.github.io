@@ -1,5 +1,5 @@
 created: 20241004212314651
-modified: 20241004213031078
+modified: 20241005020819002
 tags: Paper Research System Defense
 title: Software Debloating
 type: text/vnd.tiddlywiki
@@ -10,10 +10,23 @@ Diving into this topic, I found that there are plenty of questions regarding thi
 
 * What are the motivations?
 ** Reducing available gadgets seems like a good motivation, but it's not clear whether this can enhance software security. There seems to be other factors: whether these gadgets are exploitable?
+
 * How to measure the effectiveness of debloating?
 ** This is a more complex question. As 1) how to assure the trimmed software components are not used by users? and 2) how to claim the security is indeed enhanced?
 ** The metrics seem to be too indirect. For example, reduced #gadgets cannot represent how many ''exploitable'' vulnerabilities are fixed.
 
+* It seems to me this idea aligns ''conditional compilation''. What are the differences?
+
 ! Papers
 
-* [[Is Less Really More? Towards Better Metrics for Measuring Security Improvements Realized Through Software Debloating|https://www.usenix.org/conference/cset19/presentation/brown]]
+!! [[Is Less Really More? Towards Better Metrics for Measuring Security Improvements Realized Through Software Debloating|https://www.usenix.org/conference/cset19/presentation/brown]]
+
+This work points out that although #gadgets is can be reduced by some of the debloating tools, they sometimes actually introduce more gadgets that enhances the expressiveness of potential attacks. However, it's still not clear to me whether these introduced gadgets are indeed exploitable.
+
+!! [[A Broad Comparative Evaluation of Software Debloating Tools|https://www.usenix.org/system/files/usenixsecurity24-brown.pdf]]
+
+This work is more interesting. Seems like nearly all of the existing tools designed for software debloating are effective neither on security nor performance.
+
+! Potential Directions
+
+Maybe LLMs can aid this? Found an interesting paper: [[LPR: Large Language Models-Aided Program Reduction|https://dl.acm.org/doi/abs/10.1145/3650212.3652126]]

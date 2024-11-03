@@ -1,0 +1,8 @@
+created: 20241103210226543
+modified: 20241103213909295
+tags: AI Paper Attack SideChannel
+title: LM Side-channel
+type: text/vnd.tiddlywiki
+
+* [[What Was Your Prompt? A Remote Keylogging Attack on AI Assistants|https://www.usenix.org/conference/usenixsecurity24/presentation/weiss]] Usenix'24, packet length
+* [[The Early Bird Catches the Leak: Unveiling Timing Side Channels in LLM Serving Systems||https://arxiv.org/pdf/2409.20002]] arxiv, KV cache

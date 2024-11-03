@@ -1,0 +1,19 @@
+created: 20241007001535822
+modified: 20241007002124630
+tags: Paper SE AI
+title: Evaluating Complexity, Code Churn, and Developer Activity Metrics as Indicators of Software Vulnerabilities
+type: text/vnd.tiddlywiki
+
+! Abstract
+
+Security inspection and testing require experts in security who think like an attacker. Security experts need to know code locations on which to focus their testing and inspection efforts. Since vulnerabilities are rare occurrences, locating vulnerable code locations can be a challenging task. We investigated whether software metrics obtained from source code and development history are discriminative and predictive of vulnerable code locations. If so, security experts can use this prediction to prioritize security inspection and testing efforts. The metrics we investigated fall into three categories: complexity, code churn, and developer activity metrics. We performed two empirical case studies on large, widely used open-source projects: the Mozilla Firefox web browser and the Red Hat Enterprise Linux kernel. The results indicate that 24 of the 28 metrics collected are discriminative of vulnerabilities for both projects. The models using all three types of metrics together predicted over 80 percent of the known vulnerable files with less than 25 percent false positives for both projects. Compared to a random selection of files for inspection and testing, these models would have reduced the number of files and the number of lines of code to inspect or test by over 71 and 28 percent, respectively, for both projects.
+
+* [[Paper|https://ieeexplore.ieee.org/document/5560680]]
+
+! Discussion
+
+This is an interesting work, analyzing factors which can be used as the indicator to predict which file(s) in a project may contain vulnerabilities. But there are still several questions:
+
+* Can these conclusions/observations be applied to ''other'' projects/languages?
+* Is there a universal threshold to predict if a source file contain a bug? Or these criteria are just project-wise.
+* If single factors already do well for prediction, why do we (in practice) consider multiple factors?

@@ -1,0 +1,17 @@
+created: 20241022193936214
+modified: 20241022194640840
+tags: Research Paper
+title: Decentralized Information Flow Control
+type: text/vnd.tiddlywiki
+
+! Theoretical Foundations
+
+* [[A decentralized model for information flow control|https://dl.acm.org/doi/pdf/10.1145/269005.266669]]
+
+! Important Papers
+
+* [[Information flow control for standard OS abstractions|https://dl.acm.org/doi/pdf/10.1145/1323293.1294293]]
+
+! Related Papers
+
+* [[P4Control: Line-Rate Cross-Host Attack Prevention via In-Network Information Flow Control Enabled by Programmable Switches and eBPF|https://arxiv.org/pdf/2405.14970]]
