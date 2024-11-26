@@ -1,0 +1,15 @@
+created: 20241126212548842
+modified: 20241126213538654
+tags: Paper Defense Network System
+title: P4CONTROL: Line-Rate Cross-Host Attack Prevention via In-Network Information Flow Control Enabled by Programmable Switches and eBPF
+type: text/vnd.tiddlywiki
+
+* [[PDF|https://people.cs.vt.edu/penggao/papers/p4control-sp24.pdf]]
+
+This is an interesting work. It enforces Decentralized Information Flow Control (DIFC) using network switches and OS (using eBPF). They designed a new language to express DIFC policies and can introduce very low overhead on DIFC enforcement.
+
+Although the project only contains 4K LoC, they've conducted extensive evaluation, and some of the evaluations were on simulated environment.
+
+! Questions
+
+* As P4Control enforces DIFC at the file level, the tags may not be enough (e.g., only 256 different tags)?

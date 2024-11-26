@@ -673,5 +673,3 @@ static inline pgprot_t uvm_pgprot_decrypted(pgprot_t prot)
 ```
 
 The memory is decrypted by the kernel at here: `pgprot_decrypted`.
-
-
