@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="generator" content="TiddlyWiki" />
+<meta name="tiddlywiki-version" content="5.3.3" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="format-detection" content="telephone=no">
+<link id="faviconLink" rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="static.css">
+<title>Disk Encryption in CVMs: ya0guang's notebook — Personality Backup</title>
+</head>
+<body class="tc-body">
+
+<section class="tc-story-river tc-static-story-river">
+<p><div class="tc-tiddler-frame tc-tiddler-view-frame tc-tiddler-exists  tc-tagged-SEV tc-tagged-Security tc-tagged-SGX tc-tagged-Linux" data-tags="SEV Security SGX Linux" data-tiddler-title="Disk Encryption in CVMs" role="article"><div class="tc-tiddler-title"><div class="tc-titlebar"><span class="tc-tiddler-controls"><button aria-expanded="false" aria-label="more" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fmore-tiddler-actions" title="More actions"></button><div class=" tc-reveal" hidden="true"></div><button aria-label="edit" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fedit" title="Edit this tiddler"></button><button aria-label="close" class="tc-btn-invisible tc-btn-%24%3A%2Fcore%2Fui%2FButtons%2Fclose" title="Close this tiddler"></button></span><span><h2 class="tc-title">Disk Encryption in CVMs</h2></span></div><div class="tc-tiddler-info tc-popup-handle tc-reveal" hidden="true"></div></div><div class="tc-reveal"></div><div class=" tc-reveal"><div class="tc-subtitle"><a class="tc-tiddlylink tc-tiddlylink-missing" href=".html"></a> December 12, 2024 at 8:40 pm</div></div><div class=" tc-reveal"><div class="tc-tags-wrapper"><span class="tc-tag-list-item" data-tag-title="Linux"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">Linux</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="Security"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">Security</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="SEV"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">SEV</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span><span class="tc-tag-list-item" data-tag-title="SGX"><span aria-expanded="false" class="tc-tag-label tc-btn-invisible" draggable="true" style="fill:rgb(38, 38, 38);color:rgb(38, 38, 38);">SGX</span><span class="tc-drop-down tc-reveal" hidden="true"></span></span></div></div><div class="tc-tiddler-body tc-reveal"><ul><li>How can a untrusted hypervisor load the disk/image of a CVM in a trustworthy way?</li><li>How to pass the keys from the trusted user to the VM in a secure way?</li></ul><p>This document (<a class="tc-tiddlylink-external" href="https://docs.kernel.org/security/secrets/coco.html" rel="noopener noreferrer" target="_blank">Confidential Computing secrets</a>) specifies that:</p><blockquote><div>Confidential Computing (coco) hardware such as AMD SEV (Secure Encrypted Virtualization) allows guest owners to inject secrets into the VMs memory without the host/hypervisor being able to read them. In SEV, secret injection is performed early in the VM launch process, before the guest starts running.</div></blockquote><p>However, it's still not clear to me how the secrets are passed to the VM securely. I guess this can be a bit different for SEV and TDX.</p><p>Fortunately, Linux provides a good documentation explaining the details here for <a class="tc-tiddlylink-external" href="https://docs.kernel.org/virt/kvm/x86/amd-memory-encryption.html#secure-encrypted-virtualization-sev" rel="noopener noreferrer" target="_blank">SEV</a>.</p><p>Notably, there is a command called <code>KVM_SEV_LAUNCH_SECRET</code>, documented like this:</p><blockquote><div>KVM_SEV_LAUNCH_SECRET</div><div>The KVM_SEV_LAUNCH_SECRET command can be used by the hypervisor to inject secret data after the measurement has been validated by the guest owner.</div><div>Parameters (in): struct kvm_sev_launch_secret</div><div></div><div>Returns: 0 on success, -negative on error</div></blockquote><p>The structure looks like this:</p><pre><code>struct kvm_sev_launch_secret {
+        __u64 hdr_uaddr;        /* userspace address containing the packet header */
+        __u32 hdr_len;
+
+        __u64 guest_uaddr;      /* the guest memory region where the secret should be injected */
+        __u32 guest_len;
+
+        __u64 trans_uaddr;      /* the hypervisor memory region which contains the secret */
+        __u32 trans_len;
+};</code></pre><p>It seems like there is a mechanism for the CVM to take secrets from the host memory region.</p></div>
+</div></p>
+</section>
+</body>
+</html>
+

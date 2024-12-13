@@ -1,0 +1,42 @@
+created: 20241213012912456
+modified: 20241213014008410
+tags: SEV Security SGX Linux
+title: Disk Encryption in CVMs
+type: text/vnd.tiddlywiki
+
+* How can a untrusted hypervisor load the disk/image of a CVM in a trustworthy way?
+* How to pass the keys from the trusted user to the VM in a secure way?
+
+This document ([[Confidential Computing secrets|https://docs.kernel.org/security/secrets/coco.html]]) specifies that:
+
+> Confidential Computing (coco) hardware such as AMD SEV (Secure Encrypted Virtualization) allows guest owners to inject secrets into the VMs memory without the host/hypervisor being able to read them. In SEV, secret injection is performed early in the VM launch process, before the guest starts running.
+
+However, it's still not clear to me how the secrets are passed to the VM securely. I guess this can be a bit different for SEV and TDX.
+
+Fortunately, Linux provides a good documentation explaining the details here for [[SEV|https://docs.kernel.org/virt/kvm/x86/amd-memory-encryption.html#secure-encrypted-virtualization-sev]].
+
+Notably, there is a command called `KVM_SEV_LAUNCH_SECRET`, documented like this:
+
+> KVM_SEV_LAUNCH_SECRET
+> The KVM_SEV_LAUNCH_SECRET command can be used by the hypervisor to inject secret data after the measurement has been validated by the guest owner.
+
+> Parameters (in): struct kvm_sev_launch_secret
+> 
+> Returns: 0 on success, -negative on error
+
+The structure looks like this:
+
+```
+struct kvm_sev_launch_secret {
+        __u64 hdr_uaddr;        /* userspace address containing the packet header */
+        __u32 hdr_len;
+
+        __u64 guest_uaddr;      /* the guest memory region where the secret should be injected */
+        __u32 guest_len;
+
+        __u64 trans_uaddr;      /* the hypervisor memory region which contains the secret */
+        __u32 trans_len;
+};
+```
+
+It seems like there is a mechanism for the CVM to take secrets from the host memory region.
